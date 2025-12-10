@@ -1,0 +1,73 @@
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import bannerImg from "@/public/assets/pojects/addressVilla/360cover.webp";
+import ADmodel from "./ADmodel";
+
+const ADBanner360 = () => {
+  const [ShowPopup, setShowPopup] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const bannerRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (bannerRef.current) {
+      observer.observe(bannerRef.current);
+    }
+
+    return () => {
+      if (bannerRef.current) {
+        observer.unobserve(bannerRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div ref={bannerRef} className="relative w-full bg-[#040406]">
+      {/* Banner Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={bannerImg}
+          alt="360° Tour Banner"
+          layout="fill"
+          objectFit="cover"
+          quality={80}
+          placeholder="blur"
+        />
+      </div>
+
+      {/* Overlay for mobile */}
+      <div className="bg-[#00000066] w-full h-full absolute left-0 top-0 z-10 sm:hidden"></div>
+
+      {/* Content */}
+      <div className="relative z-20 flex items-center justify-center min-h-[300px] sm:min-h-[500px]">
+        <div className="container max-w-[1240px] px-4 flex items-center justify-between">
+          <div className="banner-content text-white">
+            <h1 className="text-[3rem] mb-0">360&deg;</h1>
+            <h1 className="banner-h1">Take a tour of the project</h1>
+            <button
+              onClick={() => setShowPopup(true)}
+              className="site-btn1 bg-white text-black hover:text-black hover:bg-white"
+            >
+              Schedule A Virtual Tour
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Popup */}
+      {ShowPopup && <ADmodel onClose={() => setShowPopup(false)} />}
+    </div>
+  );
+};
+
+export default ADBanner360;

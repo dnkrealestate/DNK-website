@@ -1,0 +1,99 @@
+"use client";
+import React from "react";
+import Assist from "@/public/assets/icons/assist.webp";
+import Consultation from "@/public/assets/icons/consultation.webp";
+import Estimation from "@/public/assets/icons/estimation.webp";
+import Shedule from "@/public/assets/icons/shedule.webp";
+import Image from "next/image";
+import ContactForm from "../contactForm/ContactForm";
+// import ContactForm from "../../contact/component/ContactForm";
+
+export const TalkSection = () => {
+  return (
+    <div className="w-full bg-[#040406] flex items-center justify-center">
+      <div className="container max-w-[1240px] py-5 px-4 md:py-9 talkSection">
+        <h2 className="m-auto w-fit">Let's Talk Together</h2>
+        <p className="text-center m-auto w-[100%] md:w-[80%] pb-4">
+          We love talk with new people. Please take a moment to tell us about
+          your Dream. Your messages will be responded to within ONE BUSINESS
+          DAY.
+        </p>
+        <div className="grid md:grid-cols-2 relative pt-8">
+          <div className="grid grid-cols-2">
+            <div className="p-2">
+              <Image
+                src={Assist}
+                alt="Damac residence dubai downtown"
+                className="pb-4 m-auto md:m-0 w-[48px]"
+                width={80}
+                height={80}
+                quality={80}
+                loading="lazy"
+              />
+              <h3 className="text-center md:text-left">
+                Call Enquiry Assistance
+              </h3>
+              <p className="text-center md:text-left">
+                We are always available on call to assist you with any questions
+                you may have.
+              </p>
+            </div>
+            <div className="p-2">
+              <Image
+                src={Consultation}
+                alt="Real estate management dubai"
+                className="pb-4 m-auto md:m-0 w-[48px]"
+                width={80}
+                height={80}
+                quality={80}
+                loading="lazy"
+              />
+              <h3 className="text-center md:text-left">Project Consultation</h3>
+              <p className="text-center md:text-left">
+                We provide you with all investment consultations for your goal.
+              </p>
+            </div>
+            <div className="p-2">
+              <Image
+                src={Estimation}
+                alt="Top real estate companies in dubai"
+                className="pb-4  m-auto md:m-0 w-[48px]"
+                width={80}
+                height={80}
+                quality={80}
+                loading="lazy"
+              />
+              <h3 className="text-center md:text-left">Project Estimation</h3>
+              <p className="mb-0 text-center md:text-left">
+                You come to us with your dream, and we do all of the planning
+                and costing for you.
+              </p>
+            </div>
+            <div className="p-2">
+              <Image
+                src={Shedule}
+                alt="3 bedroom villa for sale in dubai"
+                className="pb-4  m-auto md:m-0 w-[48px]"
+                width={80}
+                height={80}
+                quality={80}
+                loading="lazy"
+              />
+              <h3 className="text-center md:text-left">
+                Scheduling Appointments
+              </h3>
+              <p className="mb-0 text-center md:text-left">
+                We assist you in scheduling appointments whenever you wish to
+                meet us.
+              </p>
+            </div>
+          </div>
+
+          <ContactForm />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TalkSection;
