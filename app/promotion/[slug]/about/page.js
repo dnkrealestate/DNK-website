@@ -20,6 +20,9 @@ async function fetchPromotionBySlug(slug) {
 
 
 
+
+
+
 export async function generateMetadata({ params }) {
 
   const resolvedParams = await params; 
