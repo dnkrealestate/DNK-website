@@ -1,5 +1,5 @@
 import React from 'react'
-import BannerContact from './components/contactBanner'
+import BannerContact from './components/ContactBanner'
 import { URL, WWURL } from '@/url/axios';
 import { PromotionProvider } from '../PromotionContext';
 import ContactPage from './components/ContactPage';

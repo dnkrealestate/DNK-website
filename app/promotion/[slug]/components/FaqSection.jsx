@@ -1,27 +1,17 @@
 import React, { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
-export default function FaqSection() {
+export default function FaqSection({promotionData}) {
   const [openIndex, setOpenIndex] = useState(null);
 
   const faqData = [
-    {
-      q: "What makes this project unique?",
-      a: "Our project features world‑class amenities, smart‑home technology, high‑end interiors, and a prime location offering both luxury and convenience.",
-    },
-    {
-      q: "Is there any payment plan available?",
-      a: "Yes, we offer flexible payment plans tailored to your needs, including post‑handover options depending on availability.",
-    },
-    {
-      q: "How can I schedule a site visit?",
-      a: "You can schedule a site visit anytime by requesting a callback or contacting our sales team directly.",
-    },
-    {
-      q: "Are these units freehold?",
-      a: "Yes, all properties in this project come with 100% freehold ownership for all nationalities.",
-    },
-  ];
+  { q: promotionData.q1, a: promotionData.a1 },
+  { q: promotionData.q2, a: promotionData.a2 },
+  { q: promotionData.q3, a: promotionData.a3 },
+  { q: promotionData.q4, a: promotionData.a4 },
+  { q: promotionData.q5, a: promotionData.a5 },
+].filter(item => item.q && item.q.trim() !== "");
+
 
   const toggleFAQ = (i) => {
     setOpenIndex(openIndex === i ? null : i);
@@ -31,7 +21,7 @@ export default function FaqSection() {
     <section className="w-full bg-black py-12 px-4">
       <div className="max-w-[900px] m-auto">
         <h2 className="text-white text-center text-3xl md:text-4xl font-semibold mb-8 tracking-wide">
-          Frequently Asked Questions
+          { promotionData.faqTitle ? promotionData.faqTitle : 'Frequently Asked Questions' }
         </h2>
 
         <div className="space-y-4">

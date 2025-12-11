@@ -123,6 +123,17 @@ export default function AddPromotion({mode, user_id}) {
     footerBannerTitle: "",
     footerBannerSubTitle: "",
     footerBannerBtnName: "",
+    faqTitle: "",
+    q1: "",
+    a1: "",
+    q2: "",
+    a2: "",
+    q3: "",
+    a3: "",
+    q4: "",
+    a4: "",
+    q5: "",
+    a5: "",
   };
 
   const [createPromotion, setCreatePromotion] = useState(initialState);
@@ -499,13 +510,24 @@ const handleSubmit = async (e) => {
               : "text-gray-500"
           }`}
         >
-          About
+          FAQ
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("tab7")}
           className={`px-6 py-2 font-semibold ${
             activeTab === "tab7"
+              ? "border-b-4 border-blue-500 text-blue-600"
+              : "text-gray-500"
+          }`}
+        >
+          About
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("tab8")}
+          className={`px-6 py-2 font-semibold ${
+            activeTab === "tab8"
               ? "border-b-4 border-blue-500 text-blue-600"
               : "text-gray-500"
           }`}
@@ -2153,9 +2175,142 @@ const handleSubmit = async (e) => {
         </div>
       </div>)}
 
-      {/* TAB 6 - About & SEO */}
+       {/* TAB 6 - FAQ */}
        {activeTab === "tab6" && (
-        <div className="space-y-6">
+        <div className="">
+          <label>FAQ Section Title</label>
+              <input
+                placeholder="Frequently Asked Questions"
+                type="text"
+                name="faqTitle"
+                onChange={handleChange}
+                value={createPromotion.faqTitle || "Frequently Asked Questions"}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question1</label>
+              <input
+                placeholder="Question1"
+                type="text"
+                name="q1"
+                onChange={handleChange}
+                value={createPromotion.q1 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer1</label>
+              <textarea
+                placeholder="Answer1"
+                type="text"
+                name="a1"
+                onChange={handleChange}
+                value={createPromotion.a1 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question2</label>
+              <input
+                placeholder="Question1"
+                type="text"
+                name="q2"
+                onChange={handleChange}
+                value={createPromotion.q2 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer2</label>
+              <textarea
+                placeholder="Answer2"
+                type="text"
+                name="a2"
+                onChange={handleChange}
+                value={createPromotion.a2 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question3</label>
+              <input
+                placeholder="Question1"
+                type="text"
+                name="q3"
+                onChange={handleChange}
+                value={createPromotion.q3 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer3</label>
+              <textarea
+                placeholder="Answer3"
+                type="text"
+                name="a3"
+                onChange={handleChange}
+                value={createPromotion.a3 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question4</label>
+              <input
+                placeholder="Question4"
+                type="text"
+                name="q4"
+                onChange={handleChange}
+                value={createPromotion.q4 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer4</label>
+              <textarea
+                placeholder="Answer1"
+                type="text"
+                name="a4"
+                onChange={handleChange}
+                value={createPromotion.a4 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question5</label>
+              <input
+                placeholder="Question5"
+                type="text"
+                name="q5"
+                onChange={handleChange}
+                value={createPromotion.q5 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer5</label>
+              <textarea
+                placeholder="Answer5"
+                type="text"
+                name="a5"
+                onChange={handleChange}
+                value={createPromotion.a5 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+
+              <div className="flex justify-between mt-6">
+          <button
+            type="button"
+            onClick={() => setActiveTab("tab5")}
+            className="bg-gray-400 text-white px-4 py-2 rounded mb-3"
+          >
+            Back
+          </button>
+          <button
+                type="button"
+                onClick={() => setActiveTab("tab7")}
+                className="bg-blue-500 text-white px-4 py-2 rounded mb-3"
+              >
+                Next
+          </button>
+        </div>
+        </div>
+        
+        )}
+
+      {/* TAB 7 - About & SEO */}
+       {activeTab === "tab7" && (
+        <div className="">
         <h2 className="text-lg font-semibold mb-4 text-[#000]">
            About Page
         </h2>
@@ -2205,14 +2360,14 @@ const handleSubmit = async (e) => {
 
           <button
             type="button"
-            onClick={() => setActiveTab("tab5")}
+            onClick={() => setActiveTab("tab6")}
             className="bg-gray-400 text-white px-4 py-2 rounded mb-3"
           >
             Back
           </button>
           <button
                 type="button"
-                onClick={() => setActiveTab("tab7")}
+                onClick={() => setActiveTab("tab8")}
                 className="bg-blue-500 text-white px-4 py-2 rounded mb-3"
               >
                 Next
@@ -2220,9 +2375,9 @@ const handleSubmit = async (e) => {
         </div>
         </div>
       )}
-       {/* TAB 7 - contact us */}
-       {activeTab === "tab7" && (
-        <div className="space-y-6">
+       {/* TAB 8 - contact us */}
+       {activeTab === "tab8" && (
+        <div className="">
           <h2 className="text-lg font-semibold mb-4 text-[#000]">
             Contact Page
           </h2>
@@ -2287,7 +2442,7 @@ const handleSubmit = async (e) => {
 
           <button
             type="button"
-            onClick={() => setActiveTab("tab6")}
+            onClick={() => setActiveTab("tab7")}
             className="bg-gray-400 text-white px-4 py-2 rounded mb-3"
           >
             Back
@@ -2297,6 +2452,8 @@ const handleSubmit = async (e) => {
 
         </div>
        )}
+
+       
 
           </form>
 

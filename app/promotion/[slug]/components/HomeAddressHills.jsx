@@ -32,7 +32,7 @@ const HomeAddressHills = () => {
         <ADMasterPlan promotionData={promotionData} />
         <LpaymentPlan promotionData={promotionData} />
         <LAmenitiesImg promotionData={promotionData} />
-        {/* <FaqSection  /> */} 
+        <FaqSection promotionData={promotionData} /> 
         <LDownloadSection promotionData={promotionData} />
         <LBanner360 promotionData={promotionData} />
       </div>

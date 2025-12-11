@@ -1,7 +1,7 @@
 "use client";
+
 import React from "react";
-import contactBanner from "@/public/assets/banner-img/banner_contact.webp";
-import { MdEmail } from "react-icons/md";
+import contactBannerImage from "@/public/assets/banner-img/banner_contact_promo.webp";
 import { MdCall } from "react-icons/md";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
@@ -12,15 +12,15 @@ export default function ContactBanner({ promotionData }) {
   return (
     <div className="banner w-full bg-[#040406] flex items-center justify-center relative">
       <Image
-        src={contactBanner}
-        alt={`Contact Us, dubai view, Real estate, off plan, ROI, investment`}
-        quality={90}
-        fill
-        sizes="100vw"
-        priority
-        style={{
-          objectFit: "cover",
-        }}
+             src={contactBannerImage}
+             alt={`Contact Us, dubai view, Real estate, off plan, ROI, investment`}
+             quality={90}
+             fill
+             sizes="100vw"
+             priority
+             style={{
+               objectFit: "cover",
+             }}
       />
       <div className="container max-w-[1240px] px-4 flex items-center justify-start z-10">
         <div className="banner-content">
