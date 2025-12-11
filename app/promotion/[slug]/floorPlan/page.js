@@ -8,6 +8,8 @@ async function fetchPromotions() {
   return data.success ? data.data : [];
 }
 
+
+
 async function fetchPromotionBySlug(slug) {
   const promotions = await fetchPromotions();
   const matched = promotions.find((promo) => {
