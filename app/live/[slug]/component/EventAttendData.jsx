@@ -1,119 +1,142 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { userRoadshowServices } from "@/services/roadshowService";
 
 const EventAttendData = () => {
-    const params = useParams();
-    const slug = params?.slug;
+  const params = useParams();
 
-    const [searchedRegisterList, setSearchedRegisterList] = useState([]);
-          const [leadingRm, setLeadingRm] = useState({ name: "N/A", count: 0 });
-          const [highlight, setHighlight] = useState(false);
-        
-          const prevCountRef = useRef(0);
-          const prevLeadingRmRef = useRef("");
-          const notificationSoundRef = useRef(null);
-    const soundEnabledRef = useRef(false); 
-    
-     const { getRoadshowLinkById, getRoadshowRegister } = userRoadshowServices();
-    
-     useEffect(() => {
-           const enableSound = () => {
-             const audio = new Audio("/assets/sounds/Notification.mp3");
-             audio.load(); // preload
-        
-             audio
-               .play()
-               .then(() => {
-                 soundEnabledRef.current = true;
-                 notificationSoundRef.current = audio; // ✅ CORRECTED
-                 console.log("🔊 Sound enabled and preloaded.");
-               })
-               .catch((err) => {
-                 console.warn("⚠️ Could not auto-play sound:", err.message);
-               });
-        
-             document.removeEventListener("click", enableSound);
-           };
-        
-           document.addEventListener("click", enableSound);
-     }, []);
-    
-     // Polling setup
-           useEffect(() => {
-             const fetchData = async () => {
-               try {
-                 const response = await getRoadshowRegister();
-                 if (response.success) {
-                   const sorted = response.data.sort(
-                     (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
-                   );
-                   const filtered = sorted.filter(
-                     (item) =>
-                       item?.eventplace?.trim().toLowerCase() ===
-                       slug?.trim().toLowerCase()
-                   );
-        
-                   const rmCountMap = filtered.reduce((acc, curr) => {
-                     const rm = curr.sourcedRm || "Unknown";
-                     acc[rm] = (acc[rm] || 0) + 1;
-                     return acc;
-                   }, {});
-        
-                   // Determine leading RM
-                   const entries = Object.entries(rmCountMap);
-                   const top = entries.sort((a, b) => b[1] - a[1])[0] || ["N/A", 0];
-                   const [topRm, topCount] = top;
-        
-                   // Notify if new entry or leading RM changes
-                   const newCount = filtered.length;
-        
-                   if (soundEnabledRef.current && newCount > prevCountRef.current) {
-                     try {
-                       const audio = notificationSoundRef.current; // ✅ Use correct ref
-        
-                       if (audio) {
-                         audio.currentTime = 0; // reset to start
-                         audio.play().catch((err) => {
-                           console.warn("🔕 Failed to play sound:", err.message);
-                         });
-                       }
-                     } catch (error) {
-                       console.error(
-                         "Error while playing notification:",
-                         error.message
-                       );
-                     }
-                   }
-        
-                   // ✅ Trigger animation
-                   if (newCount !== prevCountRef.current) {
-                     setHighlight(true);
-                     setTimeout(() => setHighlight(false), 3000);
-                   }
-        
-                   prevCountRef.current = newCount;
-                   prevLeadingRmRef.current = topRm;
-        
-                   setSearchedRegisterList(filtered);
-                   setLeadingRm({ name: topRm, count: topCount });
-                 }
-               } catch (error) {
-                 console.error("Polling error:", error);
-               }
-             };
-        
-             fetchData(); // initial fetch
-             const interval = setInterval(fetchData, 10000); // poll every 10 sec
-             return () => clearInterval(interval);
-           }, [slug]);
-    
+  /* --------------------------------------------------
+     ✅ SAFE PARAM RESOLUTION (CRITICAL FIX)
+  -------------------------------------------------- */
+  const paramValue =
+    params?.slug ||
+    params?.eventplace ||
+    params?.city ||
+    null;
+
+  const slugValue = Array.isArray(paramValue)
+    ? paramValue.join(" ")
+    : paramValue;
+
+  console.log("FINAL SLUG VALUE:", slugValue);
+
+  const [searchedRegisterList, setSearchedRegisterList] = useState([]);
+  const [leadingRm, setLeadingRm] = useState({ name: "N/A", count: 0 });
+  const [highlight, setHighlight] = useState(false);
+
+  const prevCountRef = useRef(0);
+  const notificationSoundRef = useRef(null);
+  const soundEnabledRef = useRef(false);
+
+  const { getRoadshowRegister } = userRoadshowServices();
+
+  /* --------------------------------------------------
+     🔊 ENABLE SOUND
+  -------------------------------------------------- */
+  useEffect(() => {
+    const enableSound = () => {
+      const audio = new Audio("/assets/sounds/Notification.mp3");
+      audio.load();
+
+      audio.play().then(() => {
+        soundEnabledRef.current = true;
+        notificationSoundRef.current = audio;
+      }).catch(() => {});
+
+      document.removeEventListener("click", enableSound);
+    };
+
+    document.addEventListener("click", enableSound);
+    return () => document.removeEventListener("click", enableSound);
+  }, []);
+
+  /* --------------------------------------------------
+     🧠 STRONG NORMALIZER (BULLETPROOF)
+  -------------------------------------------------- */
+  const normalize = (value) =>
+    decodeURIComponent(value || "")
+      .toLowerCase()
+      .replace(/-/g, " ")
+      .replace(/\u00a0/g, " ")
+      .replace(/[^a-z0-9 ]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  /* --------------------------------------------------
+     🔁 POLLING + FILTER
+  -------------------------------------------------- */
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getRoadshowRegister();
+        if (!response?.success) return;
+
+        const sorted = [...response.data].sort(
+          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+        );
+
+        // 🔥 IF SLUG EXISTS → FILTER, ELSE SHOW ALL
+        const filtered = slugValue
+          ? sorted.filter((item) =>
+              normalize(item?.eventplace).includes(
+                normalize(slugValue)
+              )
+            )
+          : sorted;
+
+        console.log(
+          "MATCH CHECK:",
+          filtered.map((i) => i.eventplace)
+        );
+
+        const rmCountMap = filtered.reduce((acc, curr) => {
+          const rm = curr?.sourcedRm || "Unknown";
+          acc[rm] = (acc[rm] || 0) + 1;
+          return acc;
+        }, {});
+
+        const [topRm = "N/A", topCount = 0] =
+          Object.entries(rmCountMap).sort((a, b) => b[1] - a[1])[0] || [];
+
+        const newCount = filtered.length;
+
+        if (
+          soundEnabledRef.current &&
+          newCount > prevCountRef.current &&
+          notificationSoundRef.current
+        ) {
+          notificationSoundRef.current.currentTime = 0;
+          notificationSoundRef.current.play().catch(() => {});
+        }
+
+        if (newCount !== prevCountRef.current) {
+          setHighlight(true);
+          setTimeout(() => setHighlight(false), 3000);
+        }
+
+        prevCountRef.current = newCount;
+        setSearchedRegisterList(filtered);
+        setLeadingRm({ name: topRm, count: topCount });
+      } catch (err) {
+        console.error("Polling error:", err);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 10000);
+    return () => clearInterval(interval);
+  }, [slugValue]);
+
+  if (searchedRegisterList.length === 0) return null;
+
+  /* --------------------------------------------------
+     🖥️ UI
+  -------------------------------------------------- */
   return (
-    <>
-      {searchedRegisterList.length > 0 && (
-        <div>
-          <div
+    <div>
+      <div
             className={`bg-gray-700 rounded-2xl py-5 md:py-10 px-3 sm:px-6 m-4 relative ${
               highlight ? "animate-greenPulse" : ""
             }`}
@@ -130,7 +153,9 @@ const EventAttendData = () => {
               </h3>
             </div>
           </div>
-          <table className="w-full border text-sm">
+
+
+                <table className="w-full border text-sm">
             <thead>
               <tr>
                 <th colSpan={2} className="bg-[#FFC700] text-[#000] py-1">
@@ -164,9 +189,7 @@ const EventAttendData = () => {
               </tr>
             </tbody>
           </table>
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 

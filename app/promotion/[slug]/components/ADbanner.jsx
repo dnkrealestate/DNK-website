@@ -45,7 +45,7 @@ export const ADbanner = ({promotionData}) => {
   
     const handlePlay = () => {
       if (!hasPlayed) {
-        handleRead(`Welcome to Damac Islands new Community`);
+        handleRead(`Welcome to ${promotionData.projectName}`); // ✅ use promotion name
         hasPlayed = true; // ✅ prevent replay
       }
     };

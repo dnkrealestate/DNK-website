@@ -39,7 +39,7 @@ export const ADFormBanner = ({ promotionData, onClose, onFormSubmit }) => {
             </div>
             <button
               onClick={() => setShowPopup(true)}
-              className="site-btn bg-[var(--themeColor)] text-white border-none hover:bg-black"
+              className="site-btn bg-[var(--themeColor)] text-white hover:text-white border-none hover:bg-black"
             >
               Request callback
             </button>

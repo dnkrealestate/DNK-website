@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { userRoadshowServices } from "@/services/roadshowService";
 import RegisterData from "./RegisterData";
 import EventAttendData from "./EventAttendData";
-import BackgroundImg from "@/public/assets/banner-img/full-bg.webp"
+import BackgroundImg from "@/public/assets/banner-img/full-bg.webp";
 import Image from "next/image";
 
 export default function RoadshowResult() {
@@ -18,6 +18,27 @@ export default function RoadshowResult() {
   const [isLoading, setIsLoading] = useState(true); // loading flag
 
   const { getRoadshowLinkById, getRoadshowRegister } = userRoadshowServices();
+
+  // Safe slug handling
+  const paramValue =
+    params?.slug || params?.eventplace || params?.city || null;
+
+  const slugValue = Array.isArray(paramValue)
+    ? paramValue.join(" ")
+    : paramValue;
+
+  // ✅ Normalization function
+  const normalize = (value) =>
+    value
+      ? value
+          .toString()
+          .toLowerCase()
+          .replace(/-/g, " ")
+          .replace(/\u00a0/g, " ")
+          .replace(/[^a-z0-9 ]/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
+      : "";
 
   // Fetch Roadshow link
   useEffect(() => {
@@ -36,7 +57,6 @@ export default function RoadshowResult() {
   }, [slug]);
 
   // Fetch Registered Data
-  // Define a flag to track first fetch only
   useEffect(() => {
     let intervalId;
     let firstFetch = true;
@@ -45,11 +65,23 @@ export default function RoadshowResult() {
       try {
         const response = await getRoadshowRegister(slug);
         if (response.success && Array.isArray(response.data)) {
-          const filtered = response.data.filter(
-            (item) =>
-              item?.eventplace?.trim().toLowerCase() ===
-              slug?.trim().toLowerCase()
+          // ✅ Sort by updatedAt
+          const sorted = response.data.sort(
+            (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
           );
+
+          // ✅ Filter safely using normalize
+          const filtered = slugValue
+            ? sorted.filter((item) =>
+                normalize(item?.eventplace).includes(normalize(slugValue))
+              )
+            : sorted;
+
+          console.log(
+            "MATCH CHECK:",
+            filtered.map((i) => i.eventplace)
+          );
+
           setFilteredData(filtered);
         }
       } catch (error) {
@@ -68,7 +100,7 @@ export default function RoadshowResult() {
     }
 
     return () => clearInterval(intervalId);
-  }, [slug]);
+  }, [slug, slugValue]);
 
   if (!roadshowLink) {
     return <div className="text-white text-center mt-10">Loading...</div>;
@@ -112,14 +144,14 @@ export default function RoadshowResult() {
                 // Show grid when filtered data is available
                 <div className="w-full relative grid md:grid-cols-2 gap-4">
                   <Suspense fallback={<div>Loading...</div>}>
-                    <EventAttendData />
-                    <RegisterData />
+                    <EventAttendData filteredData={filteredData} />
+                    <RegisterData filteredData={filteredData} />
                   </Suspense>
                 </div>
               ) : (
                 // Show single RegisterData when no data is found
                 <Suspense fallback={<div>Loading...</div>}>
-                  <RegisterData />
+                  <RegisterData filteredData={[]} />
                 </Suspense>
               )}
             </div>

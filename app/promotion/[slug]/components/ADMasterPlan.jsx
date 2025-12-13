@@ -25,8 +25,7 @@ const ADMasterPlan = ({promotionData}) => {
   return (
     <div className="container max-w-[1240px] py-6 px-4 m-auto">
       {promotionData?.masterPlanTitle && <h1 className="text-[#fff] m-auto w-fit mb-4 mt-3">{promotionData?.masterPlanTitle}</h1>}
-      <p className="w-[100%] md:w-[80%] text-center m-auto mb-[20px] md:mb-[30px]">
-        {promotionData.paymentPlanSubTitle}
+      <p dangerouslySetInnerHTML={{ __html: promotionData?.masterPlanSubTitle }} className="w-[100%] md:w-[80%] text-center m-auto mb-[20px] md:mb-[30px]">
       </p>
       {promotionData?.masterPlanTitle && <div className="relative">
         {isOverlayVisible && (

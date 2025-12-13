@@ -45,8 +45,7 @@ export default function ADpaymentPlan({ promotionData }) {
         {promotionData.paymentPlanTitle}
       </h1>
 
-      <p className="w-[100%] md:w-[80%] text-center m-auto mb-[20px] md:mb-[30px]">
-        {promotionData.paymentPlanSubTitle}
+      <p dangerouslySetInnerHTML={{ __html: promotionData?.paymentPlanSubTitle }} className="w-[100%] md:w-[80%] text-center m-auto mb-[20px] md:mb-[30px]">
       </p>
 
       <div className="relative overflow-hidden">
