@@ -18,7 +18,7 @@ import TalkSection from "./components/talkSection/TalkSection";
 
 
 /* ✅ ISR: regenerate once per month */
-export const revalidate = 60 * 60 * 24 * 30;
+export const revalidate = 2592000;
 
 /* ===============================
    Monthly Seeded Random Helpers
