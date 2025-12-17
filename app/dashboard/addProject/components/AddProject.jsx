@@ -162,7 +162,19 @@ export default function AddProject({ mode , user_id}) {
         Swal.fire("Failed", "Failed to add/update project", "error");
       }
     } catch (err) {
-      Swal.fire("Failed", "Failed to add/update project", "error");
+     console.error("❌ Error submitting form:", err);
+     
+       const errorMessage =
+         err?.response?.data?.message ||    
+         err?.response?.data?.error ||        
+         err?.message ||                       
+         "Something went wrong. Please try again.";
+     
+       Swal.fire({
+         icon: "error",
+         title: "Failed",
+         text: errorMessage,
+       });
     }
   };
 

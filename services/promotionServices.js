@@ -20,10 +20,16 @@ export const promotionServices = () => {
         return response.data
     }
 
+    const deletePromotion = async (id, data) => {
+        const response = await axiosPrivate.delete('/promo/delete-promotion/'+ id)
+        return response.data
+    }
+
   return { 
     postPromotions,
     getPromotion,
-    putPromotion
+    putPromotion,
+    deletePromotion
    };
 };
 

@@ -17,7 +17,7 @@ export const ViewPromotion = ({ setCreatePromotion, submit, params }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(30);
 
-  const { getPromotion, } = promotionServices();
+  const { getPromotion, deletePromotion } = promotionServices();
 
   useEffect(() => {
     getData();
@@ -177,20 +177,29 @@ const handleEdit = (data) => {
 
     if (result.isConfirmed) {
       try {
-        // const response = await deletePromotionList(id);
-        if (response.success) {
+        const response = await deletePromotion(id);
+        if (response.sucess) {
           setPromotionList((prev) => prev.filter((item) => item._id !== id));
           Swal.fire(
             "Deleted!",
-            response.message || "Project deleted.",
+            response.message || "Promotion deleted.",
             "success"
           );
         } else {
           Swal.fire("Failed", response.message || "Failed to delete.", "error");
         }
       } catch (err) {
-        Swal.fire("Error", "Error occurred while deleting.", "error");
-        console.error(err);
+        const errorMessage =
+            err?.response?.data?.message ||    
+            err?.response?.data?.error ||        
+            err?.message ||                       
+            "Something went wrong. Please try again.";
+        
+          Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: errorMessage,
+          });
       }
     }
   };

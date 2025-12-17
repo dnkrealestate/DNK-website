@@ -13,7 +13,7 @@ export default function MasterPlanPage() {
         <BannerMasterPlan promotionData={promotionData}/>
         <ADMasterPlan promotionData={promotionData}/>
         <div className="container max-w-[1240px] py-6 px-4 m-auto">
-            <p dangerouslySetInnerHTML={{ __html: promotionData?.paymentPlanDetailDescription }}></p>
+            <p dangerouslySetInnerHTML={{ __html: promotionData?.masterPlanDescription }}></p>
        </div>
     </div>
   )

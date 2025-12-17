@@ -17,6 +17,32 @@ async function fetchProjects() {
   return data.success ? data.data : [];
 }
 
+// Get day number of the year (1–366)
+function getDayOfYear(date = new Date()) {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const diff =
+    date - start +
+    (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000;
+  const oneDay = 1000 * 60 * 60 * 24;
+  return Math.floor(diff / oneDay);
+}
+
+// Pick 1 item daily per project (deterministic)
+function pickDailyItemPerProject(list, projectId) {
+  if (!Array.isArray(list) || list.length === 0) return [];
+  
+  // Simple hash from project ID
+  const hash =
+    projectId
+      .split('')
+      .reduce((acc, char) => acc + char.charCodeAt(0), 0) || 0;
+
+  const day = getDayOfYear();
+  const index = (day + hash) % list.length;
+
+  return [list[index]];
+}
+
 // Static Paths
 export async function generateStaticParams() {
   const projects = await fetchProjects();
@@ -268,10 +294,10 @@ export default async function ProjectDetail({ params }) {
     if (team && Array.isArray(team)) {
       const salesTeam = team
         .filter((member) => member.department === "Sales")
-        .sort((a, b) => a.sortKey - b.sortKey);
+        .sort((a, b) => a._id.localeCompare(b._id)); // stable order
 
-      const shuffledTeam = salesTeam.sort(() => Math.random() - 0.5).slice(0, 1);
-      teamData = shuffledTeam;
+      // ✅ PICK 1 DAILY PER PROJECT
+      teamData = pickDailyItemPerProject(salesTeam, projectData.projectname);
     }
   } catch (error) {
     console.error("Error fetching data:", error);

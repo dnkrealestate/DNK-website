@@ -326,7 +326,18 @@ const handleSubmit = async (e) => {
     }
   } catch (err) {
     console.error("❌ Error submitting form:", err);
-    Swal.fire("Failed", "Failed to add/update project", "error");
+
+  const errorMessage =
+    err?.response?.data?.message ||    
+    err?.response?.data?.error ||        
+    err?.message ||                       
+    "Something went wrong. Please try again.";
+
+  Swal.fire({
+    icon: "error",
+    title: "Failed",
+    text: errorMessage,
+  });
   }
 };
 

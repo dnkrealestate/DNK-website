@@ -133,9 +133,19 @@ const AddNews = ({mode, user_id}) => {
         Swal.fire("Failed", "Failed to add/update news", "error");
       }
     } catch (err) {
-      const errorMsg = err?.response?.data?.message || "An error occurred.";
-      setError(errorMsg);
-      Swal.fire("Error", errorMsg, "error");
+     console.error("❌ Error submitting form:", err);
+          
+            const errorMessage =
+              err?.response?.data?.message ||    
+              err?.response?.data?.error ||        
+              err?.message ||                       
+              "Something went wrong. Please try again.";
+          
+            Swal.fire({
+              icon: "error",
+              title: "Failed",
+              text: errorMessage,
+            });
     }
   };
 

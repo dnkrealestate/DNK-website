@@ -2,15 +2,23 @@ import React from "react";
 import aboutImg from "@/public/assets/home-page/about_home_img_1.webp";
 import Link from "next/link";
 import Image from "next/image";
+import { WWURL } from "@/url/axios";
 
-export const AboutSection = () => {
+export const AboutSection = ({banner}) => {
+
+   const imageUrl = banner?.aboutImage ? (
+    `${WWURL}${banner.aboutImage}`
+  ) : (
+    <div className="absolute h-full w-full bg-gray-600 animate-pulse"></div>
+  );
+
   return (
     <div className="about-section w-full bg-[#040406] flex items-center justify-center">
       <div className="container max-w-[1240px] py-5  px-4  md:py-9 grid  md:grid-cols-2 relative ">
         <div className="md:block hidden">
           <Image
             className="w-[80%] order-last md:order-first md:w-[80%] m-auto "
-            src={aboutImg}
+            src={imageUrl}
             alt="Dubai burj al arab, Dubai hills villas for sale, off plan, Real estate, villa, apartment"
             width={400}
             height={400}

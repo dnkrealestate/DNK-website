@@ -15,7 +15,26 @@ import { getReview } from "@/services/reviewServices";
 import ReviewSection from "./components/reviewSection/ReviewSection";
 import PartnerSection from "./components/partner/PartnerSection";
 import TalkSection from "./components/talkSection/TalkSection";
-import PostHogClient from "./posthog";
+
+
+/* ✅ ISR: regenerate once per month */
+export const revalidate = 60 * 60 * 24 * 30;
+
+/* ===============================
+   Monthly Seeded Random Helpers
+================================ */
+function seededRandom(seed) {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+
+function getMonthlySeed() {
+  const now = new Date();
+  return now.getFullYear() * 100 + (now.getMonth() + 1);
+}
+
+
 
 async function fetchProjects() {
   const res = await fetch(`${URL}task/get-task-public`);
@@ -36,16 +55,7 @@ export default async function Home() {
   let reviewData = [];
   let partnerData = [];
 
-  const postHogClient = PostHogClient();
 
-  postHogClient.capture({
-    distinctId: 'user-id', // Replace with actual user ID if available
-    event: 'Home Page',
-    properties: {
-      page: 'Home',
-      timestamp: new Date().toISOString(),
-    },
-  })
 
   try {
     // Fetch all data concurrently
@@ -60,6 +70,8 @@ export default async function Home() {
       getPartner(),
     ]);
 
+    const monthSeed = getMonthlySeed();
+
     projects = projectsData;
     bannerData = banners.length > 0 ? banners[0] : null;
     eventData = event.length > 0 ? event[0] : null;
@@ -67,26 +79,37 @@ export default async function Home() {
     reviewData = review;
     partnerData = partner;
     
-    if (team && Array.isArray(team)) {
-      const sortedTeam = team
-        .map((item) => ({ ...item, sortKey: Math.random() }))
+    
+    /* ✅ Monthly random TEAM */
+    if (Array.isArray(team)) {
+      teamData = team
+        .map((item, index) => ({
+          ...item,
+          sortKey: seededRandom(monthSeed + index),
+        }))
         .sort((a, b) => a.sortKey - b.sortKey)
         .slice(0, 6);
-      teamData = sortedTeam
     }
+
+    /* ✅ Latest NEWS */
     if (news && Array.isArray(news)) {
       const sortedNews = news
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
       mainNews = sortedNews.length > 0 ? sortedNews[0] : null;
       SliderNews = sortedNews.length > 0 ? sortedNews.slice(1) : null;
     }
-    if (partner && Array.isArray(partner)) {
-      const sortedPartner = partner
-        .map((item) => ({ ...item, sortKey: Math.random() }))
+
+    /* ✅ Monthly random PARTNER */
+    if (Array.isArray(partner)) {
+      partnerData = partner
+        .map((item, index) => ({
+          ...item,
+          sortKey: seededRandom(monthSeed + index + 1000),
+        }))
         .sort((a, b) => a.sortKey - b.sortKey)
         .slice(0, 12);
-      partnerData = sortedPartner
     }
+
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -103,7 +126,7 @@ export default async function Home() {
     <>
       <BannerHome banner={bannerData} event={eventData} ad={adData} />
       <ProjectList projects={filteredProjects} />
-      <AboutSection />
+      <AboutSection banner={bannerData}/>
       <NewsList mainNews={mainNews} SliderNews={SliderNews} />
       <ServiceSection />
       <TeamSection teamData={teamData} />
