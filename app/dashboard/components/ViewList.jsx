@@ -63,6 +63,7 @@ export const ViewList = ({ setCreateProject, submit, params }) => {
       handover: data.handover,
       totalarea: data.totalarea,
       coverimage: data.coverimage,
+      mobilecoverimage: data.mobilecoverimage,
       bannertitile: data.bannertitile,
       bannersubtitile: data.bannersubtitile,
       gallary1: data.gallary1,

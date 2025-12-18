@@ -21,11 +21,13 @@ export const ProjectBanner = ({ projectId }) => {
       return () => clearTimeout(timer);
     }, []);
 
-  const imageUrl = projectId?.coverimage ? (
-    `${WWURL}${projectId.coverimage}`
-  ) : (
-    <div className="absolute h-full w-full bg-gray-600 animate-pulse"></div>
-  );
+  const desktopImage = projectId?.coverimage
+    ? `${WWURL}${projectId.coverimage}`
+    : null;
+
+  const mobileImage = projectId?.mobilecoverimage
+    ? `${WWURL}${projectId.mobilecoverimage}`
+    : null;
 
   const ProjectLogo = projectId?.projectlogo
     ? `${WWURL}${projectId.projectlogo}`
@@ -88,24 +90,40 @@ useEffect(() => {
     <div
       className="banner w-full bg-[#040406] flex items-center justify-center relative h-[350px] sm:h-[420px] md:h-[550px]"
     >
-      {projectId ? (
-        <Image
-          className=""
-          src={imageUrl}
-          alt={`${projectId.projectname || "Project"}, ${
-            projectId.altcoverimage || "Banner image"
-          }`}
-          fallback="../public/assets/banner-img/sub_banner.webp"
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 100vw"
-          placeholder="blur"
-          blurDataURL="../public/assets/banner-img/sub_banner.webp"
-          quality={85}
-          priority
-          style={{
-            objectFit: "cover",
-          }}
-        />
+        {projectId ? (
+        <>
+          {/* Mobile screen → show mobile banner ONLY if exists */}
+          {mobileImage && (
+            <div className="block md:hidden absolute inset-0">
+              <Image
+                src={mobileImage}
+                alt={`${projectId.projectname || "Project"} Mobile Banner`}
+                fill
+                sizes="100vw"
+                priority
+                quality={85}
+                style={{ objectFit: "cover" }}
+              />
+            </div>
+          )}
+
+          {/* Desktop OR mobile fallback */}
+          <div
+            className={`absolute inset-0 ${
+              mobileImage ? "hidden md:block" : "block"
+            }`}
+          >
+            <Image
+              src={desktopImage}
+              alt={`${projectId.projectname || "Project"} Banner`}
+              fill
+              sizes="100vw"
+              priority
+              quality={85}
+              style={{ objectFit: "cover" }}
+            />
+          </div>
+        </>
       ) : (
         <div className="absolute h-full w-full bg-gray-600 animate-pulse"></div>
       )}

@@ -20,7 +20,7 @@ export default function FaqSection({promotionData}) {
   return (
     <section className="w-full bg-black py-12 px-4">
       <div className="max-w-[900px] m-auto">
-        <h2 className="text-white text-center text-3xl md:text-4xl font-semibold mb-8 tracking-wide">
+        <h2 className="text-white text-center font-semibold mb-8 tracking-wide">
           { promotionData.faqTitle ? promotionData.faqTitle : 'Frequently Asked Questions' }
         </h2>
 
@@ -32,7 +32,7 @@ export default function FaqSection({promotionData}) {
               onClick={() => toggleFAQ(i)}
             >
               <div className="flex justify-between items-center">
-                <h3 className="text-white text-lg md:text-xl font-medium">
+                <h3 className="text-white font-medium">
                   {item.q}
                 </h3>
                 {openIndex === i ? (

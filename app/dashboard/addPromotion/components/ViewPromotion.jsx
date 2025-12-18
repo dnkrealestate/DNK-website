@@ -67,8 +67,6 @@ const handleEdit = (data) => {
     themeImage: data.themeImage || "",
     altThemeImage: data.altThemeImage,
     themeColor: data.themeColor,
-    developer: data.developer,
-    developerlogo: data.developerlogo,
     bannerTitle: data.bannerTitle,
     subHead: data.subHead,
     subParagraph: data.subParagraph,

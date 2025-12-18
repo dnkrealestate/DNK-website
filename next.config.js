@@ -34,13 +34,16 @@ const nextConfig = {
 
         return config;
     },
+     // ✅ Generate production source maps
+    productionBrowserSourceMaps: true,
+
 
     // ✅ Updated: Turbopack moved out of experimental
     turbopack: {
         rules: { '*.mdx': ['mdx-loader'] },
     },
 
-    // Keeping other experimental flags (they are still valid)
+    // other experimental flags
     experimental: {
         workerThreads: false,
         cpus: 1,

@@ -61,11 +61,11 @@ export default function NewsList({ mainNews, SliderNews }) {
 
                 <div className="md:px-3 py-2 flex flex-col justify-between col-span-3">
                   <div>
-                    <h2 className="mb-2 text-2xl font-bold text-white line-clamp-2">
+                    <h3 className="mb-2 font-bold text-white line-clamp-2">
                       {mainNews.newstitle}
-                    </h2>
+                    </h3>
 
-                    <div
+                    <p
                       className="text-gray-400 line-clamp-4"
                       dangerouslySetInnerHTML={{
                         __html: mainNews?.newspara1,
@@ -74,8 +74,8 @@ export default function NewsList({ mainNews, SliderNews }) {
                   </div>
 
                   <div className="flex gap-1 pt-3 text-gray-400">
-                    <span>Published:</span>
-                    <span>{mainNews.published}</span>
+                    <p>Published:</p>
+                    <p>{mainNews.published}</p>
                   </div>
                 </div>
               </Link>

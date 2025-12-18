@@ -427,27 +427,33 @@ const handleSubmit = async (e) => {
 
   
 
-  // const fetchProjectDetails = async (id) => {
-  //   try {
-  //     const response = await getPromotion(id);
-  //     setCreatePromotion(response.data);
-  //     setImageUrls({
-  //       bannerImage: response.data.imageUrl?.bannerImage || null,
-  //       bannerVideo: response.data.imageUrl?.bannerVideo || null,
-  //       developerlogo: response.data.imageUrl?.developerlogo || null,
-  //       aboutImg1: response.data.imageUrl?.aboutImg1 || null,
-  //       aboutImg2: response.data.imageUrl?.aboutImg2 || null,
-  //       masterPlanImage: response.data.imageUrl?.masterPlanImage || null,
-  //       amenitieImage1: response.data.imageUrl?.amenitieImage1 || null,
-  //       amenitieImage2: response.data.imageUrl?.amenitieImage2 || null,
-  //       amenitieImage3: response.data.imageUrl?.amenitieImage3 || null,
-  //       amenitieImage4: response.data.imageUrl?.amenitieImage4 || null,
-  //       amenitieImage5: response.data.imageUrl?.amenitieImage5 || null,
-  //     });
-  //   } catch (err) {
-  //     console.error("Failed to fetch project details:", err);
-  //   }
-  // };
+  const fetchProjectDetails = async (id) => {
+    try {
+      const response = await getPromotion(id);
+      setCreatePromotion(response.data);
+      setImageUrls({
+        bannerImage: response.data.imageUrl?.bannerImage || null,
+        bannerVideo: response.data.imageUrl?.bannerVideo || null,
+        developerlogo: response.data.imageUrl?.developerlogo || null,
+        themeImage: response.data.imageUrl?.themeImage || null,
+        subBanner: response.data.imageUrl?.subBanner || null,
+        aboutImg1: response.data.imageUrl?.aboutImg1 || null,
+        aboutImg2: response.data.imageUrl?.aboutImg2 || null,
+        floorPlans: response.data.floorPlans || [],
+        masterPlanImage: response.data.imageUrl?.masterPlanImage || null,
+        amenitieImage1: response.data.imageUrl?.amenitieImage1 || null,
+        amenitieImage2: response.data.imageUrl?.amenitieImage2 || null,
+        amenitieImage3: response.data.imageUrl?.amenitieImage3 || null,
+        amenitieImage4: response.data.imageUrl?.amenitieImage4 || null,
+        amenitieImage5: response.data.imageUrl?.amenitieImage5 || null,
+        popupBannerImage: response.data.imageUrl?.popupBannerImage || null,
+        brochureImage: response.data.imageUrl?.brochureImage || null,
+        footerBannerImage: response.data.imageUrl?.footerBannerImage || null,
+      });
+    } catch (err) {
+      console.error("Failed to fetch project details:", err);
+    }
+  };
 
   return (
     <div>

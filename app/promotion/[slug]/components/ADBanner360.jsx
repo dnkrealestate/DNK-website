@@ -59,8 +59,8 @@ const ADBanner360 = ({promotionData}) => {
       <div className="relative z-20 flex items-center justify-center min-h-[300px] sm:min-h-[500px]">
         <div className="container max-w-[1240px] px-4 flex items-center justify-between">
           <div className="banner-content text-white">
-            <h1 className="text-[3rem] mb-0">{promotionData.footerBannerTitle}</h1>
-            <h1 className="banner-h1">{promotionData.footerBannerSubTitle}</h1>
+            <h2 className="mb-0">{promotionData.footerBannerTitle}</h2>
+            <h3 className="banner-h1">{promotionData.footerBannerSubTitle}</h3>
             <button
               onClick={() => setShowPopup(true)}
               className="site-btn1 bg-white text-black hover:text-black hover:bg-white"

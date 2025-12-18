@@ -77,6 +77,7 @@ export default function BannerHome({ banner, event, ad }) {
           quality={100}
           sizes="100vw"
           priority
+          fetchPriority="high"
           style={{ objectFit: "cover" }}
         />
       ) : (

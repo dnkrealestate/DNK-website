@@ -36,6 +36,7 @@ export default function AddProject({ mode , user_id}) {
     handover: "",
     totalarea: "",
     coverimage: null,
+    mobilecoverimage: null,
     bannertitile: "",
     bannersubtitile: "",
     gallary1: null,
@@ -87,6 +88,7 @@ export default function AddProject({ mode , user_id}) {
   const [imageUrls, setImageUrls] = useState({
     thumbnail: null,
     coverimage: null,
+    mobilecoverimage: null,
     gallary1: null,
     gallary2: null,
     gallary3: null,
@@ -183,6 +185,7 @@ export default function AddProject({ mode , user_id}) {
     setImageUrls({
       thumbnail: null,
       coverimage: null,
+      mobilecoverimage: null,
       gallary1: null,
       gallary2: null,
       gallary3: null,
@@ -220,6 +223,7 @@ export default function AddProject({ mode , user_id}) {
       setImageUrls({
         thumbnail: response.data.imageUrl?.thumbnail || null,
         coverimage: response.data.imageUrl?.coverimage || null,
+        mobilecoverimage: response.data.imageUrl?.mobilecoverimage || null,
         gallary1: response.data.imageUrl?.gallary1 || null,
         gallary2: response.data.imageUrl?.gallary2 || null,
         gallary3: response.data.imageUrl?.gallary3 || null,
@@ -627,6 +631,32 @@ export default function AddProject({ mode , user_id}) {
                 className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
               />
             </div>
+          </div>
+        </div>
+
+        <div className="flex gap-3 mb-4">
+          <div className="w-fit mb-3">
+            <label>Mobile Cover Image *</label>
+            <label htmlFor="mobileCoverImage" className="cursor-pointer">
+              <Image
+                width={700}
+                height={266}
+                src={
+                  imageUrls?.mobilecoverimage ||
+                  (createProject.mobilecoverimage
+                    ? URL + createProject.mobilecoverimage
+                    : projectImage)
+                }
+                alt="mobile cover image"
+              />
+            </label>
+            <input
+              type="file"
+              className=""
+              onChange={handleFileInput}
+              id="mobileCoverImage"
+              name="mobilecoverimage"
+            />
           </div>
         </div>
 
