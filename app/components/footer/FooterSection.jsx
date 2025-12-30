@@ -20,6 +20,7 @@ import { userUserServices } from "@/services/userServices";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { track } from "@vercel/analytics";
+import ChatBot from "../ChatBot";
 
 export default function FooterSection() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -441,7 +442,7 @@ export default function FooterSection() {
       </div>
       {showButton && (
         <div className="scrollTop-widget">
-          <div className="scrollTop bounce-top z-40" onClick={handleScrollTop}>
+          <div className="scrollTop bounce-top z-50" onClick={handleScrollTop}>
             <IoIosArrowUp className="arrow-top " aria-label="Go top" />
           </div>
         </div>
@@ -467,7 +468,7 @@ export default function FooterSection() {
           </Link>
         </div>
       </div> */}
-      <div className="call-widget fixed bottom-5 right-5 z-50">
+      <div className="call-widget fixed bottom-24 right-5 z-50">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="animate-ping border border-[#18A436] rounded-full w-[50px] h-[50px]"></div>
         </div>
@@ -546,6 +547,7 @@ export default function FooterSection() {
           </div>
         )}
       </div>
+      <ChatBot />
     </footer>
   );
 };

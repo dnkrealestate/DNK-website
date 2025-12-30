@@ -561,8 +561,8 @@ p {
 
 .scrollTop-widget {
   position: fixed;
-  bottom: 100px;
-  right: 30px;
+  left: 30px;
+  bottom: 20px;
   cursor: pointer;
 }
 @media (max-width: 768px) {
@@ -584,6 +584,27 @@ p {
   .whatsapp-widget {
     bottom: 20px;
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+.animate-shake {
+  animation: shake 0.8s ease-in-out infinite;
 }
 
 .white-cover {
