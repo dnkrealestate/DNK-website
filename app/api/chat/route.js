@@ -1,192 +1,155 @@
-import { WWURL } from "@/url/axios";
+import { streamText } from 'ai';
+import 'dotenv/config';
+import { WWURL } from '@/url/axios';
 
-// Helper: Detect project intent in user message
-function detectProjectIntent(message, projects) {
- const lowerMsg = message.toLowerCase();
 
-  return projects.find((p) => {
-    if (!p?.name) return false; // <-- skip if no name
-
-    const projectName = p.name.toLowerCase();
-    const keywords = [
-      projectName,
-      projectName.split(" ")[0], // first word
-      "price",
-      "cost",
-      "payment",
-      "floor plan",
-      "location",
-      "amenities",
-    ];
-
-    return keywords.some((k) => lowerMsg.includes(k));
-  });
+function generateSlug(text = '') {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // remove special chars
+    .replace(/\s+/g, '-')     // spaces → hyphen
+    .replace(/-+/g, '-');     // clean double hyphens
 }
+
+
+function normalize(text = "") {
+  return text.toLowerCase().replace(/[^a-z0-9\s]/g, "").trim();
+}
+
+function detectProjectIntent(message, projects) {
+  const msg = normalize(message);
+
+  // 1️⃣ Exact / full-name match (BEST)
+  const exactMatch = projects.find(p => {
+    if (!p?.projectname) return false;
+    return msg.includes(normalize(p.projectname));
+  });
+  if (exactMatch) return exactMatch;
+
+  // 2️⃣ Partial match (all words must match)
+  const partialMatch = projects.find(p => {
+    if (!p?.projectname) return false;
+    const words = normalize(p.projectname).split(" ");
+    return words.every(w => msg.includes(w));
+  });
+  if (partialMatch) return partialMatch;
+
+  // 3️⃣ No project detected
+  return null;
+}
+
+/* -------- HISTORY PROJECT FINDER -------- */
+
+function getLastMentionedProject(history = [], projects = []) {
+  if (!Array.isArray(history)) return null;
+
+  for (let i = history.length - 1; i >= 0; i--) {
+    const msg = history[i];
+    if (msg.role === "user") {
+      const found = detectProjectIntent(msg.content, projects);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 
 export async function POST(req) {
   try {
-    const { message, page, hasName, hasPhone, name } = await req.json();
+    const { message, page, hasName, hasPhone, name, history = [] } = await req.json();
+    if (!message) return Response.json({ reply: 'Message required.' }, { status: 400 });
 
-    if (!message) {
-      return Response.json({ reply: "Message required." }, { status: 400 });
-    }
-
-    /* ---------- NAME DETECTION ---------- */
-    const looksLikeName =
-      message.length <= 30 &&
-      /^[a-zA-Z\s]+$/.test(message) &&
-      !message.match(/\d/);
-
+    // ----- NAME DETECTION -----
+    const looksLikeName = message.length <= 30 && /^[a-zA-Z\s]+$/.test(message) && !/\d/.test(message);
     if (!hasName && looksLikeName) {
       return Response.json({
         saveName: message.trim(),
-        reply: `Nice to meet you, ${message.trim()} 😊<br/>Please share your contact number.`,
+        reply: `Nice to meet you, ${message.trim()} 😊<br/>Please share your WhatsApp number.`,
       });
     }
-
-     /* ---------- ASK NAME ONLY IF NOT STORED ---------- */
     if (!hasName) {
-      return Response.json({
-        reply: "👋 May I know your name?",
-      });
+      return Response.json({ reply: '👋 May I know your name?' });
     }
 
-    /* ---------- PHONE DETECTION ---------- */
+    // ----- PHONE DETECTION -----
     const phoneMatch = message.match(/(\+?\d{9,15})/);
-
-    let thankYouMessage = "";
-
+    let thankYouMessage = '';
     if (phoneMatch && !hasPhone) {
       await fetch(`${WWURL}api/lead`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name || "Chat User",
-          phone: phoneMatch[0],
-          page,
-          source: "AI Chatbot",
-        }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name || 'Chat User', phone: phoneMatch[0], page, source: 'AI Chatbot' }),
       });
-       thankYouMessage = `
-        ✅ Thank you! Our property consultant will contact you shortly.<br/><br/>`;
+      thankYouMessage = '✅ Thank you! Our property consultant will contact you shortly.<br/><br/>';
     }
 
-     /* ---------- INTENT DETECTION (ASK PHONE ONLY WHEN NEEDED) ---------- */
-    const intentKeywords = [
-      "price",
-      "cost",
-      "payment",
-      "availability",
-      "book",
-      "buy",
-      "visit",
-    ];
-
-    const needsPhone = intentKeywords.some((k) =>
-      message.toLowerCase().includes(k)
-    );
-
+    const intentKeywords = ['price', 'cost', 'payment', 'availability', 'book', 'buy', 'visit'];
+    const needsPhone = intentKeywords.some((k) => message.toLowerCase().includes(k));
     if (needsPhone && !hasPhone && !phoneMatch) {
       return Response.json({
-        reply:
-          "To share exact pricing and availability, may I have your WhatsApp number?",
+        reply: 'To share exact pricing and availability, may I have your WhatsApp number?',
       });
     }
 
-    // 2️⃣ Fetch all projects
+    // ----- FETCH PROJECTS FIRST -----
     const projectsRes = await fetch(`${WWURL}task/get-task-public`);
     const projectsData = await projectsRes.json();
     const projects = Array.isArray(projectsData?.data) ? projectsData.data : [];
 
-    /* ---------- PROJECT DETECTION ---------- */
-    const project = detectProjectIntent(message, projects);
+    // ----- PROJECT DETECTION (MESSAGE + HISTORY) -----
+    let project = detectProjectIntent(message, projects); // <-- use let, not const
+
+    if (!project && history.length) {
+      project = getLastMentionedProject(history, projects);
+    }
+
+      // ----- AI PROMPT -----
+    let prompt = `You are DNK Real Estate AI assistant.
+Answer Dubai property questions in friendly, professional tone.
+Rules:
+- Only reference dnkre.com
+- Only answer about Dubai real estate
+- If unsure, suggest browsing https://www.dnkre.com/projects
+- User hasPhone: ${hasPhone}
+- User message: ${message}`;
 
     if (project) {
-      return Response.json({
-        savePhone: phoneMatch ? phoneMatch[0] : undefined,
-        reply: `
-          ${thankYouMessage}
-          🏡 <b>${project.name}</b><br/>
-          Starting price: <b>${project.startingPrice || "Available on request"}</b><br/><br/>
-          <a href="${WWURL}projects/${project.slug}" target="_blank" class="underline text-green-600">
-          View full project details
-          </a>
-          `,
-            });
-      }
-
-     /* ---------- 5️⃣ THANK YOU ONLY (NO QUESTION ASKED) ---------- */
-    if (thankYouMessage) {
-            return Response.json({
-              savePhone: phoneMatch[0],
-              reply: `
-                ${thankYouMessage}
-                You can ask me about:
-                <ul>
-                  <li>🏙️ Project details</li>
-                  <li>💰 Prices & payment plans</li>
-                  <li>📍 Locations</li>
-                  <li>📐 Floor plans</li>
-                </ul>
-                `,
-            });
+      prompt += `
+      Context: User is asking about project "${project.projectname}".
+      Project details:
+      - Developer: ${project.developer}
+      - Location: ${project.locationname || project.location}
+      - Starting price: ${project.startingprice || 'Available on request'}
+      - Payment plan: ${project.paymentplan || 'Available on request'}
+      - Project link: <a href="https://www.dnkre.com/projects/${generateSlug(project.projectname)}" target="_blank" class="underline text-green-600">View Project</a>
+      `;
     }
 
+     // ----- CALL AI -----
+    let aiReply = hasPhone
+      ? '⚠️ Guide unavailable. <a href="https://wa.me/971555769195" target="_blank" class="underline text-green-600">WhatsApp us</a>'
+      : 'Please share your WhatsApp number so we can assist you better.';
 
-       /* ---------- AI FALLBACK ---------- */
-    let aiReply = ""; // start empty
+    if (hasPhone || project) {
+      const result = streamText({
+        model: 'openai/gpt-4.1-mini',
+        prompt,
+      });
 
-if (!hasPhone) {
-  aiReply = "Please share your Contact number so we can assist you better.";
-} else {
-  aiReply = '⚠️ Guide unavailable. <a href="https://wa.me/971555769195" target="_blank" class="underline text-green-600">WhatsApp us</a>';
-}
-
-    try {
-      const aiRes = await fetch(
-        "https://ai-gateway.vercel.com/v1/openai/responses",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer vck_1k8lcgp50ClIMMQZwFtmUkc3haHzwcRFdUB4vUDEFxmbCLDTzV0afpkE`,
-          },
-          body: JSON.stringify({
-            model: "openai/gpt-4.1-mini",
-            input: [
-              {
-                role: "system",
-                content: `
-You are DNK Real Estate AI assistant.
-Answer Dubai property questions. User: ${message}
-Provide property details, prices, and payment plans.
-Ask for WhatsApp number if user wants to buy.
-Never mention AI or OpenAI.
-Answer in a friendly, professional tone.
-                `,
-              },
-              { role: "user", content: message },
-            ],
-          }),
-        }
-      );
-
-      if (aiRes.ok) {
-        const data = await aiRes.json();
-        aiReply = data.output_text || aiReply;
-      } else {
-        console.error("AI API error:", aiRes.status, await aiRes.text());
+      let aiText = '';
+      for await (const part of result.textStream) {
+        aiText += part;
       }
-    } catch (err) {
-      console.error("AI fetch failed:", err);
+      if (aiText) aiReply = aiText;
     }
 
-    return Response.json({ reply: aiReply });
+    return Response.json({ reply: thankYouMessage + aiReply, savePhone: phoneMatch ? phoneMatch[0] : undefined })
+
   } catch (err) {
     console.error(err);
     return Response.json({
-      reply:
-        '⚠️ AI temporarily unavailable. <a href="https://wa.me/971555769195" target="_blank" class="underline text-green-600">WhatsApp us</a>',
+      reply: '⚠️ Service temporarily unavailable. <a href="https://wa.me/971555769195" target="_blank" class="underline text-green-600">WhatsApp us</a>',
     });
   }
 }

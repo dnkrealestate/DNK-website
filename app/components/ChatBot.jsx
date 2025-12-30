@@ -3,8 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { IoSend } from "react-icons/io5";
 import { RiChatSmileAiFill } from "react-icons/ri";
+import { IoClose } from "react-icons/io5";
 import logo from "@/public/assets/logo/dnklogo_1.webp";
 import Image from "next/image";
+
+const CHAT_KEY = "dnk_chat_history";
+const CHAT_TIME_KEY = "dnk_chat_time";
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
@@ -17,6 +22,34 @@ export default function ChatBot() {
   const [hasPhone, setHasPhone] = useState(false);
   const [isTyping, setIsTyping] = useState(false); // for typing indicator
   const messagesEndRef = useRef(null);
+
+   /* ---------------- LOAD CHAT (24 HOURS) ---------------- */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const savedChat = localStorage.getItem(CHAT_KEY);
+    const savedTime = localStorage.getItem(CHAT_TIME_KEY);
+
+    if (savedChat && savedTime) {
+      const isExpired = Date.now() - Number(savedTime) > ONE_DAY;
+
+      if (isExpired) {
+        localStorage.removeItem(CHAT_KEY);
+        localStorage.removeItem(CHAT_TIME_KEY);
+      } else {
+        setMessages(JSON.parse(savedChat));
+      }
+    }
+  }, []);
+
+   /* ---------------- SAVE CHAT ---------------- */
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(CHAT_KEY, JSON.stringify(messages));
+      localStorage.setItem(CHAT_TIME_KEY, Date.now().toString());
+    }
+  }, [messages]);
+
 
   /* ---------- LOAD NAME FROM LOCAL STORAGE ---------- */
  useEffect(() => {
@@ -32,6 +65,7 @@ export default function ChatBot() {
       if (savedPhone) {
         setHasPhone(true);
       }
+      
     }
   }, []);
 
@@ -53,7 +87,17 @@ export default function ChatBot() {
     try {
       const hasPhone = !!localStorage.getItem("chat_phone");
       const name = localStorage.getItem("chat_user_name") || "";
-      
+
+      // 🔹 Load last project (if still valid)
+      let lastProject = null;
+      const lastProjectRaw = localStorage.getItem("chat_last_project");
+      if (lastProjectRaw) {
+        const parsed = JSON.parse(lastProjectRaw);
+        if (Date.now() - parsed.timestamp <= ONE_DAY) {
+          lastProject = parsed.data;
+        }
+      }
+
       const res = await fetch("/api/chat", {
        method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -63,6 +107,7 @@ export default function ChatBot() {
           hasName: !!name,
           hasPhone,
           name,
+          history: messages, 
         }),
       });
 
@@ -80,7 +125,6 @@ export default function ChatBot() {
         localStorage.setItem("chat_phone", data.savePhone);
       }
 
-
       setIsTyping(false);
       setMessages((m) => [...m, { role: "bot", content: data.reply || "⚠️ AI unavailable" }]);
     } catch {
@@ -93,6 +137,8 @@ export default function ChatBot() {
     setOpen(!open);
     setShowTooltip(false);
   };
+
+  const handleClose = () => setOpen(false);
 
   return (
     <>
@@ -109,7 +155,11 @@ export default function ChatBot() {
             onClick={handleButtonClick}
             className="bg-[#18A436] text-white p-3 rounded-full shadow-lg cursor-pointer group hover:bg-[#54ff79] hover:text-[#000]"
           >
-            <RiChatSmileAiFill className="text-[2rem]" />
+           {open ? (
+            <IoClose className="text-[2rem]" />   // Close icon when open
+          ) : (
+            <RiChatSmileAiFill className="text-[2rem]" /> // Chat icon when closed
+          )}
           </button>
         </div>
       </div>
@@ -162,7 +212,7 @@ export default function ChatBot() {
               onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Type a message"
-              className="flex-1 p-2 text-sm outline-none text-black"
+              className="flex-1 p-2 md:text-sm outline-none text-black text-[16px]"
             />
             <button onClick={sendMessage} className="text-[#18A436] p-2">
               <IoSend size={22} />
