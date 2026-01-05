@@ -300,26 +300,44 @@ export async function POST(req) {
     if (!hasName && /^[a-zA-Z\s]{2,30}$/.test(message)) {
       return Response.json({
         saveName: message,
-        reply: `Nice to meet you, ${message} 😊<br/>May I have your WhatsApp number?`
+        reply: `Nice to meet you, ${message} 😊<br/>May I have your Contact number?`
       });
     }
 
     if (!hasName) return Response.json({ reply: "👋 May I know your name?" });
 
-    /* ---- PHONE ---- */
-    const phone = message.match(/(\+?\d{9,15})/);
-    if (phone && !hasPhone) {
-      await fetch(`${WWURL}api/lead`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          phone: phone[0],
-          page,
-          source: "AI Chatbot"
-        })
-      });
-    }
+/* ---- PHONE ---- */
+const phone = message.match(/(\+?\d{9,15})/);
+
+if (phone && !hasPhone) {
+  // Save lead + chat history
+  await fetch(`${WWURL}api/lead`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      phone: phone[0],
+      page,
+      source: "AI Chatbot",
+      chatHistory: prevRequirement?.chatHistory || [],
+    }),
+  });
+
+  // ⛔ STOP FLOW HERE
+  return Response.json({
+    savePhone: phone[0],
+    reply: `Thank you 😊  
+Our property expert will contact you shortly on WhatsApp.
+
+Meanwhile, you can ask me about:
+• **Investment opportunities**
+• Any **project details**
+• **Best areas** in Dubai
+• Your **requirements**
+`
+
+  });
+}
 
     /* ---- PROJECT DATA ---- */
     const res = await fetch(`${WWURL}task/get-task-public`);
