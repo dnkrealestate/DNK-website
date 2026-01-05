@@ -6,6 +6,7 @@ import { RiChatSmileAiFill } from "react-icons/ri";
 import { IoClose } from "react-icons/io5";
 import logo from "@/public/assets/logo/dnklogo_1.webp";
 import Image from "next/image";
+import { track } from "@vercel/analytics";
 
 const CHAT_KEY = "dnk_chat_history";
 const CHAT_TIME_KEY = "dnk_chat_time";
@@ -66,6 +67,25 @@ export default function ChatBot() {
         setHasPhone(true);
       }
       
+    }
+  }, []);
+
+  /* ---------------- VERCEL TRACKING (ONCE) ---------------- */
+  useEffect(() => {
+    const storedName = localStorage.getItem("chat_user_name");
+    const storedPhone = localStorage.getItem("chat_phone");
+    const alreadyTracked = localStorage.getItem("chat_tracked");
+
+    if (storedName && storedPhone && !alreadyTracked) {
+      track(`Chat bot Contact form submitted ${window.location.pathname}`, {
+        name: storedName,
+        phone: storedPhone,
+        page: window.location.pathname,
+        source: "AI Chatbot",
+        chatHistory: messages
+      });
+
+      localStorage.setItem("chat_tracked", "true");
     }
   }, []);
 
@@ -133,12 +153,22 @@ export default function ChatBot() {
     }
   };
 
-  const handleButtonClick = () => {
-    setOpen(!open);
-    setShowTooltip(false);
-  };
+const handleButtonClick = () => {
+  setOpen(!open);
+  setShowTooltip(false);
+
+  // Track button click event
+  track('chatbot_button_click', {
+    open: !open // true if opening, false if closing
+  });
+};
 
   const handleClose = () => setOpen(false);
+
+function parseBold(text) {
+  // Replace **bold** with <b>bold</b>
+  return text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+}
 
   return (
     <>
@@ -186,7 +216,7 @@ export default function ChatBot() {
                       ? "bg-[#18A436] text-white rounded-br-none"
                       : "bg-white text-black rounded-bl-none"
                   }`}
-                  dangerouslySetInnerHTML={{ __html: m.content }}
+                  dangerouslySetInnerHTML={{ __html: parseBold(m.content) }}
                 />
               </div>
             ))}
