@@ -104,6 +104,21 @@ export const userRoadshowServices = () => {
         return response.data
     };
 
+    const postMeetingResgister = async (formData) => {
+        const response = await axiosPrivate.post("/event/post-meeting-register", formData);
+        return response.data;
+    };
+
+    const getMeetings = async () => {
+        const response = await axiosPrivate.get('/event/get-meeting-register')
+        return response.data
+    };
+
+     const deleteMeeting = async (id) => {
+        const response = await axiosPrivate.delete('/event/delete-meeting/' + id)
+        return response.data
+    }
+
     return {
         postRoadshowResgister,
         getRoadshowRegister,
@@ -122,6 +137,16 @@ export const userRoadshowServices = () => {
         updateSourceRM,
         deleteSourceRM,
         getSourceRM,
+        getMeetings,
+        deleteMeeting,
     }
 
 }
+
+export const postMeetingResgister = async (data) => {
+  const response = await axiosPrivate.post(
+    "/event/post-meeting-register",
+    data // FormData
+  );
+  return response.data;
+};

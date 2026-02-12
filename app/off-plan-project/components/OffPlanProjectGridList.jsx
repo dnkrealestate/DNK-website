@@ -8,6 +8,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import Image from "next/image";
 import { WWURL } from "@/url/axios";
+import { usePathname } from "next/navigation";
 
 export default function OffPlanProjectGridList({ projects, partnerData }) {
   const [projectList, setProjectList] = useState([]);
@@ -16,6 +17,7 @@ export default function OffPlanProjectGridList({ projects, partnerData }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedDeveloper, setSelectedDeveloper] = useState("");
   const [itemsPerPage] = useState(30);
+   const pathname = usePathname();
 
   const statusValue = "off-plan";
   const generateSlug = (name) => name.replace(/\s+/g, "-").toLowerCase();
@@ -63,6 +65,24 @@ export default function OffPlanProjectGridList({ projects, partnerData }) {
 const currentItems = filteredItems.slice(offset, offset + itemsPerPage);
 const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
 
+ // 🔥 GTM Project Click Event
+  const pushProjectClick = (project) => {
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "project_list_click",
+        event_category: "Project Engagement",
+        event_label: project.projectname,
+        page_path: pathname,
+        project_id: project._id,
+        project_name: project.projectname,
+        developer: project.developer,
+        location: project.locationname,
+        list_name: "Featured Off Plan Page",
+      });
+    }
+  };
+
   return (
     <div className="about-section w-full bg-[#040406] flex items-center justify-center">
       <div className="container max-w-[1240px] py-5  px-4  md:py-9  relative">
@@ -105,7 +125,8 @@ const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
                 const slug = generateSlug(data.projectname);
                 return (
                   <div className="p-4" key={data.projectname}>
-                    <Link href={`/projects/${slug}`}>
+                    <Link href={`/projects/${slug}`}
+                    onClick={() => pushProjectClick(data)}>
                       <div className="max-w-full overflow-hidden  border border-[#ffff] rounded-[10px] shadow bg-[#040406] cursor-pointer">
                         <div>
                           <div className="relative w-full h-[266px]">

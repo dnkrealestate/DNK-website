@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import logo from "@/public/assets/logo/dnklogo_1.webp";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
+import { usePathname } from "next/navigation";
 
 const CHAT_KEY = "dnk_chat_history";
 const CHAT_TIME_KEY = "dnk_chat_time";
@@ -23,6 +24,7 @@ export default function ChatBot() {
   const [hasPhone, setHasPhone] = useState(false);
   const [isTyping, setIsTyping] = useState(false); // for typing indicator
   const messagesEndRef = useRef(null);
+  const pathname = usePathname();
 
    /* ---------------- LOAD CHAT (24 HOURS) ---------------- */
   useEffect(() => {
@@ -156,6 +158,15 @@ export default function ChatBot() {
 const handleButtonClick = () => {
   setOpen(!open);
   setShowTooltip(false);
+
+   if (typeof window !== "undefined" && window.dataLayer) {
+    window.dataLayer.push({
+      event: "chatbot_open",
+      event_category: "Engagement",
+      event_label: "Chatbot Widget",
+      page_path: pathname,
+    });
+  }
 
   // Track button click event
   track('chatbot_button_click', {

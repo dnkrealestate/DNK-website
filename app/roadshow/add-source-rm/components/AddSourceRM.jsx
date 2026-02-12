@@ -12,11 +12,13 @@ const AddSourceRM = (props) => {
 
   const initialState = {
     name: "",
+    email: "",   // ✅ Added email here
   };
 
   const [addSourceRM, setAddSourceRM] = useState(initialState);
 
-  const { postSourceRM, getSourceRM, updateSourceRM, deleteSourceRM } = userRoadshowServices();
+  const { postSourceRM, getSourceRM, updateSourceRM, deleteSourceRM } =
+    userRoadshowServices();
 
   useEffect(() => {
     if (props?.mode === "update" && props?.user_id) {
@@ -43,10 +45,31 @@ const AddSourceRM = (props) => {
 
   const handleReset = () => {
     setAddSourceRM(initialState);
+    setErrors({});
+  };
+
+  // ✅ Basic Validation
+  const validate = () => {
+    let newErrors = {};
+
+    if (!addSourceRM.name) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!addSourceRM.email) {
+      newErrors.email = "Email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(addSourceRM.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validate()) return;
 
     try {
       const formdata = new FormData();
@@ -77,7 +100,6 @@ const AddSourceRM = (props) => {
   return (
     <div className="bg-[#1E1E1E] p-4">
       <div className="w-full">
-        {/* Create sourceRM Form */}
         <div className="bg-[#1E1E1E] rounded-2xl relative">
           <h3 className="text-[#fff] text-[1.5rem] font-semibold mb-6 text-center">
             Add sourceRM
@@ -85,24 +107,43 @@ const AddSourceRM = (props) => {
 
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="grid sm:grid-cols-2">
-              {[{ name: "name", label: "SourceRM Name" }].map((field) => (
-                <div key={field.name} className="mx-2 mb-4">
-                  <label>{field.label}</label>
-                  <input
-                    type="text"
-                    name={field.name}
-                    placeholder={`${field.label}*`}
-                    value={addSourceRM[field.name] || ""}
-                    onChange={handleChange}
-                    className="w-full bg-transparent border border-[#fff] p-[10px] rounded text-[#fff]"
-                  />
-                  {errors[field.name] && (
-                    <p className="error text-[0.9rem] text-[#FF0202]">
-                      {errors[field.name]}
-                    </p>
-                  )}
-                </div>
-              ))}
+
+              {/* Name Field */}
+              <div className="mx-2 mb-4">
+                <label>SourceRM Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="SourceRM Name*"
+                  value={addSourceRM.name || ""}
+                  onChange={handleChange}
+                  className="w-full bg-transparent border border-[#fff] p-[10px] rounded text-[#fff]"
+                />
+                {errors.name && (
+                  <p className="text-[0.9rem] text-[#FF0202]">
+                    {errors.name}
+                  </p>
+                )}
+              </div>
+
+              {/* ✅ Email Field */}
+              <div className="mx-2 mb-4">
+                <label>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email*"
+                  value={addSourceRM.email || ""}
+                  onChange={handleChange}
+                  className="w-full bg-transparent border border-[#fff] p-[10px] rounded text-[#fff]"
+                />
+                {errors.email && (
+                  <p className="text-[0.9rem] text-[#FF0202]">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+
             </div>
 
             <button
@@ -114,7 +155,6 @@ const AddSourceRM = (props) => {
           </form>
         </div>
 
-        {/* Roadshow List */}
         <div className="relative pt-4">
           <Suspense fallback={<div>Loading...</div>}>
             <SourceRMList

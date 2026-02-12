@@ -853,3 +853,11 @@ table th {
 .animate-slideIn {
   animation: slideIn 0.4s ease-out forwards;
 }
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.css-hlgwow{
+  padding: 6px 8px !important;
+}

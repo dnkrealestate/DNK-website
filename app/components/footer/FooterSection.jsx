@@ -119,6 +119,16 @@ export default function FooterSection() {
   
    const handleSubmit = async (e) => {
       e.preventDefault();
+
+        // ✅ Push to Google Tag Manager
+        if (typeof window !== "undefined" && window.dataLayer) {
+          window.dataLayer.push({
+            event: "floating_call_button_click",
+            event_category: "Engagement",
+            event_label: "Floating Call Button",
+            page_path: pathname,
+          });
+        }
   
       track(`Call Back form submitted ${pathname}`, {
             track: `name: ${fullName},
@@ -154,6 +164,20 @@ export default function FooterSection() {
       }
       
     };
+
+    // 🔥 Universal GTM Push Function
+  const pushToDataLayer = (eventName, label, phone = null) => {
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: eventName,
+        event_category: "Engagement",
+        event_label: label,
+        page_path: pathname,
+        phone_number: phone,
+      });
+    }
+  };
 
   const handleScrollTop = () => {
     window.scrollTo({
@@ -247,6 +271,11 @@ export default function FooterSection() {
                 </li>
                 <li
                   onClick={() => {
+                     pushToDataLayer(
+                        "footer_whatsapp_click",
+                        "Footer WhatsApp",
+                        "+971555769195"
+                    );
                     track("WhatsApp Button Click Footer", {
                       track: `${pathname},
                   button: "WhatsApp Button Footer",
@@ -357,6 +386,11 @@ export default function FooterSection() {
                 </li>
                 <li
                   onClick={() => {
+                       pushToDataLayer(
+                              "footer_call_click_main_office",
+                              "Footer Main Office Call",
+                              "+97145546904"
+                            );
                     track("Call Button Clicked Footer", {
                       page: pathname,
                       button: "Call Button Footer",
@@ -380,6 +414,12 @@ export default function FooterSection() {
                     <div>
                       <div
                         onClick={() => {
+                           pushToDataLayer(
+                              "footer_call_click_dann",
+                              "Footer Call Dann",
+                              "+971555769195"
+                            );
+
                           track("Call Button Clicked Footer", {
                             track: `page: ${pathname},
                         button: Call Button Footer,
@@ -394,6 +434,12 @@ export default function FooterSection() {
                       </div>
                       <div
                         onClick={() => {
+                           pushToDataLayer(
+                            "footer_call_click_waseem",
+                            "Footer Call Waseem",
+                            "+971543049309"
+                          );
+
                           track("Call Button Clicked Footer", {
                             track: `page: ${pathname},
                         button: Call Button Footer,

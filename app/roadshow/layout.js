@@ -106,6 +106,15 @@ export default function LayoutRoadshow({ children }) {
                             View Client Registration
                         </p>
                     </li>
+                    <li
+                        onClick={() => handleNavigation("/roadshow/meetings")}
+                        className={`${pathname === "/roadshow/meetings" && "bg-[#0F0F1A]"
+                            } text-white border-b border-gray-100 p-3 cursor-pointer group hover:bg-[#0F0F1A]`}
+                    >
+                        <p className="transform group-hover:translate-x-2 transition-transform ease-in duration-200 text-sm font-semibold">
+                            Meeting Appointment
+                        </p>
+                    </li>
 
                     <li
                         onClick={() => handleNavigation("/roadshow/create")}

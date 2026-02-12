@@ -110,23 +110,6 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
           city: ${city},
           Page :${pathname}`,
         });
-
-    // Identify the user in PostHog
-    posthog.identify(phoneNumber, {
-      name: fullName,
-      phone: phoneNumber,
-      email: email,
-      city: city,
-      page: window.location.pathname,
-    });
-
-    // Capture form submission event
-    posthog.capture("contact_form_submitted", {
-      name: fullName,
-      phone: phoneNumber,
-      email: email,
-      city: city,
-    });
     
     if (!validateForm()) {
       return;
@@ -139,6 +122,18 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
         phoneNumber,
         city,
       });
+
+    // ✅ Send event to Google Tag Manager
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "contact_form_submitted",
+        form_name: "Main Contact Form",
+        page_path: pathname,
+        user_name: fullName,
+        user_city: city,
+      });
+    }
 
       Swal.fire({
         title: `Thank you <br>${fullName}`,

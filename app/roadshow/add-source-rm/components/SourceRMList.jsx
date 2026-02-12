@@ -44,6 +44,7 @@ const SourceRMList = (props) => {
     setAddSourceRM({
       id: data._id,
       name: data.name,
+      email: data.email, // ✅ Added email here
     });
   };
 
@@ -69,6 +70,7 @@ const SourceRMList = (props) => {
           <thead>
             <tr>
               <th>SourceRM Name</th>
+              <th>Email</th>
               {pathname === "/roadshow/add-source-rm" && <th>Edit</th>}
               {pathname === "/roadshow/add-source-rm" && <th>Delete</th>}
             </tr>
@@ -78,6 +80,7 @@ const SourceRMList = (props) => {
               searchedSourceRMList.map((data, i) => (
                 <tr key={i}>
                   <td>{data.name}</td>
+                  <td>{data.email}</td>
                   {pathname === "/roadshow/add-source-rm" && (
                     <td className="text-center">
                       <MdModeEditOutline

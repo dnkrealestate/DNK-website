@@ -13,11 +13,31 @@ import { URL, WWURL } from "@/url/axios";
 import Link from "next/link";
 import Image from "next/image";
 import DemoImage from "@/public/assets/icons/image_demo.webp";
+import { usePathname } from "next/navigation";
 
 export default function ProjectList({ projects }) {
+  const pathname = usePathname();
 
   const generateSlug = (name) => name.replace(/\s+/g, "-").toLowerCase();
   const offPlan = `/off-plan-project`;
+
+    // 🔥 GTM Project Click Event
+  const pushProjectClick = (project) => {
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "project_list_click",
+        event_category: "Project Engagement",
+        event_label: project.projectname,
+        page_path: pathname,
+        project_id: project._id,
+        project_name: project.projectname,
+        developer: project.developer,
+        location: project.locationname,
+        list_name: "Featured Off Plan Slider",
+      });
+    }
+  };
 
   return (
     <div className="w-full bg-[#040406] flex items-center justify-center px-4 xl:px-0">
@@ -79,7 +99,8 @@ export default function ProjectList({ projects }) {
                   return (
                     <SwiperSlide key={data._id}>
                       <div className="p-4 overflow-hidden">
-                        <Link href={`/projects/${slug}`}>
+                        <Link href={`/projects/${slug}`} 
+                          onClick={() => pushProjectClick(data)}>
                           <div className="relative max-w-[350px] overflow-hidden border rounded-[10px] shadow bg-[#040406] cursor-pointer">
                             <div className="relative w-full h-[266px]">
                               <Image

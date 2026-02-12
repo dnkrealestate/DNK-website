@@ -10,6 +10,16 @@ import { track } from "@vercel/analytics";
 export default function BannerContact() {
   const pathname = usePathname();
 
+  const pushToDataLayer = (eventName, eventCategory, eventLabel) => {
+  if (typeof window !== "undefined" && window.dataLayer) {
+    window.dataLayer.push({
+      event: eventName,
+      event_category: eventCategory,
+      event_label: eventLabel,
+    });
+  }
+};
+
   return (
     <div className="banner w-full bg-[#040406] flex items-center justify-center relative">
       <Image
@@ -32,6 +42,11 @@ export default function BannerContact() {
           </p>
           <div className="flex gap-4">
             <div onClick={() => {
+              pushToDataLayer(
+                        "Contact_page_email_click",
+                        "Contact page Email",
+                        "info@dnkre.com"
+                    );
               track("Email Button Clicked Banner Contact", {
                 page: pathname,
                 button: "Email Button Banner Contact",
@@ -50,6 +65,11 @@ export default function BannerContact() {
 
             <div
               onClick={() => {
+                pushToDataLayer(
+                        "Contact_page_whatsapp_click",
+                        "Contact page WhatsApp",
+                        "+971555769195"
+                );
                 track("Call Button Clicked Banner Contact", {
                   track: `page: ${pathname},
                    button: Call Button Banner Contact,

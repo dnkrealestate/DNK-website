@@ -169,6 +169,19 @@ const FormRoadshow = () => {
           eventplace: params?.slug,
         });
 
+        // ✅ Push event to Google Tag Manager
+        if (typeof window !== "undefined" && window.dataLayer) {
+          window.dataLayer.push({
+            event: "roadshow_form_submit",
+            event_location: slug,
+            user_name: addRegister.fullName,
+            attend_date: addRegister.attendDate,
+            attend_time: addRegister.attendTime,
+            sourced_rm: addRegister.sourcedRm,
+            budget: addRegister.budget
+          });
+        }
+
         if (response.success) {
           Swal.fire("Success", "Thank you for getting in touch!", "success");
           handleReset();
