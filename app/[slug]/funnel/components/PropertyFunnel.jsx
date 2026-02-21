@@ -15,7 +15,7 @@ const questions = [
       "Dubai Creek Harbour",
       "Palm Jumeirah",
       "Downtown Dubai",
-      "JBR",
+      "JBR", 
       "Dubai Hills Estate",
       "Al Barari",
       "JVC",
