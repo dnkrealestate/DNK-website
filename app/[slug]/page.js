@@ -192,7 +192,7 @@ export default async function Page({ params }) {
    
         <div className="relative h-[250px] md:h-[400px] w-full">
           <Image
-            src={`${WWURL}/${projects[0]?.thumbnail}`}
+            src={`${WWURL}${projects[0]?.thumbnail}`}
             alt={projects[0]?.projectname || "Project Image"}
             fill
             priority
