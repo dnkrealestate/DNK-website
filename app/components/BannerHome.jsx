@@ -3,11 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { URL, WWURL } from "@/url/axios";
 import PopupModel from "./model/PopupModel";
+import gsap from "gsap";
 
 export default function BannerHome({ banner, event, ad }) {
   const [ShowPopup, setShowPopup] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const audioRef = useRef(null);
+  const headlineRef = useRef(null);
 
   // Detect screen size
   useEffect(() => {
@@ -25,6 +27,67 @@ export default function BannerHome({ banner, event, ad }) {
   const mobileImageUrl = banner?.mobileImage ? `${WWURL}${banner.mobileImage}` : desktopImageUrl;
 
   const eventImageUrl = event?.image ? `${WWURL}${event.image}` : null;
+
+useEffect(() => {
+  if (!headlineRef.current) return;
+
+  const textEl = headlineRef.current;
+  const originalText = textEl.textContent; // store original text
+
+  requestAnimationFrame(() => {
+    const content = originalText;
+
+    // Clear existing content
+    textEl.innerHTML = "";
+
+    // Split text into spans for animation
+    content.split("").forEach((char) => {
+      const span = document.createElement("span");
+      span.textContent = char === " " ? "\u00A0" : char;
+      span.style.display = "inline-block";
+      textEl.appendChild(span);
+    });
+
+    const chars = textEl.querySelectorAll("span");
+
+    // 1️⃣ Animate the split text
+    gsap.fromTo(
+      chars,
+      {
+        opacity: 0,
+        y: 60,
+        rotateX: -90,
+        filter: "blur(15px)",
+      },
+      {
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        filter: "blur(0px)",
+        duration: 1.2,
+        ease: "back.out(1.7)",
+        stagger: 0.03,
+        onComplete: () => {
+          // 2️⃣ Replace spans with plain text
+          textEl.textContent = originalText;
+
+          // 3️⃣ Apply initial blur to plain text
+          textEl.style.filter = "blur(5px)";
+
+          // 4️⃣ Animate blur from 5px → 0
+          gsap.to(textEl, {
+            filter: "blur(0px)",
+            duration: 1,
+            ease: "power1.out",
+          });
+        },
+      }
+    );
+  });
+}, [banner?.bannerTitle]);
+
+
+
 
   useEffect(() => {
     const playAudio = () => {
@@ -87,7 +150,7 @@ export default function BannerHome({ banner, event, ad }) {
       <div className="container max-w-[1240px] px-4 items-center overflow-hidden relative">
         <div className="banner-content grid md:grid-cols-3">
           <div className="z-10 w-fit col-span-2">
-            <h1 className="banner-h1">
+            <h1 ref={headlineRef}  className="banner-h1 normal-case w-fit">
               {banner?.bannerTitle || "Build Your Future in Dubai with DNK Real Estate"}
             </h1>
             <p

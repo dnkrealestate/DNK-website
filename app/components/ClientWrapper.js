@@ -10,7 +10,7 @@ import HeaderProject from "./header/HeaderProject";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 
-export default function ClientWrapper({ children, spclLogo }) {
+export default function ClientWrapper({ children, spclLogo,  developerSlugs = [] }) {
     const pathname = usePathname();
     const { showSplash } = useSplash();
     const [isSplashComplete, setIsSplashComplete] = useState(!showSplash);
@@ -21,6 +21,14 @@ export default function ClientWrapper({ children, spclLogo }) {
             setTimeout(() => setIsSplashComplete(true), 40);
         }
     }, [showSplash]);
+
+
+  // ✅ Get first URL segment
+  const currentSlug = pathname.split("/")[1];
+
+  // ✅ Check if it matches developer slug
+  const isDeveloperPage =
+    currentSlug && developerSlugs.includes(currentSlug);
 
 
     const isProjectPage = pathname.startsWith("/projects");
@@ -40,12 +48,12 @@ export default function ClientWrapper({ children, spclLogo }) {
 
     return (
         <>
-            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && <HeaderMain logoData={spclLogo} />}
+            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isDeveloperPage && <HeaderMain logoData={spclLogo} />}
             {children}
             <SpeedInsights />
             <Analytics />
-            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && <FooterSection />}
-            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && <SplashScreen logoData={spclLogo} />}
+            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isDeveloperPage && <FooterSection />}
+            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion  && <SplashScreen logoData={spclLogo} />}
         </>
     );
 }

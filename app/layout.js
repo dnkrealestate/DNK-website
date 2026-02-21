@@ -5,6 +5,7 @@ import ClientWrapper from "./components/ClientWrapper";
 import Script from "next/script";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { getLogo } from "@/services/projectServices";
+import { getDeveloperSlugs } from "@/utils/developerSlugs";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -53,6 +54,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   let logoData = null;
+  const developerSlugs = await getDeveloperSlugs();
 
   try {
     const logo = await getLogo();
@@ -102,7 +104,7 @@ export default async function RootLayout({ children }) {
         </Script>
 
         <SplashProvider>
-          <ClientWrapper spclLogo={logoData}>
+          <ClientWrapper developerSlugs={developerSlugs} spclLogo={logoData}>
             {children}
           </ClientWrapper>
         </SplashProvider>
