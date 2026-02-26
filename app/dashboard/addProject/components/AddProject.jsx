@@ -81,6 +81,17 @@ export default function AddProject({ mode , user_id}) {
     altgallary1: "",
     altgallary2: "",
     altgallary3: "",
+    faqTitle: "",
+    q1: "",
+    a1: "",
+    q2: "",
+    a2: "",
+    q3: "",
+    a3: "",
+    q4: "",
+    a4: "",
+    q5: "",
+    a5: "",
   };
 
 
@@ -1056,6 +1067,117 @@ export default function AddProject({ mode , user_id}) {
           value={createProject.point8 || ""}
           className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
         />
+        <div className="">
+          <label>FAQ Section Title</label>
+              <input
+                placeholder="Frequently Asked Questions"
+                type="text"
+                name="faqTitle"
+                onChange={handleChange}
+                value={createProject.faqTitle || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question1</label>
+              <input
+                placeholder="Question1"
+                type="text"
+                name="q1"
+                onChange={handleChange}
+                value={createProject.q1 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer1</label>
+              <textarea
+                placeholder="Answer1"
+                type="text"
+                name="a1"
+                onChange={handleChange}
+                value={createProject.a1 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question2</label>
+              <input
+                placeholder="Question1"
+                type="text"
+                name="q2"
+                onChange={handleChange}
+                value={createProject.q2 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer2</label>
+              <textarea
+                placeholder="Answer2"
+                type="text"
+                name="a2"
+                onChange={handleChange}
+                value={createProject.a2 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question3</label>
+              <input
+                placeholder="Question1"
+                type="text"
+                name="q3"
+                onChange={handleChange}
+                value={createProject.q3 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer3</label>
+              <textarea
+                placeholder="Answer3"
+                type="text"
+                name="a3"
+                onChange={handleChange}
+                value={createProject.a3 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question4</label>
+              <input
+                placeholder="Question4"
+                type="text"
+                name="q4"
+                onChange={handleChange}
+                value={createProject.q4 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer4</label>
+              <textarea
+                placeholder="Answer4"
+                type="text"
+                name="a4"
+                onChange={handleChange}
+                value={createProject.a4 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Question5</label>
+              <input
+                placeholder="Question5"
+                type="text"
+                name="q5"
+                onChange={handleChange}
+                value={createProject.q5 || ""}
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+              <label>Answer5</label>
+              <textarea
+                placeholder="Answer5"
+                type="text"
+                name="a5"
+                onChange={handleChange}
+                value={createProject.a5 || ""}
+                cols="30"
+                rows="2"
+                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              />
+        </div>
         <label className="font-bold underline">SEO</label>
         <div>
           <label>Keywords</label>

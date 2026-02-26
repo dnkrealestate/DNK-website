@@ -108,6 +108,17 @@ export const ViewList = ({ setCreateProject, submit, params }) => {
       altgallary1: data.altgallary1,
       altgallary2: data.altgallary2,
       altgallary3: data.altgallary3,
+      faqTitle: data.faqTitle || "",
+      q1: data.q1 || "",
+      a1: data.a1 || "",
+      q2: data.q2 || "",
+      a2: data.a2 || "",
+      q3: data.q3 || "",
+      a3: data.a3 || "",
+      q4: data.q4 || "",
+      a4: data.a4 || "",
+      q5: data.q5 || "",
+      a5: data.a5 || "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

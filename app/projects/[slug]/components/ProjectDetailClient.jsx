@@ -6,6 +6,7 @@ import TalkSection from "@/app/components/talkSection/TalkSection";
 import { HeaderProject } from "@/app/components/header/HeaderProject";
 import ProjectBanner from "./ProjectBanner";
 import DetailProject from "./DetailProject";
+import ProjectFaqSection from "./ProjectFaqSection";
 
 export default function ProjectDetailClient({
   projectData,
@@ -18,6 +19,7 @@ export default function ProjectDetailClient({
         <HeaderProject projectId={projectData} />
         <ProjectBanner projectId={projectData} />
         <DetailProject projectId={projectData} teamData={teamData} />
+        <ProjectFaqSection projectId={projectData} />
         <ProjectList projects={filteredProjects} />
         <TalkSection />
     </>

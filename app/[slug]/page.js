@@ -17,7 +17,7 @@ function generateSlug(name) {
 export async function generateStaticParams() {
   const developers = await getPartner();
 
-  return developers.slice(0, 100).map((dev) => ({
+  return developers.map((dev) => ({
     slug: generateSlug(dev.partnername),
   }));
 }
@@ -102,7 +102,7 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   // ✅ Await params (Next.js App Router dynamic API)
-  const { slug } = await params;
+  const { slug } = params;
 
   let developerData = null;
   let projects = [];

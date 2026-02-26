@@ -15,18 +15,18 @@ const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(true); 
+  const [showTooltip, setShowTooltip] = useState(true);
   const [messages, setMessages] = useState([
     { role: "bot", content: "👋 Hi! May I know your name?" },
   ]);
   const [text, setText] = useState("");
   const [name, setName] = useState(null);
   const [hasPhone, setHasPhone] = useState(false);
-  const [isTyping, setIsTyping] = useState(false); // for typing indicator
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const pathname = usePathname();
 
-   /* ---------------- LOAD CHAT (24 HOURS) ---------------- */
+  /* ---------------- LOAD CHAT (24 HOURS) ---------------- */
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -45,7 +45,7 @@ export default function ChatBot() {
     }
   }, []);
 
-   /* ---------------- SAVE CHAT ---------------- */
+  /* ---------------- SAVE CHAT ---------------- */
   useEffect(() => {
     if (messages.length > 0) {
       localStorage.setItem(CHAT_KEY, JSON.stringify(messages));
@@ -53,9 +53,8 @@ export default function ChatBot() {
     }
   }, [messages]);
 
-
   /* ---------- LOAD NAME FROM LOCAL STORAGE ---------- */
- useEffect(() => {
+  useEffect(() => {
     if (typeof window !== "undefined") {
       const storedName = localStorage.getItem("chat_user_name");
       const savedPhone = localStorage.getItem("chat_phone");
@@ -68,7 +67,6 @@ export default function ChatBot() {
       if (savedPhone) {
         setHasPhone(true);
       }
-      
     }
   }, []);
 
@@ -110,7 +108,7 @@ export default function ChatBot() {
       const hasPhone = !!localStorage.getItem("chat_phone");
       const name = localStorage.getItem("chat_user_name") || "";
 
-      // 🔹 Load last project (if still valid)
+      // Load last project if still valid
       let lastProject = null;
       const lastProjectRaw = localStorage.getItem("chat_last_project");
       if (lastProjectRaw) {
@@ -121,7 +119,7 @@ export default function ChatBot() {
       }
 
       const res = await fetch("/api/chat", {
-       method: "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: userMessage,
@@ -129,13 +127,13 @@ export default function ChatBot() {
           hasName: !!name,
           hasPhone,
           name,
-          history: messages, 
+          history: messages,
         }),
       });
 
       const data = await res.json();
 
-       // Save name if bot asks to
+      // Save name if bot asks to
       if (data.saveName && !name) {
         setName(data.saveName);
         localStorage.setItem("chat_user_name", data.saveName);
@@ -147,39 +145,51 @@ export default function ChatBot() {
         localStorage.setItem("chat_phone", data.savePhone);
       }
 
+      // Progressive streaming for human-like typing
+      if (data.reply) {
+        setMessages((m) => [...m, { role: "bot", content: "" }]);
+        let accumulated = "";
+        for (let i = 0; i < data.reply.length; i++) {
+          accumulated += data.reply[i];
+          setMessages((m) => [
+            ...m.slice(0, -1),
+            { role: "bot", content: accumulated }
+          ]);
+          await new Promise(r => setTimeout(r, 15)); // 15ms per character
+        }
+      }
+
       setIsTyping(false);
-      setMessages((m) => [...m, { role: "bot", content: data.reply || "⚠️ AI unavailable" }]);
     } catch {
       setIsTyping(false);
       setMessages((m) => [...m, { role: "bot", content: "⚠️ Something went wrong." }]);
     }
   };
 
-const handleButtonClick = () => {
-  setOpen(!open);
-  setShowTooltip(false);
+  const handleButtonClick = () => {
+    setOpen(!open);
+    setShowTooltip(false);
 
-   if (typeof window !== "undefined" && window.dataLayer) {
-    window.dataLayer.push({
-      event: "chatbot_open",
-      event_category: "Engagement",
-      event_label: "Chatbot Widget",
-      page_path: pathname,
+    if (typeof window !== "undefined" && window.dataLayer) {
+      window.dataLayer.push({
+        event: "chatbot_open",
+        event_category: "Engagement",
+        event_label: "Chatbot Widget",
+        page_path: pathname,
+      });
+    }
+
+    // Track button click event
+    track('chatbot_button_click', {
+      open: !open
     });
-  }
-
-  // Track button click event
-  track('chatbot_button_click', {
-    open: !open // true if opening, false if closing
-  });
-};
+  };
 
   const handleClose = () => setOpen(false);
 
-function parseBold(text) {
-  // Replace **bold** with <b>bold</b>
-  return text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-}
+  function parseBold(text) {
+    return text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+  }
 
   return (
     <>
@@ -196,11 +206,11 @@ function parseBold(text) {
             onClick={handleButtonClick}
             className="bg-[#18A436] text-white p-3 rounded-full shadow-lg cursor-pointer group hover:bg-[#54ff79] hover:text-[#000]"
           >
-           {open ? (
-            <IoClose className="text-[2rem]" />   // Close icon when open
-          ) : (
-            <RiChatSmileAiFill className="text-[2rem]" /> // Chat icon when closed
-          )}
+            {open ? (
+              <IoClose className="text-[2rem]" />
+            ) : (
+              <RiChatSmileAiFill className="text-[2rem]" />
+            )}
           </button>
         </div>
       </div>

@@ -48,6 +48,11 @@ export default function BannerDeveloper({ developerData }) {
           <p className="text-[0.8rem] mt-1 text-[#fff] px-0 md:px-4">
             {developerData.partnerdescription}
           </p>
+          <Link href={`/${developerData.partnername?.toLowerCase()}`}>
+            <button className=" site-btn1  bg-yellow-500 hover:bg-yellow-600 px-6 py-3  font-semibold transition duration-300">
+              Get Exclusive Offers
+            </button>
+          </Link>
         </div>
       </div>
     </div>
