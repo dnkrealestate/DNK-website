@@ -24,7 +24,7 @@ export default function TableDetail({ projectId }) {
         </Link>
         /
         <Link
-          href={`/projects/${projectId.projectname}`}
+          href={`/projects/${projectId.projectname?.toLowerCase().replace(/\s+/g, "-")}`}
           className="text-[#979797] hover:text-[#CE8745] pr-1"
         >
           {projectId.projectname}
