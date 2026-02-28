@@ -934,3 +934,16 @@ table th {
 .blur-loop {
   animation: blurLoop 3s ease-in-out infinite;
 }
+
+@keyframes blink-bg {
+  0%, 100% {
+    background-color: #109528; /* yellow-500 */
+  }
+  50% {
+    background-color: #5050505e; /* yellow-600 */
+  }
+}
+
+.blink-bg {
+  animation: blink-bg 2s infinite ease-in-out; /* 1s duration, loops infinitely */
+}
