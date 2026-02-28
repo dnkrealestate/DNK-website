@@ -158,12 +158,12 @@ export default async function Page({ params }) {
             priority
             className="object-cover opacity-15 blur-loop"
           />
-          <div className="bg-[#000000cc] w-full h-full absolute left-0 top-0 z-0"></div>
+          <div className="bg-[#000000cc] w-full h-full absolute left-0 top-0 z-1"></div>
         </div>
 
-        <div className="grid md:grid-cols-2 w-full max-w-7xl z-10">
+        <div className="grid md:grid-cols-2 w-full max-w-7xl z-[7]">
           {/* Thumbnail */}
-          <div className="relative h-[250px] md:h-[400px] w-full">
+          <div className="relative h-[250px] md:h-[400px] w-full z-[6]">
             <Image
               src={thumbnailImage}
               alt={project?.projectname}
@@ -172,11 +172,12 @@ export default async function Page({ params }) {
               sizes="(max-width: 768px) 100vw, 50vw"
               style={{ objectFit: "cover", objectPosition: "top" }}
             />
+            <div className="bg-[#000000b1] w-full h-full absolute left-0 top-0 z-[9] sm:hidden rounded-md"></div>
           </div>
 
           {/* Content */}
           <div className="px-4 pt-4 md:pt-1 text-white">
-            <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2 z-20">
               {project?.projectname}
             </h1>
             <h2 className="text-lg mb-3">
@@ -184,22 +185,22 @@ export default async function Page({ params }) {
             </h2>
 
             <div className="space-y-1 md:space-y-0">
-              <h3 className="text-[1rem] md:text-[1.1rem] font-normal">
+              <h3 className="text-[0.8rem] md:text-[1.1rem] font-normal mb-0">
                 ◆ Starting from {project?.startingprice}
               </h3>
-              <h3 className="text-[1rem] md:text-[1.1rem] font-normal">
+              <h3 className="text-[0.8rem] md:text-[1.1rem] font-normal">
                 ◆ Flexible Payment Plan {project?.paymentplan}
               </h3>
-              <h3 className="text-[1rem] md:text-[1.1rem] font-normal">
+              <h3 className="text-[0.8rem] md:text-[1.1rem] font-normal">
                 ◆ Premium Residences in {capitalize(project?.locationname)}
               </h3>
-              <h3 className="text-[1rem] md:text-[1.1rem] font-normal">
+              <h3 className="text-[0.8rem] md:text-[1.1rem] font-normal">
                 ◆ Easy & Attractive Down Payment Options – {project?.downpayment}
               </h3>
-              <h3 className="text-[1rem] md:text-[1.1rem] font-normal">
+              <h3 className="text-[0.8rem] md:text-[1.1rem] font-normal">
                 ◆ Strong ROI & High Capital Appreciation Potential
               </h3>
-              <h3 className="text-[1rem] md:text-[1.1rem] font-normal">
+              <h3 className="text-[0.8rem] md:text-[1.1rem] font-normal">
                 ◆ Available Units:{" "}
                 {Object.keys(project)
                   .filter((key) => key.startsWith("type") && project[key])
@@ -212,10 +213,10 @@ export default async function Page({ params }) {
                   .join(", ")
                   .replace(/,([^,]*)$/, " & $1")}
               </h3>
-              <h3 className="text-[1rem] md:text-[1.1rem] font-normal">
+              <h3 className="text-[0.8rem] md:text-[1.1rem] font-normal">
                 ◆ Available Bedrooms: {project?.bedroom}
               </h3>
-              <h3 className="text-[1rem] md:text-[1.1rem] font-normal">
+              <h3 className="text-[0.8rem] md:text-[1.1rem] font-normal">
                 ◆ Free Property Consultation
               </h3>
             </div>
@@ -229,19 +230,19 @@ export default async function Page({ params }) {
         </div>
 
         {/* Developer Logo */}
-        <div className="absolute top-24 md:top-auto md:bottom-24 z-10 px-10">
+        <div className="absolute top-24 md:top-auto md:bottom-24 z-[40] px-10">
           <Image
             src={developerLogo}
             alt={capitalize(project?.developer)}
             width={180}
             height={80}
             priority
-            className="object-cover"
+            className="object-cover z-20"
             style={{ height: "auto" }}
           />
         </div>
 
-        <div className="bg-[#0000008b] w-full h-full absolute left-0 top-0 z-0 sm:hidden rounded-md"></div>
+        
       </div>
     </>
   );
