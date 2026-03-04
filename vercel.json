@@ -1,10 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["dxb1", "bom1", "iad1"],
+  "functionFailoverRegions": ["bom1"], 
   "functions": {
-    "api/**/*.js": {
-      "memory": 1024,
-      "maxDuration": 10,
-      "regions": ["iad1", "bom1", "dxb1"]
+    "api/specific-function.js": {
+      "regions": ["dxb1"],          
+      "functionFailoverRegions": ["iad1"] 
     }
   }
 }
