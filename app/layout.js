@@ -113,6 +113,7 @@ export default async function RootLayout({ children }) {
             alt="meta-pixel"
           />
         </noscript>
+        
 
         {/* ✅ JSON-LD (SEO safe) */}
         <Script
