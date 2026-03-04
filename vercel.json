@@ -4,7 +4,7 @@
     "api/**/*.js": {
       "memory": 1024,
       "maxDuration": 10,
-      "regions": ["dxb1", "bom1", "iad1"]
+      "regions": ["iad1", "bom1", "dxb1"]
     }
   }
 }
