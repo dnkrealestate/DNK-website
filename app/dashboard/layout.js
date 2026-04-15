@@ -59,7 +59,7 @@ export default function DashboardLayout({ children }) {
             {navButton("/dashboard/ad", "Add Ad")}
             {navButton("/dashboard/review", "Add Review")}
             {navButton("/dashboard/partner", "Add Partner")}
-            {navButton("/dashboard/home-banner", "Change Home Banner")}
+            {navButton("/dashboard/home-banner", "General Settings")}
             {navButton("/dashboard/special-day", "Special Day Wish")}
             {navButton("/dashboard/special-day-logo", "Update Special Day Logo")}
           </div>

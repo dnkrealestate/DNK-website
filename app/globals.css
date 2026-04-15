@@ -947,3 +947,36 @@ table th {
 .blink-bg {
   animation: blink-bg 2s infinite ease-in-out; /* 1s duration, loops infinitely */
 }
+
+
+.top-news-bar {
+  width: 100%;
+  overflow: hidden;
+  color: #fff;
+}
+
+.ticker {
+  width: 100%;
+  overflow: hidden;
+}
+
+.ticker p {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%; /* start from right */
+  animation: scrollSingle 30s linear infinite;
+  font-size: 14px;
+}
+
+@keyframes scrollSingle {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.ticker p:hover {
+  animation-play-state: paused;
+}

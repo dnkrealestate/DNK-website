@@ -4,6 +4,8 @@ import Image from "next/image";
 import { URL, WWURL } from "@/url/axios";
 import PopupModel from "./model/PopupModel";
 import gsap from "gsap";
+import DdesktopImageUrl from "@/public/assets/banner-img/In-the-UAE-Everyone-is-Emirati.webp";
+import DmobileImageUrl from "@/public/assets/banner-img/In-the-UAE-Everyone-is-Emirati-mobile.webp";
 
 export default function BannerHome({ banner, event, ad }) {
   const [ShowPopup, setShowPopup] = useState(false);
@@ -144,7 +146,17 @@ useEffect(() => {
           style={{ objectFit: "cover" }}
         />
       ) : (
-        <div className="absolute h-full w-full bg-gray-600 animate-pulse"></div>
+        // <div className="absolute h-full w-full bg-gray-600 animate-pulse"></div>
+        <Image
+          src={isMobile ? DmobileImageUrl : DdesktopImageUrl}
+          alt="dubai view, Real estate, off plan, ROI, investment"
+          fill
+          quality={100}
+          sizes="100vw"
+          priority
+          fetchPriority="high"
+          style={{ objectFit: "cover" }}
+        />
       )}
 
       <div className="container max-w-[1240px] px-4 items-center overflow-hidden relative">

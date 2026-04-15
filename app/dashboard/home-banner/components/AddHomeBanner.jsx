@@ -15,6 +15,7 @@ export const AddHomeBanner = () => {
     aboutImage: null,
     bannerTitle: "",
     bannerSubTitle: "",
+    announcement: "",
   });
 
   const [homeBannerId, setHomeBannerId] = useState(null);
@@ -41,6 +42,7 @@ export const AddHomeBanner = () => {
           aboutImage: data.aboutImage || null,
           bannerTitle: data.bannerTitle || "",
           bannerSubTitle: data.bannerSubTitle || "",
+          announcement: data.announcement || "",
         });
 
         setHomeBannerId(data._id);
@@ -91,6 +93,7 @@ export const AddHomeBanner = () => {
 
       formdata.append("bannerTitle", homeBanner.bannerTitle);
       formdata.append("bannerSubTitle", homeBanner.bannerSubTitle);
+      formdata.append("announcement", homeBanner.announcement);
 
       let response;
       if (homeBannerId) {
@@ -119,6 +122,33 @@ export const AddHomeBanner = () => {
       <h1 className="font-semibold mb-4 text-black">
         {homeBannerId ? "Update" : "Add"} Home Page Data
       </h1>
+
+      {/* Website Announcement */}
+        <label className="block mb-1 font-medium">Website Announcement & Breaking  News </label>
+        <div className="flex gap-2 items-center mb-4">
+  <input
+    name="announcement"
+    value={homeBanner.announcement}
+    onChange={handleChange}
+    type="text"
+    className="w-full border border-[#040406] p-2 rounded"
+    placeholder="Add announcement • breaking news here • Separate with • for multiple announcements"
+    required
+  />
+
+  <button
+    type="button"
+    onClick={() =>
+      setHomeBanner((prev) => ({
+        ...prev,
+        announcement: "",
+      }))
+    }
+    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+  >
+    Clear
+  </button>
+</div>
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         {/* Main Banner Image */}

@@ -5,7 +5,7 @@ import Image from "next/image";
 import AdPoster from "@/public/assets/icons/adposter.webp";
 import Swal from "sweetalert2";
 import { useProjectServices } from "@/services/projectServices";
-import { URL as API_URL } from "@/url/axios";
+import { URL as WWURL } from "@/url/axios";
 
 const AddAdImage = () => {
   const [adPoster, setAdPoster] = useState({ image: null });
@@ -92,7 +92,7 @@ const AddAdImage = () => {
               imageUrl?.image && typeof imageUrl.image === "string"
                 ? imageUrl.image
                 : adPoster.image
-                ? `${API_URL}/${adPoster.image}`
+                ? `${WWURL}${adPoster.image}`
                 : AdPoster
             }
             alt="Advertisement"

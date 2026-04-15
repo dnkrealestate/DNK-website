@@ -10,9 +10,13 @@ import { RiWhatsappFill } from "react-icons/ri";
 import dnkLogo from "../../../public/assets/logo/dnklogo_1.webp";
 import { WWURL } from "@/url/axios";
 import { track } from "@vercel/analytics";
+import { useProjectServices } from "@/services/projectServices";
 
 const HeaderMain = ({ logoData }) => {
   const [nav, setNav] = useState(true);
+    const {  getHomeBannerR } =
+      useProjectServices();
+  const [newsText, setNewsText] = useState("");
   const router = useRouter();
   const pathname = usePathname();
 
@@ -26,6 +30,37 @@ const HeaderMain = ({ logoData }) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+ useEffect(() => {
+  let isMounted = true;
+
+  const fetchAndUpdate = async () => {
+    try {
+      const res = await getHomeBannerR();
+
+      if (isMounted && res.success && res.data.length > 0) {
+        const newAnnouncement = res.data[0].announcement || "";
+
+        setNewsText((prev) =>
+          prev !== newAnnouncement ? newAnnouncement : prev
+        );
+      }
+    } catch (err) {
+      console.log("Announcement fetch error:", err);
+    }
+  };
+
+  // initial fetch
+  fetchAndUpdate();
+
+  // polling every 10–15 seconds
+  const interval = setInterval(fetchAndUpdate, 12000); // 12 sec
+
+  return () => {
+    isMounted = false;
+    clearInterval(interval);
+  };
+}, []);
 
   const handleNav = () => {
     setNav(!nav);
@@ -83,9 +118,19 @@ const HeaderMain = ({ logoData }) => {
     logoData && logoData.image ? `${WWURL}${logoData.image}` : dnkLogo;
   return (
     <>
+    
       {/* <DefaultSeo {...SEO} /> */}
       <header>
+        {/* Top News Ticker */}
+      {newsText && (
+        <div className="top-news-bar bg-[#FAC25A]">
+          <div className="ticker">
+            <p dangerouslySetInnerHTML={{ __html: newsText }} className="text-black m-0"></p>
+          </div>
+        </div>
+      )}
         <div className="header flex container items-center justify-between h-15 max-w-[1240px] mx-auto px-4 py-2">
+          
           <div className="left-block flex items-center justify-center gap-4 md:gap-0">
             <div onClick={handleNav}>
               {!nav ? (
