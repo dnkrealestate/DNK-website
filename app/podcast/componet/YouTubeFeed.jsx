@@ -79,9 +79,14 @@ const YouTubeFeed = () => {
               onClick={() => handleVideoClick(video)}
               className="cursor-pointer transition hover:scale-[1.02]"
             >
-              <img
-                src={video.snippet.thumbnails.medium.url}
-                alt={video.snippet.title}
+             <img
+                src={
+                  video?.snippet?.thumbnails?.medium?.url ||
+                  video?.snippet?.thumbnails?.high?.url ||
+                  video?.snippet?.thumbnails?.default?.url ||
+                  "/fallback.jpg"
+                }
+                alt={video?.snippet?.title || "Video thumbnail"}
                 className="rounded-lg w-full"
               />
               <p className="mt-2 text-sm font-medium">{video.snippet.title}</p>

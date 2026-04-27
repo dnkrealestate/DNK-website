@@ -102,7 +102,7 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   // ✅ Await params (Next.js App Router dynamic API)
-  const { slug } = params;
+  const { slug } = await params;
 
   let developerData = null;
   let projects = [];
