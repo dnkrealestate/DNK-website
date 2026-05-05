@@ -95,6 +95,11 @@ export const PartnerSection = ({ partnerData }) => {
                       href={`/developer/${data?.partnername
                         ?.replace(/\s+/g, "-")
                         .toLowerCase()}`}
+                      onClick={() => {
+                        if (typeof window !== "undefined" && window.snaptr) {
+                          window.snaptr("track", `PARTNER_CLICK : /developer/${data?.partnername?.replace(/\s+/g, "-").toLowerCase()}`);
+                        }
+                      }}
                     >
                       <Image
                         src={getPartenerUrl(data.image)}

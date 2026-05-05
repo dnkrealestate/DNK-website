@@ -100,7 +100,13 @@ export default function ProjectList({ projects }) {
                     <SwiperSlide key={data._id}>
                       <div className="p-4 overflow-hidden">
                         <Link href={`/projects/${slug}`} 
-                          onClick={() => pushProjectClick(data)}>
+                         onClick={() => {
+                            pushProjectClick(data);
+
+                            if (typeof window !== "undefined" && window.snaptr) {
+                              window.snaptr("track", "CONTACT");
+                            }
+                          }}>
                           <div className="relative max-w-[350px] overflow-hidden border rounded-[10px] shadow bg-[#040406] cursor-pointer">
                             <div className="relative w-full h-[266px]">
                               <Image

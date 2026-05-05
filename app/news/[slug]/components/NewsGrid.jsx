@@ -16,7 +16,11 @@ export default function NewsGrid({ newsList }) {
               const slug = generateSlug(data.newsurl);
               return (
                 <div key={data.newsurl}>
-                  <Link href={`/news/${slug}`}>
+                  <Link href={`/news/${slug}`} onClick={() => {
+                            if (typeof window !== "undefined" && window.snaptr) {
+                              window.snaptr("track", "NEWS_CLICK");
+                            }
+                          }}>
                     <div className="md:grid grid-cols-4 overflow-hidden flex  border border-[#ffff] rounded-md shadow bg-[#040406] cursor-pointer mb-4">
                       <div className="relative">
                         {data.newsthumbnail ? (

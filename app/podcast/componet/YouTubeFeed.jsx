@@ -10,26 +10,29 @@ const YouTubeFeed = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const videoPlayerRef = useRef(null);
   const videosPerPage = 20;
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=30&playlistId=PLPiY8b2lNU8av9zqdNysCafoxL4KUCHGR&key=AIzaSyA-OOedaGN2MrPLyJErWwF417ItfWurCxQ`
-        );
-        const data = await response.json();
-        const videoItems = data.items.filter(
-          (item) => item.snippet?.resourceId?.videoId
-        );
-        setVideos(videoItems);
-        setSelectedVideo(videoItems[0]);
-      } catch (error) {
-        console.error("Error fetching YouTube videos:", error);
-      }
-    };
+ useEffect(() => {
+  const fetchVideos = async () => {
+    try {
+      const response = await fetch("/api/youtube");
+      const data = await response.json();
 
-    fetchVideos();
-  }, []);
+      const videoItems = data.items.filter(
+        (item) => item.snippet?.resourceId?.videoId
+      );
+
+      setVideos(videoItems);
+      setSelectedVideo(videoItems[0]);
+    } catch (error) {
+      console.error("Error fetching YouTube videos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchVideos();
+}, []);
 
   const offset = currentPage * videosPerPage;
   const currentVideos = videos.slice(offset, offset + videosPerPage);

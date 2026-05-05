@@ -35,7 +35,12 @@ export default function MdNewsGrid({ newsList }) {
               const slug = generateSlug(data.newsurl);
               return (
                 <div key={data.newsurl}>
-                  <Link href={`/news/${slug}`}>
+                  <Link href={`/news/${slug}`} 
+                  onClick={() => {
+                            if (typeof window !== "undefined" && window.snaptr) {
+                              window.snaptr("track", `NEWS_CLICK : /news/${slug}`);
+                            }
+                          }}>
                     <div className="p-3">
                       <Image
                         src={

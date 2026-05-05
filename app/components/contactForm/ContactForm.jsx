@@ -123,6 +123,16 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
         city,
       });
 
+      // ✅ Snapchat Lead Tracking
+      if (typeof window !== "undefined" && window.snaptr) {
+        window.snaptr('track', 'SIGN_UP', {
+          user_email: email,
+          user_phone_number: phoneNumber,
+          firstname: fullName,
+          geo_city: city,
+        });
+      }
+
     // ✅ Send event to Google Tag Manager
     if (typeof window !== "undefined") {
       window.dataLayer = window.dataLayer || [];
@@ -238,6 +248,11 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
                   message:
                     "Hello, could you please provide more insights into the project?",
                 });
+
+                // ✅ Snapchat event
+                  if (typeof window !== "undefined" && window.snaptr) {
+                    window.snaptr('track', 'CONTACT');
+                  }
               }}
             >
               <a

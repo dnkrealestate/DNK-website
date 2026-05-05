@@ -194,7 +194,12 @@ export default function TableDetail({ projectId }) {
           </h2>
         </div>
       </div>
-      <Link href={`/${projectId.developer?.toLowerCase()}/${projectId.projectname.toLowerCase().replace(/\s+/g, "-")}/active`}>
+      <Link href={`/${projectId.developer?.toLowerCase()}/${projectId.projectname.toLowerCase().replace(/\s+/g, "-")}/active`} 
+      onClick={() => {
+                            if (typeof window !== "undefined" && window.snaptr) {
+                              window.snaptr("track", `PROJECT_Funnel_CLICK : /${projectId.developer?.toLowerCase()}/${projectId.projectname.toLowerCase().replace(/\s+/g, "-")}/active`);
+                            }
+                          }}>
         <button className="site-btn1 w-full !border-yellow-500 !rounded-none bg-yellow-500 hover:bg-yellow-600 px-6 py-3  font-semibold transition duration-300">
           Check Availability
         </button>

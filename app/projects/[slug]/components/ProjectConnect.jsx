@@ -105,6 +105,16 @@ export const ProjectConnect = ({ projectId, teamData }) => {
         phoneNumber,
         city,
       });
+      
+      // ✅ Snapchat Lead Tracking
+      if (typeof window !== "undefined" && window.snaptr) {
+        window.snaptr('track', 'SIGN_UP', {
+          user_email: email,
+          user_phone_number: phoneNumber,
+          firstname: fullName,
+          geo_city: city,
+        });
+      }
 
       Swal.fire({
         title: "Thank you",
@@ -130,6 +140,7 @@ export const ProjectConnect = ({ projectId, teamData }) => {
       city: ${city},
       Page :${pathname}`,
     });
+
   };
 
   const imageUrl = teamData?.[0]?.image

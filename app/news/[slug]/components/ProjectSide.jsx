@@ -16,7 +16,11 @@ export default function ProjectSide({ projects }) {
             const slug = generateSlug(data.projectname);
             return (
               <div key={data.projectname}>
-                <Link href={`/projects/${slug}`}>
+                <Link href={`/projects/${slug}`} onClick={() => {
+                            if (typeof window !== "undefined" && window.snaptr) {
+                              window.snaptr("track", "PROJECT_CLICK");
+                            }
+                          }}>
                   <div className="md:grid grid-cols-4 overflow-hidden flex  border border-[#ffff] rounded-md shadow bg-[#040406] cursor-pointer mb-4">
                     <div className="relative">
                       {data.thumbnail ? (

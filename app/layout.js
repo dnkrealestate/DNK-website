@@ -86,23 +86,23 @@ export default async function RootLayout({ children }) {
 
       {/* ✅ Meta Pixel Code */}
         <Script
-  id="meta-pixel"
-  strategy="afterInteractive"
-  dangerouslySetInnerHTML={{
-    __html: `
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '702378121580941');
-      fbq('track', 'PageView');
-    `,
-  }}
-/>
+        id="meta-pixel"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '702378121580941');
+            fbq('track', 'PageView');
+          `,
+        }}
+      />
 
         {/* ✅ Meta Pixel NoScript Fallback */}
         <noscript>
@@ -134,6 +134,29 @@ export default async function RootLayout({ children }) {
               "https://www.linkedin.com/company/dnkrealestate/",
             ],
           })}
+        </Script>
+
+        {/* ✅ Snapchat Pixel */}
+        <Script id="snapchat-pixel" strategy="afterInteractive">
+          {`
+            (function(e,t,n){
+              if(e.snaptr)return;
+              var a=e.snaptr=function(){
+                a.handleRequest ? a.handleRequest.apply(a,arguments) : a.queue.push(arguments)
+              };
+              a.queue=[];
+              var s='script';
+              r=t.createElement(s);
+              r.async=!0;
+              r.src=n;
+              var u=t.getElementsByTagName(s)[0];
+              u.parentNode.insertBefore(r,u);
+            })(window,document,'https://sc-static.net/scevent.min.js');
+
+            snaptr('init', 'd67e3280-a2aa-4a97-9a37-b861892b7198');
+
+            snaptr('track', 'PAGE_VIEW');
+          `}
         </Script>
 
         <SplashProvider>

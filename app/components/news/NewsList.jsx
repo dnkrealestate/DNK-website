@@ -42,6 +42,11 @@ export default function NewsList({ mainNews, SliderNews }) {
             {mainNews && (
               <Link
                 href={`/news/${slug}`}
+                onClick={() => {
+                            if (typeof window !== "undefined" && window.snaptr) {
+                              window.snaptr("track", "NEWS_CLICK");
+                            }
+                          }}
                 className="block md:grid grid-cols-4 mainNewsSection"
               >
                 <div className="relative">

@@ -99,7 +99,12 @@ export default function DeveloperProjectGridList({ projects, developerData }) {
                 const slug = generateSlug(data.projectname);
                 return (
                   <div className="p-4" key={data.projectname}>
-                    <Link href={`/projects/${slug}`}>
+                    <Link href={`/projects/${slug}`}
+                    onClick={() => {
+                            if (typeof window !== "undefined" && window.snaptr) {
+                              window.snaptr("track", `PROJECT_CLICK : /projects/${slug}`);
+                            }
+                          }}>
                       <div className="max-w-full overflow-hidden  border border-[#ffff] rounded-[10px] shadow bg-[#040406] cursor-pointer">
                         <div>
                           <div className="relative w-full h-[266px]">

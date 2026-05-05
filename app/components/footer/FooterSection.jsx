@@ -135,6 +135,11 @@ export default function FooterSection() {
             phone: ${phoneNumber},
             Page :${pathname}`,
           });
+
+          // ✅ Snapchat event
+      if (typeof window !== "undefined" && window.snaptr) {
+        window.snaptr('track', 'floating_call_button_click');
+      }
       
       if (!validateForm()) {
         return;
