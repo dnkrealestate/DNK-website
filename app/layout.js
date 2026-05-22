@@ -7,6 +7,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { getLogo } from "@/services/projectServices";
 import { getDeveloperSlugs } from "@/utils/developerSlugs";
 import PixelTracker from "./PixelTracker";
+import ClarityProvider from "./components/ClarityProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -162,6 +163,7 @@ export default async function RootLayout({ children }) {
         <SplashProvider>
           <ClientWrapper developerSlugs={developerSlugs} spclLogo={logoData}>
             <PixelTracker />
+            <ClarityProvider />
             {children}
           </ClientWrapper>
         </SplashProvider>
