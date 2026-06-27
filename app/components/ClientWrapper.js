@@ -45,15 +45,16 @@ export default function ClientWrapper({ children, spclLogo,  developerSlugs = []
     const isForgotPassword = pathname.startsWith("/forgot-password");
     const isIslands = pathname.startsWith("/damac-islands-new-community");
     const isPromotion = pathname.startsWith("/promotion");
+    const isHudayriyat = pathname.startsWith("/hudayriyat-island");
 
     return (
         <>
-            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isDeveloperPage && <HeaderMain logoData={spclLogo} />}
+            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isDeveloperPage && <HeaderMain logoData={spclLogo} />}
             {children}
             <SpeedInsights />
             <Analytics />
-            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isDeveloperPage && <FooterSection />}
-            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion  && <SplashScreen logoData={spclLogo} />}
+            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isDeveloperPage && <FooterSection />}
+            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && <SplashScreen logoData={spclLogo} />}
         </>
     );
 }
