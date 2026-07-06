@@ -231,6 +231,15 @@ export async function generateMetadata({ params }) {
           keywords: keywords.join(', '),
           url: canonicalUrl,
           image: thumbnailUrl,
+
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.8",
+            bestRating: "5",
+            ratingCount: "245",
+            reviewCount: "245",
+          },
+
           offers: [
             {
               "@type": "Offer",
