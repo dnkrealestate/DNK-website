@@ -11,6 +11,7 @@ import dnkLogo from "../../../public/assets/logo/dnklogo_1.webp";
 import { WWURL } from "@/url/axios";
 import { track } from "@vercel/analytics";
 import { useProjectServices } from "@/services/projectServices";
+import { trackLeadClick } from "@/services/leadServices";
 
 const HeaderMain = ({ logoData }) => {
   const [nav, setNav] = useState(true);
@@ -263,6 +264,12 @@ const HeaderMain = ({ logoData }) => {
                   action: Call to Dann,
                   phone: +971555769195,`,
                     });
+                    trackLeadClick({
+                      type: "call_click",
+                      phone: "+971555769195",
+                      page: pathname,
+                      source: "Header",
+                    });
                   }}
                   className="group"
                 >
@@ -276,6 +283,12 @@ const HeaderMain = ({ logoData }) => {
                       track: `Page: ${pathname},
                   button: WhatsApp Button Header
                   whatsapp: Msg to Dann`,
+                    });
+                    trackLeadClick({
+                      type: "whatsapp_click",
+                      phone: "+971555769195",
+                      page: pathname,
+                      source: "Header",
                     });
                   }}
                   className="group"

@@ -1,25 +1,42 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
+import { MdArrowBack, MdDelete } from "react-icons/md";
 import projectImage from "/public/assets/icons/image_demo.webp";
 import logoIcon from "/public/assets/icons/addlogo.webp";
 import cvrImage from "/public/assets/icons/coverimage.webp";
 import { useProjectServices } from "@/services/projectServices";
 import { userPartnerServices } from "@/services/partnerServices";
 import { URL } from "@/url/axios";
-import ViewList from "../../components/ViewList";
+import Card from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
 
-export default function AddProject({ mode , user_id}) {
+function SectionHeading({ title, description }) {
+  return (
+    <div className="mb-4 mt-8 border-b border-[#E5E8EE] pb-2 first:mt-0">
+      <h2 className="text-base font-semibold text-[#1A2233]">{title}</h2>
+      {description && (
+        <p className="text-xs text-[#8791A1]">{description}</p>
+      )}
+    </div>
+  );
+}
+
+export default function AddProject({ mode = "create", user_id = null }) {
+  const router = useRouter();
   const [err, setErr] = useState(false);
   const [partnerList, setPartnerList] = useState([]);
   const [searchedDeveloperList, setSearchedDeveloperList] = useState([]);
   const [selectedDeveloperImage, setSelectedDeveloperImage] = useState("");
   const [submit, setSubmit] = useState(false);
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const { getPartnerR, getPartnerName } = userPartnerServices();
-  const { postProjectList, putProjectList, getProjectList, deletProjectList } =
+  const { postProjectList, putProjectList, getProjectByIdR, deleteProjectList } =
     useProjectServices();
 
   const initialState = {
@@ -150,6 +167,7 @@ export default function AddProject({ mode , user_id}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSaving(true);
     try {
       const formdata = new FormData();
       for (const [key, value] of Object.entries(createProject)) {
@@ -159,7 +177,8 @@ export default function AddProject({ mode , user_id}) {
       }
 
       let response;
-      if (createProject.id) {
+      const isUpdate = Boolean(createProject.id);
+      if (isUpdate) {
         formdata.append("_id", createProject.id);
         response = await putProjectList(createProject.id, formdata);
       } else {
@@ -167,27 +186,61 @@ export default function AddProject({ mode , user_id}) {
       }
 
       if (response.success) {
-        Swal.fire("Success", "Successfully added/updated", "success");
-        handleReset();
-        setMessage("Please refresh the page");
-        setSubmit(!submit);
+        Swal.fire("Success", isUpdate ? "Project updated." : "Project created.", "success");
+        if (isUpdate) {
+          fetchProjectDetails(createProject.id);
+        } else {
+          handleReset();
+          router.push("/dashboard/addProject");
+        }
       } else {
-        Swal.fire("Failed", "Failed to add/update project", "error");
+        Swal.fire("Failed", response.message || "Failed to add/update project", "error");
       }
     } catch (err) {
-     console.error("❌ Error submitting form:", err);
-     
-       const errorMessage =
-         err?.response?.data?.message ||    
-         err?.response?.data?.error ||        
-         err?.message ||                       
-         "Something went wrong. Please try again.";
-     
-       Swal.fire({
-         icon: "error",
-         title: "Failed",
-         text: errorMessage,
-       });
+      console.error("❌ Error submitting form:", err);
+
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Something went wrong. Please try again.";
+
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: errorMessage,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!createProject.id) return;
+    const result = await Swal.fire({
+      title: "Delete this project?",
+      text: "This can't be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete it",
+    });
+    if (!result.isConfirmed) return;
+
+    setDeleting(true);
+    try {
+      const response = await deleteProjectList(createProject.id);
+      if (response.success) {
+        Swal.fire("Deleted", "Project has been deleted.", "success");
+        router.push("/dashboard/addProject");
+      } else {
+        Swal.fire("Failed", response.message || "Failed to delete project.", "error");
+      }
+    } catch (err) {
+      Swal.fire("Error", "Something went wrong while deleting.", "error");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -229,37 +282,87 @@ export default function AddProject({ mode , user_id}) {
 
   const fetchProjectDetails = async (id) => {
     try {
-      const response = await getProjectList(id);
-      setCreateProject(response.data);
+      const response = await getProjectByIdR(id);
+      if (!response.success) {
+        Swal.fire("Failed", "Could not load project.", "error");
+        return;
+      }
+      const project = response.data;
+      // Existing image fields already resolve via `URL + createProject.<field>` in the
+      // markup below, so imageUrls only needs to hold freshly-selected local blob previews.
+      setCreateProject({ ...project, id: project._id });
       setImageUrls({
-        thumbnail: response.data.imageUrl?.thumbnail || null,
-        coverimage: response.data.imageUrl?.coverimage || null,
-        mobilecoverimage: response.data.imageUrl?.mobilecoverimage || null,
-        gallary1: response.data.imageUrl?.gallary1 || null,
-        gallary2: response.data.imageUrl?.gallary2 || null,
-        gallary3: response.data.imageUrl?.gallary3 || null,
-        developerlogo: response.data.imageUrl?.developerlogo || null,
-        projectlogo: response.data.imageUrl?.projectlogo || null,
+        thumbnail: null,
+        coverimage: null,
+        mobilecoverimage: null,
+        gallary1: null,
+        gallary2: null,
+        gallary3: null,
+        developerlogo: null,
+        projectlogo: null,
       });
     } catch (err) {
-      console.error("Failed to fetch project details:", err);
+      if (err?.response?.status === 404) {
+        Swal.fire("Not found", "This project no longer exists.", "error");
+        router.push("/dashboard/addProject");
+      } else {
+        console.error("Failed to fetch project details:", err);
+        Swal.fire("Error", "Failed to load project details.", "error");
+      }
     }
   };
 
+  const isEditMode = Boolean(createProject.id);
+
   return (
     <div className="text-[#000]">
-      <div>
-        <h1 className="text-[#000] font-semibold">Add Project</h1>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard/addProject")}
+            className="mb-2 flex items-center gap-1.5 text-sm text-[#5B6472] hover:text-[#0F2C45]"
+          >
+            <MdArrowBack /> Back to all projects
+          </button>
+          <h1 className="text-xl font-semibold text-[#1A2233]">
+            {isEditMode
+              ? `Edit Project${createProject.projectname ? `: ${createProject.projectname}` : ""}`
+              : "Add New Project"}
+          </h1>
+          <p className="mt-1 text-sm text-[#7A8494]">
+            {isEditMode
+              ? "Update this listing's details, media, and content."
+              : "Fill in the details to publish a new listing."}
+          </p>
+        </div>
+        {isEditMode && (
+          <Button
+            type="button"
+            variant="danger"
+            size="sm"
+            loading={deleting}
+            onClick={handleDelete}
+          >
+            <MdDelete /> Delete project
+          </Button>
+        )}
       </div>
+
       <form
         action="/task/add-task"
         method="POST"
         encType="multipart/form-data"
         onSubmit={handleSubmit}
       >
+        <Card className="p-6">
+        <SectionHeading
+          title="Media & Branding"
+          description="Thumbnail and project logo shown across listing cards."
+        />
         <div className="w-fit mb-3 grid grid-cols-2 gap-2">
           <div>
-            <label>Thumbnail *</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Thumbnail *</label>
             <label htmlFor="thumbnail" className="cursor-pointer">
               <Image
                 width={380}
@@ -282,19 +385,19 @@ export default function AddProject({ mode , user_id}) {
               id="thumbnail"
             />
             <div className="mt-2">
-              <label>Thumbnail alt Name</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Thumbnail alt Name</label>
               <input
                 placeholder="Thumbnail alt Name"
                 onChange={handleChange}
                 name="altthumbnail"
                 value={createProject.altthumbnail || ""}
                 type="text"
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
             </div>
           </div>
           <div>
-            <label>Project Logo *</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Project Logo *</label>
             <label htmlFor="projectlogo" className="cursor-pointer">
               <Image
                 width={200}
@@ -318,32 +421,39 @@ export default function AddProject({ mode , user_id}) {
               id="projectlogo"
             />
             <div className="mt-2">
-              <label>Logo alt Name</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Logo alt Name</label>
               <input
                 placeholder="Logo alt Name"
                 onChange={handleChange}
                 name="altprojectlogo"
                 value={createProject.altprojectlogo || ""}
                 type="text"
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
             </div>
           </div>
         </div>
-        <label>Project Runing Status</label>
+        </Card>
+
+        <Card className="p-6">
+        <SectionHeading
+          title="Classification & Status"
+          description="How this listing is categorized and its key facts."
+        />
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Project Runing Status</label>
         <select
           placeholder="Type "
           onChange={handleChange}
           name="runingstatus"
           value={createProject.runingstatus || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         >
           <option value={" "}></option>
           <option value={"newlaunch"}>New Launch</option>
           <option value={"soldout"}>Sold Out</option>
         </select>
-        <label>Status *</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Status *</label>
         <select
           placeholder="Status"
           onChange={handleChange}
@@ -351,7 +461,7 @@ export default function AddProject({ mode , user_id}) {
           required
           value={createProject.status || ""}
           type="select"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         >
           <option value={""}></option>
           <option value={"buy"}>Buy</option>
@@ -360,16 +470,16 @@ export default function AddProject({ mode , user_id}) {
           <option value={"rent"}>Rent</option>
         </select>
 
-        <label>Project Name *</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Project Name *</label>
         <input
           placeholder="Project Name"
           onChange={handleChange}
           name="projectname"
           value={createProject.projectname || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
-        <label>Developer *</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Developer *</label>
         {selectedDeveloperImage ? (
           <div className="developer-image">
             <Image
@@ -397,7 +507,7 @@ export default function AddProject({ mode , user_id}) {
           name="developer"
           value={createProject.developer || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         >
           <option value={""}></option>
           {searchedDeveloperList.length > 0 ? (
@@ -411,7 +521,7 @@ export default function AddProject({ mode , user_id}) {
           )}
         </select>
 
-        <label>Type</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Type</label>
         <div className="grid grid-cols-6 gap-2">
           <select
             placeholder="Type "
@@ -419,7 +529,7 @@ export default function AddProject({ mode , user_id}) {
             name="type"
             value={createProject.type || ""}
             type="text"
-            className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+            className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
           >
             <option value={""}></option>
             <option value={"apartment"}>Apartment</option>
@@ -442,7 +552,7 @@ export default function AddProject({ mode , user_id}) {
             name="type2"
             value={createProject.type2 || ""}
             type="text"
-            className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+            className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
           >
             <option value={""}></option>
             <option value={"apartment"}>Apartment</option>
@@ -465,7 +575,7 @@ export default function AddProject({ mode , user_id}) {
             name="type3"
             value={createProject.type3 || ""}
             type="text"
-            className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+            className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
           >
             <option value={""}></option>
             <option value={"apartment"}>Apartment</option>
@@ -488,7 +598,7 @@ export default function AddProject({ mode , user_id}) {
             name="type4"
             value={createProject.type4 || ""}
             type="text"
-            className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+            className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
           >
             <option value={""}></option>
             <option value={"apartment"}>Apartment</option>
@@ -511,7 +621,7 @@ export default function AddProject({ mode , user_id}) {
             name="type5"
             value={createProject.type5 || ""}
             type="text"
-            className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+            className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
           >
             <option value={""}></option>
             <option value={"apartment"}>Apartment</option>
@@ -534,7 +644,7 @@ export default function AddProject({ mode , user_id}) {
             name="type6"
             value={createProject.type6 || ""}
             type="text"
-            className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+            className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
           >
             <option value={""}></option>
             <option value={"apartment"}>Apartment</option>
@@ -551,66 +661,72 @@ export default function AddProject({ mode , user_id}) {
             <option value={"Plot"}>Plot</option>
           </select>
         </div>
-        <label>Bedroom</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Bedroom</label>
         <input
           placeholder="1 - 4 BR"
           onChange={handleChange}
           name="bedroom"
           value={createProject.bedroom || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
-        <label>Handover date</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Handover date</label>
         <input
           placeholder="eg: Dec - 2027"
           onChange={handleChange}
           name="handover"
           value={createProject.handover || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
-        <label>Total Area</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Total Area</label>
         <input
           placeholder="eg: 2,319 to 3,324 Sq Ft"
           onChange={handleChange}
           name="totalarea"
           value={createProject.totalarea || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
-        <label>Starting Price *</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Starting Price *</label>
         <input
           placeholder="eg: AED 1.2M"
           onChange={handleChange}
           name="startingprice"
           value={createProject.startingprice || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
-        <label>Down Payment</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Down Payment</label>
         <input
           placeholder="eg: 20%"
           onChange={handleChange}
           name="downpayment"
           value={createProject.downpayment || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
-        <label>Payment Plan</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Payment Plan</label>
         <input
           placeholder="eg: 80/20"
           onChange={handleChange}
           name="paymentplan"
           value={createProject.paymentplan || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
+        </Card>
 
+        <Card className="p-6">
+        <SectionHeading
+          title="Banner & Gallery"
+          description="Hero banner, mobile cover, and gallery images for the project page."
+        />
         <div className="flex gap-3 mb-4">
           <div className="w-fit mb-3">
-            <label>Cover Image *</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Cover Image *</label>
             <label htmlFor="coverImage" className="cursor-pointer">
               <Image
                 width={700}
@@ -632,14 +748,14 @@ export default function AddProject({ mode , user_id}) {
               name="coverimage"
             />
             <div className="mt-2">
-              <label>Cover image alt Name</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Cover image alt Name</label>
               <input
                 placeholder="Cover image alt Name"
                 onChange={handleChange}
                 name="altcoverimage"
                 value={createProject.altcoverimage || ""}
                 type="text"
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
             </div>
           </div>
@@ -647,7 +763,7 @@ export default function AddProject({ mode , user_id}) {
 
         <div className="flex gap-3 mb-4">
           <div className="w-fit mb-3">
-            <label>Mobile Cover Image *</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Mobile Cover Image *</label>
             <label htmlFor="mobileCoverImage" className="cursor-pointer">
               <Image
                 width={700}
@@ -671,29 +787,29 @@ export default function AddProject({ mode , user_id}) {
           </div>
         </div>
 
-        <label>Banner title *</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Banner title *</label>
         <input
           placeholder="Project name by developer name eg: Sun city By Damac Property"
           type="text"
           name="bannertitile"
           onChange={handleChange}
           value={createProject.bannertitile || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
-        <label>Banner sub title *</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Banner sub title *</label>
         <input
           placeholder="property detailes eg: 1-3 Bedroom Apartment"
           type="text"
           name="bannersubtitile"
           onChange={handleChange}
           value={createProject.bannersubtitile || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
         <div className="flex gap-2">
           <div className="flex gap-3 mb-4">
             <div className="w-fit mb-3">
-              <label>Gallary Image 1 *</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Gallary Image 1 *</label>
               <label htmlFor="Gallary" className="cursor-pointer">
                 <div className="relative">
                   <Image
@@ -722,21 +838,21 @@ export default function AddProject({ mode , user_id}) {
                 name="gallary1"
               />
               <div className="mt-2">
-                <label>Gallary Image 1 alt Name</label>
+                <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Gallary Image 1 alt Name</label>
                 <input
                   placeholder="Gallary Image 1 alt Name"
                   onChange={handleChange}
                   name="altgallary1"
                   value={createProject.altgallary1 || ""}
                   type="text"
-                  className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                  className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
                 />
               </div>
             </div>
           </div>
           <div className="flex gap-3 mb-4">
             <div className="w-fit mb-3">
-              <label>Gallary Image 2 *</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Gallary Image 2 *</label>
               <label htmlFor="gallary" className="cursor-pointer">
                 <div className="relative">
                   <Image
@@ -765,21 +881,21 @@ export default function AddProject({ mode , user_id}) {
                 name="gallary2"
               />
               <div className="mt-2">
-                <label>Gallary Image 2 alt Name</label>
+                <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Gallary Image 2 alt Name</label>
                 <input
                   placeholder="Gallary Image 2 alt Name"
                   onChange={handleChange}
                   name="altgallary2"
                   value={createProject.altgallary2 || ""}
                   type="text"
-                  className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                  className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
                 />
               </div>
             </div>
           </div>
           <div className="flex gap-3 mb-4">
             <div className="w-fit mb-3">
-              <label>Gallary Image 3 *</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Gallary Image 3 *</label>
               <label htmlFor="gallary" className="cursor-pointer">
                 <div className="relative">
                   <Image
@@ -808,40 +924,47 @@ export default function AddProject({ mode , user_id}) {
                 name="gallary3"
               />
               <div className="mt-2">
-                <label>Gallary Image 3 alt Name</label>
+                <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Gallary Image 3 alt Name</label>
                 <input
                   placeholder="Gallary Image 3 alt Name"
                   onChange={handleChange}
                   name="altgallary3"
                   value={createProject.altgallary3 || ""}
                   type="text"
-                  className=" border border-[#040406] p-[10px] rounded mb-[25px]"
+                  className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
                 />
               </div>
             </div>
           </div>
         </div>
-        <label>YouTube Link ID</label>
+        </Card>
+
+        <Card className="p-6">
+        <SectionHeading
+          title="Content"
+          description="Headline and about copy shown on the project page."
+        />
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">YouTube Link ID</label>
         <input
           placeholder="eg:S1Q2HR8H-EM"
           type="text"
           name="youtubeid"
           onChange={handleChange}
           value={createProject.youtubeid || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
-        <label>Main head</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Main head</label>
         <input
           placeholder="eg: Elevate your Lifestyle at {property location name}"
           type="text"
           name="mainhead"
           onChange={handleChange}
           value={createProject.mainhead || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
-        <label>About Paragraph 1</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">About Paragraph 1</label>
         <textarea
           placeholder="About Paragraph 1"
           type="text"
@@ -850,10 +973,10 @@ export default function AddProject({ mode , user_id}) {
           value={createProject.about || ""}
           cols="30"
           rows="5"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
-        <label>About Paragraph 2</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">About Paragraph 2</label>
         <textarea
           placeholder="About Paragraph 2"
           type="text"
@@ -862,10 +985,10 @@ export default function AddProject({ mode , user_id}) {
           value={createProject.about1 || ""}
           cols="30"
           rows="5"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
-        <label>About Paragraph 3</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">About Paragraph 3</label>
         <textarea
           placeholder="About Paragraph 3"
           type="text"
@@ -874,133 +997,146 @@ export default function AddProject({ mode , user_id}) {
           value={createProject.about2 || ""}
           cols="30"
           rows="5"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
-        <label>Location Name *</label>
+        </Card>
+
+        <Card className="p-6">
+        <SectionHeading
+          title="Location & Nearby"
+          description="Where the project is, and what's close by."
+        />
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Location Name *</label>
         <input
           placeholder="eg: Business Bay, Dubai"
           onChange={handleChange}
           name="locationname"
           value={createProject.locationname || ""}
           type="text"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
-        <label>Location Map Link</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Location Map Link</label>
         <input
           placeholder="Google map embed a map src= link "
           type="text"
           name="location"
           onChange={handleChange}
           value={createProject.location || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label>Nearby option1</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Nearby option1</label>
             <input
               placeholder="eg: School"
               type="text"
               name="nearby1"
               onChange={handleChange}
               value={createProject.nearby1 || ""}
-              className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
             />
           </div>
           <div className="col-span-2">
-            <label>Nearby option1 Description</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Nearby option1 Description</label>
             <input
               placeholder="eg: 10 Minutes"
               type="text"
               name="dec1"
               onChange={handleChange}
               value={createProject.dec1 || ""}
-              className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
             />
           </div>
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label>Nearby option2</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Nearby option2</label>
             <input
               placeholder="eg: School"
               type="text"
               name="nearby2"
               onChange={handleChange}
               value={createProject.nearby2 || ""}
-              className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
             />
           </div>
           <div className="col-span-2">
-            <label>Nearby option2 Description</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Nearby option2 Description</label>
             <input
               placeholder="eg: 10 Minutes"
               type="text"
               name="dec2"
               onChange={handleChange}
               value={createProject.dec2 || ""}
-              className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
             />
           </div>
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label>Nearby option3</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Nearby option3</label>
             <input
               placeholder="eg: School"
               type="text"
               name="nearby3"
               onChange={handleChange}
               value={createProject.nearby3 || ""}
-              className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
             />
           </div>
           <div className="col-span-2">
-            <label>Nearby option3 Description</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Nearby option3 Description</label>
             <input
               placeholder="eg: 10 Minutes"
               type="text"
               name="dec3"
               onChange={handleChange}
               value={createProject.dec3 || ""}
-              className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
             />
           </div>
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label>Nearby option4</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Nearby option4</label>
             <input
               placeholder="eg: School"
               type="text"
               name="nearby4"
               onChange={handleChange}
               value={createProject.nearby4 || ""}
-              className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
             />
           </div>
           <div className="col-span-2">
-            <label>Nearby option4 Description</label>
+            <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Nearby option4 Description</label>
             <input
               placeholder="eg: 10 Minutes"
               type="text"
               name="dec4"
               onChange={handleChange}
               value={createProject.dec4 || ""}
-              className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+              className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
             />
           </div>
         </div>
+        </Card>
 
-        <label>Section Head Name</label>
+        <Card className="p-6">
+        <SectionHeading
+          title="Key Highlights"
+          description="Short bullet points shown as project highlights."
+        />
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Section Head Name</label>
         <input
           placeholder="Key Highlights"
           type="text"
           name="pointhead"
           onChange={handleChange}
           value={createProject.pointhead || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
         <input
           placeholder="point 1"
@@ -1008,7 +1144,7 @@ export default function AddProject({ mode , user_id}) {
           name="point1"
           onChange={handleChange}
           value={createProject.point1 || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
 
         <input
@@ -1017,7 +1153,7 @@ export default function AddProject({ mode , user_id}) {
           name="point2"
           onChange={handleChange}
           value={createProject.point2 || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
         <input
           placeholder="Points 2"
@@ -1025,7 +1161,7 @@ export default function AddProject({ mode , user_id}) {
           name="point3"
           onChange={handleChange}
           value={createProject.point3 || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
         <input
           placeholder="Points 4"
@@ -1033,7 +1169,7 @@ export default function AddProject({ mode , user_id}) {
           name="point4"
           onChange={handleChange}
           value={createProject.point4 || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
         <input
           placeholder="Point 5"
@@ -1041,7 +1177,7 @@ export default function AddProject({ mode , user_id}) {
           name="point5"
           onChange={handleChange}
           value={createProject.point5 || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
         <input
           placeholder="Point 6"
@@ -1049,7 +1185,7 @@ export default function AddProject({ mode , user_id}) {
           name="point6"
           onChange={handleChange}
           value={createProject.point6 || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
         <input
           placeholder="Point 7"
@@ -1057,7 +1193,7 @@ export default function AddProject({ mode , user_id}) {
           name="point7"
           onChange={handleChange}
           value={createProject.point7 || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
         <input
           placeholder="point 8"
@@ -1065,28 +1201,35 @@ export default function AddProject({ mode , user_id}) {
           name="point8"
           onChange={handleChange}
           value={createProject.point8 || ""}
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
+        />
+        </Card>
+
+        <Card className="p-6">
+        <SectionHeading
+          title="FAQs"
+          description="Up to five frequently asked questions for this project."
         />
         <div className="">
-          <label>FAQ Section Title</label>
+          <label className="mb-1.5 block text-sm font-medium text-[#33394B]">FAQ Section Title</label>
               <input
                 placeholder="Frequently Asked Questions"
                 type="text"
                 name="faqTitle"
                 onChange={handleChange}
                 value={createProject.faqTitle || ""}
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Question1</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Question1</label>
               <input
                 placeholder="Question1"
                 type="text"
                 name="q1"
                 onChange={handleChange}
                 value={createProject.q1 || ""}
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Answer1</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Answer1</label>
               <textarea
                 placeholder="Answer1"
                 type="text"
@@ -1095,18 +1238,18 @@ export default function AddProject({ mode , user_id}) {
                 value={createProject.a1 || ""}
                 cols="30"
                 rows="2"
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Question2</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Question2</label>
               <input
                 placeholder="Question1"
                 type="text"
                 name="q2"
                 onChange={handleChange}
                 value={createProject.q2 || ""}
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Answer2</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Answer2</label>
               <textarea
                 placeholder="Answer2"
                 type="text"
@@ -1115,18 +1258,18 @@ export default function AddProject({ mode , user_id}) {
                 value={createProject.a2 || ""}
                 cols="30"
                 rows="2"
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Question3</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Question3</label>
               <input
                 placeholder="Question1"
                 type="text"
                 name="q3"
                 onChange={handleChange}
                 value={createProject.q3 || ""}
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Answer3</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Answer3</label>
               <textarea
                 placeholder="Answer3"
                 type="text"
@@ -1135,18 +1278,18 @@ export default function AddProject({ mode , user_id}) {
                 value={createProject.a3 || ""}
                 cols="30"
                 rows="2"
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Question4</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Question4</label>
               <input
                 placeholder="Question4"
                 type="text"
                 name="q4"
                 onChange={handleChange}
                 value={createProject.q4 || ""}
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Answer4</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Answer4</label>
               <textarea
                 placeholder="Answer4"
                 type="text"
@@ -1155,18 +1298,18 @@ export default function AddProject({ mode , user_id}) {
                 value={createProject.a4 || ""}
                 cols="30"
                 rows="2"
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Question5</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Question5</label>
               <input
                 placeholder="Question5"
                 type="text"
                 name="q5"
                 onChange={handleChange}
                 value={createProject.q5 || ""}
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
-              <label>Answer5</label>
+              <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Answer5</label>
               <textarea
                 placeholder="Answer5"
                 type="text"
@@ -1175,23 +1318,29 @@ export default function AddProject({ mode , user_id}) {
                 value={createProject.a5 || ""}
                 cols="30"
                 rows="2"
-                className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+                className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
               />
         </div>
-        <label className="font-bold underline">SEO</label>
+        </Card>
+
+        <Card className="p-6">
+        <SectionHeading
+          title="SEO & Description"
+          description="Search keywords and the full project description."
+        />
         <div>
-          <label>Keywords</label>
+          <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Keywords</label>
           <input
             placeholder="Keywords eg: Damac, riverside, ..."
             type="text"
             name="projectkeyword"
             onChange={handleChange}
             value={createProject.projectkeyword || ""}
-            className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+            className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
           />
         </div>
 
-        <label>Description</label>
+        <label className="mb-1.5 block text-sm font-medium text-[#33394B]">Description</label>
         <textarea
           placeholder="Project Description"
           type="text"
@@ -1200,31 +1349,25 @@ export default function AddProject({ mode , user_id}) {
           value={createProject.projectdescription || ""}
           cols="30"
           rows="5"
-          className="w-full  border border-[#040406] p-[10px] rounded mb-[25px]"
+          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
         />
-      </form>
-      {err && <span>{err}</span>}
+        </Card>
 
-      <div className="mb-3 flex gap-4 justify-end">
-        <button
-          onClick={handleReset}
-          className=" bg-[#00A3FF] hover:bg-[#6A9F43] px-[2.5rem] py-[0.4rem] rounded-md text-[#ffffff]"
-        >
-          Clear
-        </button>
-        <button
-          onClick={handleSubmit}
-          className=" bg-[#00A3FF] hover:bg-[#6A9F43] px-[2.5rem] py-[0.4rem] rounded-md text-[#ffffff]"
-        >
-          {createProject.id ? "Update" : "Submit"}
-        </button>
-        {message && <p>{message}</p>}
-      </div>
-      <div className="mb-4">
-        <Suspense fallback={<div>Loading...</div>}>
-          <ViewList {...{ createProject, setCreateProject, submit }} />
-          </Suspense>
-      </div>
+        {err && (
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {err}
+          </div>
+        )}
+
+        <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex justify-end gap-3 border-t border-[#E5E8EE] bg-[#F5F6F8]/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
+          <Button type="button" variant="secondary" onClick={handleReset}>
+            Clear
+          </Button>
+          <Button type="submit" loading={saving}>
+            {isEditMode ? "Update Project" : "Create Project"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

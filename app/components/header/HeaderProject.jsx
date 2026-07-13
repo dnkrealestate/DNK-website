@@ -11,6 +11,7 @@ import { WWURL } from "@/url/axios";
 import Link from "next/link";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
+import { trackLeadClick } from "@/services/leadServices";
 
 export function HeaderProject({ projectId }) {
   const [nav, setNav] = useState(true);
@@ -210,6 +211,12 @@ export function HeaderProject({ projectId }) {
                   action: Call to Dann,
                   phone: +971555769195`,
                     });
+                    trackLeadClick({
+                      type: "call_click",
+                      phone: "+971555769195",
+                      page: pathname,
+                      source: "Header",
+                    });
                   }}
                   className="group"
                 >
@@ -223,6 +230,12 @@ export function HeaderProject({ projectId }) {
                       track: `page: ${pathname},
                   button: WhatsApp Button Header Project,
                   whatsapp: Msg to Dann,`,
+                    });
+                    trackLeadClick({
+                      type: "whatsapp_click",
+                      phone: "+971555769195",
+                      page: pathname,
+                      source: "Header",
                     });
                   }}
                   className="group"

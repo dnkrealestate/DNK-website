@@ -49,11 +49,11 @@ export default function ClientWrapper({ children, spclLogo,  developerSlugs = []
 
     return (
         <>
-            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isDeveloperPage && <HeaderMain logoData={spclLogo} />}
+            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isDeveloperPage && !isRoadshowLive && !isAttendance && <HeaderMain logoData={spclLogo} />}
             {children}
             <SpeedInsights />
             <Analytics />
-            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isDeveloperPage && <FooterSection />}
+            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isDeveloperPage && !isRoadshowLive && !isAttendance && <FooterSection />}
             {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && <SplashScreen logoData={spclLogo} />}
         </>
     );

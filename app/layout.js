@@ -8,6 +8,7 @@ import { getLogo } from "@/services/projectServices";
 import { getDeveloperSlugs } from "@/utils/developerSlugs";
 import PixelTracker from "./PixelTracker";
 import ClarityProvider from "./components/ClarityProvider";
+import PageViewTracker from "./components/PageViewTracker";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -164,6 +165,7 @@ export default async function RootLayout({ children }) {
           <ClientWrapper developerSlugs={developerSlugs} spclLogo={logoData}>
             <PixelTracker />
             <ClarityProvider />
+            <PageViewTracker />
             {children}
           </ClientWrapper>
         </SplashProvider>

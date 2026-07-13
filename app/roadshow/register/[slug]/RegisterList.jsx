@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { FaFilePdf } from "react-icons/fa6";
 import { IoSearch } from "react-icons/io5";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
@@ -21,7 +21,7 @@ const RegisterList = () => {
   const pathname = usePathname();
   const slug = pathname.split("/").pop();
 
-  const { getRoadshowRegister, deleteRegister, getRoadshow } =
+  const { getRoadshowRegister, deleteRegister, updateRegister, getRoadshow, getActiveRM } =
     userRoadshowServices();
   
   const generateSlug = (name) => {
@@ -114,6 +114,60 @@ const RegisterList = () => {
       } catch (err) {
         Swal.fire("Error!", "An error occurred while deleting.", "error");
       }
+    }
+  };
+
+  const handleEditRm = async (row) => {
+    try {
+      const rmResponse = await getActiveRM();
+      if (!rmResponse.success) {
+        Swal.fire("Error", "Could not load the RM list.", "error");
+        return;
+      }
+
+      const options = rmResponse.data
+        .map(
+          (rm) =>
+            `<option value="${rm.name}" ${
+              rm.name === row.sourcedRm ? "selected" : ""
+            }>${rm.name}</option>`
+        )
+        .join("");
+
+      const { value: newRm } = await Swal.fire({
+        title: "Change Sourced RM",
+        html: `<select id="rm-select" class="swal2-select" style="width:85%">
+                 <option value="">Select RM</option>
+                 ${options}
+               </select>`,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: "Save",
+        preConfirm: () => {
+          const val = document.getElementById("rm-select").value;
+          if (!val) {
+            Swal.showValidationMessage("Please select an RM");
+          }
+          return val;
+        },
+      });
+
+      if (!newRm) return;
+
+      const response = await updateRegister(row._id, { sourcedRm: newRm });
+      if (response.success) {
+        setRegisterList((prev) =>
+          prev.map((item) =>
+            item._id === row._id ? { ...item, sourcedRm: newRm } : item
+          )
+        );
+        Swal.fire("Updated", "Sourced RM updated successfully.", "success");
+      } else {
+        Swal.fire("Failed", "Failed to update Sourced RM.", "error");
+      }
+    } catch (err) {
+      console.error("Error updating Sourced RM:", err);
+      Swal.fire("Error", "Something went wrong.", "error");
     }
   };
 
@@ -282,7 +336,16 @@ const RegisterList = () => {
                   <td>{data.status}</td>
                   <td>{data.type}</td>
                   <td>{data.budget}</td>
-                  <td>{data.sourcedRm}</td>
+                  <td>
+                    <div className="flex items-center justify-center gap-1.5">
+                      <span>{data.sourcedRm}</span>
+                      <MdEdit
+                        onClick={() => handleEditRm(data)}
+                        className="cursor-pointer text-blue-400 hover:text-blue-300"
+                        title="Change Sourced RM"
+                      />
+                    </div>
+                  </td>
                   <td>{data.attendedRm}</td>
                   <td>
                     {new Date(data.updatedAt).toLocaleString(undefined, {

@@ -19,6 +19,11 @@ export const userRoadshowServices = () => {
         return response.data
     }
 
+    const updateRegister = async (id, data) => {
+        const response = await axiosPrivate.put('/event/update-register/' + id, data)
+        return response.data
+    }
+
     const getRoadshowRegister = async () => {
         const response = await axiosPrivate.get('/event/get-roadshow-register')
         return response.data
@@ -73,6 +78,11 @@ export const userRoadshowServices = () => {
         return response.data
     }
 
+    const updateClientRegister = async (id, data) => {
+        const response = await axiosPrivate.put('/event/update-client-register/' + id, data)
+        return response.data
+    }
+
     const checkDuplicateClient = async (formdata) => {
         const response = await axiosPrivate.post('/event/check-duplicate', formdata, {
             headers: { "Content-Type": 'application/json' }
@@ -104,6 +114,20 @@ export const userRoadshowServices = () => {
         return response.data
     };
 
+    // Live, active-employee list pulled from Bitrix (excludes inactive users,
+    // department 4, and a couple of specific non-RM accounts).
+    const getActiveRM = async () => {
+        const response = await axiosPrivate.get('/event/get-active-rm')
+        return response.data
+    };
+
+    // Full RM directory (active + inactive, with photos) for matching a recorded
+    // "sourcedRm" name to an avatar on the /live/[slug] insights page.
+    const getRmDirectory = async () => {
+        const response = await axiosPrivate.get('/event/get-rm-directory')
+        return response.data
+    };
+
     const postMeetingResgister = async (formData) => {
         const response = await axiosPrivate.post("/event/post-meeting-register", formData);
         return response.data;
@@ -127,16 +151,20 @@ export const userRoadshowServices = () => {
         putRoadshow,
         deleteRoadshow,
         deleteRegister,
+        updateRegister,
         postClientResgister,
         postClientResgisterPort2,
         getClientRegister,
         deleteClentRegister,
+        updateClientRegister,
         checkDuplicateClient,
         getRoadshowLinkById,
         postSourceRM,
         updateSourceRM,
         deleteSourceRM,
         getSourceRM,
+        getActiveRM,
+        getRmDirectory,
         getMeetings,
         deleteMeeting,
     }

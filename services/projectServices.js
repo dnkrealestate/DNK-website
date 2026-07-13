@@ -18,7 +18,21 @@ export const useProjectServices = () => {
         const response = await axiosPrivate.get('/task/get-task')
         return response.data
     }
-    
+
+    // Lightweight list (only the fields the grid/browse UI needs) — much faster
+    // than get-task, which returns all 50+ fields per project.
+    const getProjectSummaryListR = async () => {
+        const response = await axiosPrivate.get('/task/get-task-summary')
+        return response.data
+    }
+
+    // Single project by Mongo _id — for the edit page, instead of downloading
+    // the entire projects collection just to find one document.
+    const getProjectByIdR = async (id) => {
+        const response = await axiosPrivate.get('/task/get-task-id/' + id)
+        return response.data
+    }
+
     const getProjectById = async (projectname) => {
         const response = await axiosPrivate.get('/task/project/' + projectname)
         return response.data
@@ -148,6 +162,8 @@ export const useProjectServices = () => {
         putLogo,
         deleteLogo,
         getProjectListR,
+        getProjectSummaryListR,
+        getProjectByIdR,
         getAdR,
         getHomeBannerR,
         getEventR,

@@ -1,11 +1,7 @@
-"use client"
+"use client";
 
-import AddProject from './components/AddProject'
+import ProjectGrid from "./components/ProjectGrid";
 
 export default function AddProjectPage() {
-  return (
-      <>
-          <AddProject />
-      </>
-  )
+  return <ProjectGrid />;
 }

@@ -21,6 +21,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { track } from "@vercel/analytics";
 import ChatBot from "../ChatBot";
+import { trackLeadClick } from "@/services/leadServices";
 
 export default function FooterSection() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -286,6 +287,12 @@ export default function FooterSection() {
                   button: "WhatsApp Button Footer",
                   whatsapp: "Msg to Dann"`,
                     });
+                    trackLeadClick({
+                      type: "whatsapp_click",
+                      phone: "+971555769195",
+                      page: pathname,
+                      source: "Footer",
+                    });
                   }}
                 >
                   <Link
@@ -402,6 +409,12 @@ export default function FooterSection() {
                       name: "24/7 Call",
                       phone: "+97145546904",
                     });
+                    trackLeadClick({
+                      type: "call_click",
+                      phone: "+97145546904",
+                      page: pathname,
+                      source: "Footer",
+                    });
                   }}
                 >
                   <Link
@@ -431,6 +444,12 @@ export default function FooterSection() {
                         name: Call to Dann,
                         phone: +971555769195`,
                           });
+                          trackLeadClick({
+                            type: "call_click",
+                            phone: "+971555769195",
+                            page: pathname,
+                            source: "Footer",
+                          });
                         }}
                       >
                         <Link href="tel:+971555769195" className="py-1">
@@ -450,6 +469,12 @@ export default function FooterSection() {
                         button: Call Button Footer,
                         name: Call to Waseem,
                         phone: +971543049309,`,
+                          });
+                          trackLeadClick({
+                            type: "call_click",
+                            phone: "+971543049309",
+                            page: pathname,
+                            source: "Footer",
                           });
                         }}
                       >

@@ -25,7 +25,7 @@ const FormRoadshow = () => {
     getRoadshow,
     getRoadshowLinkById,
     checkDuplicateClient,
-    getSourceRM,
+    getActiveRM,
   } = userRoadshowServices();
 
   const initialState = {
@@ -95,7 +95,7 @@ const FormRoadshow = () => {
   
    const fetchSourceRMData = async () => {
      try {
-       const response = await getSourceRM();
+       const response = await getActiveRM();
        if (response.success) {
          const formatted = response.data.map((rm) => ({
            label: rm.name,

@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
 import { track } from "@vercel/analytics";
+import { trackLeadClick } from "@/services/leadServices";
 
 
 export default function ContactForm({ onFormSubmit = () => {} }) {
@@ -253,6 +254,13 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
                   if (typeof window !== "undefined" && window.snaptr) {
                     window.snaptr('track', 'CONTACT');
                   }
+
+                trackLeadClick({
+                  type: "whatsapp_click",
+                  phone: "+971555769195",
+                  page: pathname,
+                  source: "Contact Form",
+                });
               }}
             >
               <a

@@ -109,13 +109,13 @@ export default function RoadshowResult() {
   const hasFilteredData = filteredData.length > 0;
 
   return (
-    <div>
+    <div className="h-screen w-screen overflow-hidden">
       <Head>
         <meta name="robots" content="noindex" />
         <title>{`Result ${roadshowLink.place}`}</title>
         <meta name="description" content="Attendance" />
       </Head>
-      <div className="relative w-full md:h-screen">
+      <div className="relative h-full w-full">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -130,32 +130,39 @@ export default function RoadshowResult() {
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
 
-        {/* Content on top of video */}
-        <div className="relative z-10 bg-black bg-opacity-60 w-full h-full flex items-center justify-center">
-          <div className="container max-w-[1240px] py-5 sm:px-4 md:py-9 relative">
-            <div className="py-5 sm:px-4 md:py-9 relative">
-              <h3 className="text-white text-[1.5rem] font-semibold mb-4 text-center">
-                {`${roadshowLink.place} Roadshow Insights`}
-              </h3>
-
-              {isLoading ? (
-                <div className="text-white text-center">Loading data...</div>
-              ) : hasFilteredData ? (
-                // Show grid when filtered data is available
-                <div className="w-full relative grid md:grid-cols-2 gap-4">
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <EventAttendData filteredData={filteredData} />
-                    <RegisterData filteredData={filteredData} />
-                  </Suspense>
-                </div>
-              ) : (
-                // Show single RegisterData when no data is found
-                <Suspense fallback={<div>Loading...</div>}>
-                  <RegisterData filteredData={[]} />
-                </Suspense>
-              )}
-            </div>
+        {/* Everything below fits within one screen — no page scrolling, ever */}
+        <div className="relative z-10 flex h-full w-full flex-col bg-black bg-opacity-60 px-4 py-3 sm:px-6 sm:py-4">
+          <div className="mb-3 flex shrink-0 flex-col items-center gap-1.5 text-center">
+            <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/70">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#18A4A0] opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#18A4A0]" />
+              </span>
+              Live
+            </span>
+            <h3 className="text-white text-[1.25rem] font-semibold sm:text-[1.5rem]">
+              {`${roadshowLink.place} Roadshow Insights`}
+            </h3>
           </div>
+
+          {isLoading ? (
+            <div className="flex flex-1 items-center justify-center text-white/60">
+              Loading data...
+            </div>
+          ) : hasFilteredData ? (
+            <div className="grid min-h-0 w-full flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+              <Suspense fallback={<div className="text-white/60">Loading...</div>}>
+                <RegisterData filteredData={filteredData} />
+                <EventAttendData filteredData={filteredData} />
+              </Suspense>
+            </div>
+          ) : (
+            <div className="min-h-0 w-full flex-1">
+              <Suspense fallback={<div className="text-white/60">Loading...</div>}>
+                <RegisterData filteredData={[]} />
+              </Suspense>
+            </div>
+          )}
         </div>
       </div>
     </div>
