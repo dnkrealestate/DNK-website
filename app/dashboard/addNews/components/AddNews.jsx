@@ -22,6 +22,7 @@ const AddNews = ({mode, user_id}) => {
     newsurl: "",
     type: "",
     alt: "",
+    isDraft: false,
   };
 
   const [createNews, setCreateNews] = useState(initialState);
@@ -114,6 +115,7 @@ const AddNews = ({mode, user_id}) => {
           formData.append(key, value);
         }
       });
+      formData.append("isDraft", createNews.isDraft ? "true" : "false");
 
       let response;
       if (createNews.id) {
@@ -310,7 +312,18 @@ const AddNews = ({mode, user_id}) => {
 
         {err && <span className="text-red-600">{err}</span>}
 
-        <div className="flex gap-4 justify-end">
+        <div className="flex items-center justify-end gap-4">
+          <label className="mr-auto flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              checked={Boolean(createNews.isDraft)}
+              onChange={(e) =>
+                setCreateNews((prev) => ({ ...prev, isDraft: e.target.checked }))
+              }
+              className="h-4 w-4"
+            />
+            Save as draft (hidden from the live site)
+          </label>
           <button
             type="button"
             onClick={handleReset}
@@ -322,7 +335,7 @@ const AddNews = ({mode, user_id}) => {
             type="submit"
             className="bg-blue-500 hover:bg-green-600 px-6 py-2 text-white rounded"
           >
-            {createNews.id ? "Update" : "Submit"}
+            {createNews.isDraft ? "Save Draft" : createNews.id ? "Update" : "Publish"}
           </button>
         </div>
       </form>

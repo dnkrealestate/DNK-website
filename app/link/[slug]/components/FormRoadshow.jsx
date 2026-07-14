@@ -5,8 +5,9 @@ import { useParams } from "next/navigation";
 import PhoneInput from "react-phone-input-2";
 import Swal from "sweetalert2";
 import Select from "react-select";
+import { MdLock } from "react-icons/md";
 import { userRoadshowServices } from "@/services/roadshowService";
-import "react-phone-input-2/lib/style.css"; 
+import "react-phone-input-2/lib/style.css";
 import { track } from "@vercel/analytics";
 
 const FormRoadshow = () => {
@@ -17,12 +18,9 @@ const FormRoadshow = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [valid, setValid] = useState(true);
-  const [eventList, setEventList] = useState([]);
-  const [searchedEventList, setSearchedEventList] = useState([]);
 
   const {
     postClientResgister,
-    getRoadshow,
     getRoadshowLinkById,
     checkDuplicateClient,
     getActiveRM,
@@ -47,11 +45,10 @@ const FormRoadshow = () => {
   const [rmOptions, setRmOptions] = useState([]);
 
   useEffect(() => {
-    console.log("Params:", params);
     if (slug) {
       fetchRoadshowLinkData(slug);
     }
-  }, [slug, params]);
+  }, [slug]);
 
   const fetchRoadshowLinkData = async (slug) => {
     try {
@@ -70,22 +67,6 @@ const FormRoadshow = () => {
       }
     } catch (error) {
       console.error("Error fetching roadshow link data:", error);
-    }
-  };
-
-  useEffect(() => {
-    getEventData();
-  }, []);
-
-  const getEventData = async () => {
-    try {
-      const response = await getRoadshow();
-      if (response.success) {
-        setEventList(response.data);
-        setSearchedEventList(response.data);
-      }
-    } catch (err) {
-      console.error("Error fetching event list:", err);
     }
   };
 
@@ -211,46 +192,69 @@ const FormRoadshow = () => {
     }));
   };
 
+  const inputClass =
+    "w-full rounded-xl border border-white/15 bg-white/5 p-3 text-white placeholder:text-white/40 transition-colors focus:border-[#CE8745] focus:outline-none focus:ring-1 focus:ring-[#CE8745]";
+  const labelClass = "mb-1.5 block text-sm font-medium text-white/80";
+  const errorClass = "mt-1 text-xs text-red-400";
+
+  const selectStyles = {
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: "rgba(255,255,255,0.05)",
+      borderColor: state.isFocused ? "#CE8745" : "rgba(255,255,255,0.15)",
+      borderRadius: "0.75rem",
+      padding: "2px",
+      boxShadow: "none",
+      "&:hover": { borderColor: "#CE8745" },
+    }),
+    singleValue: (base) => ({ ...base, color: "white" }),
+    input: (base) => ({ ...base, color: "white" }),
+    placeholder: (base) => ({ ...base, color: "rgba(255,255,255,0.4)" }),
+    menu: (base) => ({ ...base, zIndex: 999, borderRadius: "0.75rem", overflow: "hidden" }),
+    option: (base, state) => ({
+      ...base,
+      color: "#000",
+      backgroundColor: state.isFocused ? "#F3E4D3" : "white",
+      cursor: "pointer",
+    }),
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="grid sm:grid-cols-2">
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Full Name */}
-        <div className="mx-2 mb-4">
-          <label className="text-white">Full Name</label>
+        <div>
+          <label className={labelClass}>Full Name</label>
           <input
-            placeholder="Full Name*"
+            placeholder="Enter your full name"
             name="fullName"
             type="text"
-            className="w-full bg-transparent border border-white p-2 rounded text-white"
+            className={inputClass}
             value={addRegister.fullName}
             onChange={handleChange}
           />
-          {errors.fullName && (
-            <p className="text-red-500 text-sm">{errors.fullName}</p>
-          )}
+          {errors.fullName && <p className={errorClass}>{errors.fullName}</p>}
         </div>
 
         {/* Email */}
-        <div className="mx-2 mb-4">
-          <label className="text-white">Email</label>
+        <div>
+          <label className={labelClass}>Email</label>
           <input
-            placeholder="Email*"
+            placeholder="you@example.com"
             name="email"
             type="email"
-            className="w-full bg-transparent border border-white p-2 rounded text-white"
+            className={inputClass}
             value={addRegister.email}
             onChange={handleChange}
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email}</p>
-          )}
+          {errors.email && <p className={errorClass}>{errors.email}</p>}
         </div>
 
         {/* Phone Number */}
-        <div className="mx-2 mb-4 phoneInput">
-          <label className="text-white">Phone</label>
+        <div className="phoneInput phoneInputBordered">
+          <label className={labelClass}>Phone</label>
           <PhoneInput
-            placeholder="Mobile Number*"
+            placeholder="Mobile Number"
             type="text"
             name="phone"
             country={"in"}
@@ -259,19 +263,15 @@ const FormRoadshow = () => {
             onChange={handleChangePhone}
             enableAreaCodeStretch
             inputProps={{ name: "phone", required: true }}
-            className="w-full bg-transparent border border-[#ffffff] p-[5px] pl-0 rounded text-[#ffffff]"
+            containerClass="w-full"
           />
-          {errors.phone && (
-            <p className="text-red-500 text-sm">{errors.phone}</p>
-          )}
-          {!valid && (
-            <p className="text-red-500 text-sm">Invalid phone number.</p>
-          )}
+          {errors.phone && <p className={errorClass}>{errors.phone}</p>}
+          {!valid && <p className={errorClass}>Invalid phone number.</p>}
         </div>
 
         {/* Attend Date */}
-        <div className="mx-2 mb-4">
-          <label className="text-white">Attend Date</label>
+        <div>
+          <label className={labelClass}>Attend Date</label>
           <Select
             placeholder="Select Date"
             options={[
@@ -296,32 +296,14 @@ const FormRoadshow = () => {
                 attendDate: selected?.value || "",
               }))
             }
-            styles={{
-              control: (base) => ({
-                ...base,
-                backgroundColor: "transparent",
-                borderColor: "white",
-                color: "white",
-              }),
-              singleValue: (base) => ({ ...base, color: "white" }),
-              input: (base) => ({ ...base, color: "white" }),
-              menu: (base) => ({ ...base, zIndex: 999 }),
-              option: (base, state) => ({
-                ...base,
-                color: "#000",
-                backgroundColor: state.isFocused ? "#f5f5f5" : "white",
-                cursor: "pointer",
-              }),
-            }}
+            styles={selectStyles}
           />
-          {errors.attendDate && (
-            <p className="text-red-500 text-sm">{errors.attendDate}</p>
-          )}
+          {errors.attendDate && <p className={errorClass}>{errors.attendDate}</p>}
         </div>
 
         {/* Attend Time */}
-        <div className="mx-2 mb-4">
-          <label className="text-white">Attend Time</label>
+        <div>
+          <label className={labelClass}>Attend Time</label>
           <Select
             placeholder="Select Time"
             options={[
@@ -339,10 +321,7 @@ const FormRoadshow = () => {
             ].map((time) => ({ label: time, value: time }))}
             value={
               addRegister.attendTime
-                ? {
-                    label: addRegister.attendTime,
-                    value: addRegister.attendTime,
-                  }
+                ? { label: addRegister.attendTime, value: addRegister.attendTime }
                 : null
             }
             onChange={(selected) =>
@@ -351,83 +330,39 @@ const FormRoadshow = () => {
                 attendTime: selected?.value || "",
               }))
             }
-            styles={{
-              control: (base) => ({
-                ...base,
-                backgroundColor: "transparent",
-                borderColor: "white",
-                color: "white",
-              }),
-              singleValue: (base) => ({ ...base, color: "white" }),
-              input: (base) => ({ ...base, color: "white" }),
-              menu: (base) => ({ ...base, zIndex: 999 }),
-              option: (base, state) => ({
-                ...base,
-                color: "#000",
-                backgroundColor: state.isFocused ? "#f5f5f5" : "white",
-                cursor: "pointer",
-              }),
-            }}
+            styles={selectStyles}
           />
-          {errors.attendTime && (
-            <p className="text-red-500 text-sm">{errors.attendTime}</p>
-          )}
+          {errors.attendTime && <p className={errorClass}>{errors.attendTime}</p>}
         </div>
 
-        {/* Sourced RM */}
-        <div className="mb-4 mx-2">
-          <label className="block text-white mb-0">Sourced RM</label>
-          <Select
-            options={rmOptions}
-            placeholder="Select RM"
-            value={
-              rmOptions.find((opt) => opt.value === addRegister.sourcedRm) ||
-              null
-            }
-            onChange={(selected) =>
-              setAddRegister((prev) => ({
-                ...prev,
-                sourcedRm: selected?.value,
-              }))
-            }
-            styles={{
-              color: "white",
-              control: (base) => ({
-                ...base,
-                backgroundColor: "transparent",
-                borderColor: "white",
-                color: "white",
-              }),
-              singleValue: (base) => ({ ...base, color: "white" }),
-              input: (base) => ({ ...base, color: "white" }),
-              menu: (base) => ({ ...base, zIndex: 999 }),
-              option: (base, state) => ({
-                ...base,
-                color: "#000",
-                backgroundColor: state.isFocused ? "#f5f5f5" : "white",
-                cursor: "pointer",
-              }),
-            }}
-          />
-        </div>
-
-        
-      </div>
-      {/* Budget */}
-        <div className="mx-2 mb-4">
-          <label className="text-white">Enter Your Budget</label>
+        {/* Your Budget */}
+        <div>
+          <label className={labelClass}>Your Budget</label>
           <input
-            placeholder="Enter Your Budget"
+            placeholder="Enter your budget"
             name="budget"
             type="text"
-            className="w-full bg-transparent border border-white p-2 rounded text-white"
+            className={inputClass}
             value={addRegister.budget}
             onChange={handleChange}
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.budget}</p>
-          )}
         </div>
+
+        {/* Sourced RM */}
+        <div className="sm:col-span-2">
+          <label className={labelClass}>Sourced RM</label>
+          <Select
+            options={rmOptions}
+            placeholder="Select RM"
+            value={rmOptions.find((opt) => opt.value === addRegister.sourcedRm) || null}
+            onChange={(selected) =>
+              setAddRegister((prev) => ({ ...prev, sourcedRm: selected?.value }))
+            }
+            styles={selectStyles}
+          />
+          {errors.sourcedRm && <p className={errorClass}>{errors.sourcedRm}</p>}
+        </div>
+      </div>
 
       {/* Hidden Event Input */}
       <input type="hidden" name="event" value={addRegister.event} />
@@ -435,11 +370,20 @@ const FormRoadshow = () => {
       {/* Submit Button */}
       <button
         type="submit"
-        className="bg-[#CE8745] text-white hover:bg-white hover:text-[#CE8745] w-full p-2 mt-6 rounded transition-all"
+        className="mt-2 flex w-full items-center justify-center rounded-xl bg-[#CE8745] p-3 font-medium text-white transition-all hover:bg-[#b8763b] disabled:opacity-70"
         disabled={loading}
       >
-        {loading ? <div className="loader w-6 h-6 border-white m-auto" /> : "Submit"}
+        {loading ? (
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+        ) : (
+          "Submit Registration"
+        )}
       </button>
+
+      <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-xs text-white/40">
+        <MdLock className="shrink-0" />
+        Your information is kept private and secure, in line with our Privacy Policy.
+      </p>
     </form>
   );
 };

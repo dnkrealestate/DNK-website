@@ -3,6 +3,9 @@ import { userUserServices } from "@/services/userServices";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Card from "@/app/dashboard/components/ui/Card";
+import Button from "@/app/dashboard/components/ui/Button";
+import { Input } from "@/app/dashboard/components/ui/Field";
 
 export default function UserEdit() {
   const { getUser, putUser } = userUserServices();
@@ -13,19 +16,17 @@ export default function UserEdit() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  // Fetch user data on component mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await getUser();
-        console.log("Fetched user:", response.data);
-
         if (response?.sucess && response?.data) {
           setAddUser({
             _id: response.data._id,
             email: response.data.email,
-            password: "", // keep blank
+            password: "",
           });
         }
       } catch (err) {
@@ -52,6 +53,7 @@ export default function UserEdit() {
       return;
     }
 
+    setSaving(true);
     try {
       const formdata = new FormData();
       formdata.append("password", addUser.password);
@@ -60,70 +62,55 @@ export default function UserEdit() {
 
       if (response?.sucess) {
         Swal.fire("Success", "Password updated successfully!", "success");
-        setAddUser((prev) => ({ ...prev, password: "" })); // reset password
+        setAddUser((prev) => ({ ...prev, password: "" }));
       } else {
         Swal.fire("Failed", "Failed to update password", "error");
       }
     } catch (err) {
       console.error(err);
       Swal.fire("Error", "Something went wrong", "error");
+    } finally {
+      setSaving(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="bg-[#1E1E1E] p-4 flex justify-center items-center min-h-screen">
-        <p className="text-white text-center">Loading user data...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-[#1E1E1E] p-4 flex justify-center items-center min-h-screen">
-      <div className="bg-[#1E1E1E] rounded-2xl p-6 w-96">
-        <h3 className="text-white text-xl font-semibold mb-6 text-center">
+    <div className="flex min-h-[70vh] items-center justify-center">
+      <Card className="w-full max-w-md p-6 sm:p-8">
+        <h3 className="mb-6 text-center text-lg font-semibold text-[#1A2233]">
           Change Password
         </h3>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Display authenticated email */}
-          <div>
-            <label className="block text-white mb-1">Email</label>
-            <input
-              type="text"
-              value={addUser.email}
-              readOnly
-              className="w-full p-2 border rounded bg-gray-700 text-white cursor-not-allowed"
-            />
-          </div>
+        {loading ? (
+          <p className="text-center text-sm text-[#8791A1]">Loading user data...</p>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input label="Email" value={addUser.email} readOnly className="cursor-not-allowed bg-[#F5F6F8]" />
 
-          {/* Password */}
-          <div className="relative">
-            <label className="block text-white mb-1">New Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={addUser.password}
-              onChange={handleChange}
-              placeholder="Enter new password"
-              className="w-full p-2 border rounded !bg-transparent text-white pr-10"
-            />
-            <span
-              className="absolute right-3 top-[2.6rem] text-white cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
+            <div className="relative">
+              <Input
+                label="New Password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={addUser.password}
+                onChange={handleChange}
+                placeholder="Enter new password"
+                className="pr-10"
+              />
+              <span
+                className="absolute right-3 top-[2.35rem] cursor-pointer text-[#8791A1] hover:text-[#4B5566]"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
 
-          <button
-            type="submit"
-            className="w-full bg-[#00A3FF] hover:bg-[#6A9F43] py-2 rounded text-white font-semibold"
-          >
-            Update Password
-          </button>
-        </form>
-      </div>
+            <Button type="submit" className="w-full" loading={saving}>
+              Update Password
+            </Button>
+          </form>
+        )}
+      </Card>
     </div>
   );
 }

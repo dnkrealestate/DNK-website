@@ -6,8 +6,9 @@ import { userRoadshowServices } from "@/services/roadshowService";
 
 
 export async function generateMetadata({ params }) {
+  const { slug } = await params;
   const { getRoadshowLinkById } = userRoadshowServices();
-  const response = await getRoadshowLinkById(params.slug);
+  const response = await getRoadshowLinkById(slug);
 
   if (response.success && response.data) {
     const place = response.data.place;

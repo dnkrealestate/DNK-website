@@ -4,21 +4,19 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useParams } from "next/navigation";
 import FormRoadshow from "./FormRoadshow";
-import { getPartner } from "@/services/partnerServices";
 import { userRoadshowServices } from "@/services/roadshowService";
-import PartnerSection from "@/app/components/partner/PartnerSection";
-import BackgroundImg from "@/public/assets/banner-img/full-bg.webp"
+import BackgroundImg from "@/public/assets/banner-img/full-bg.webp";
+import dnkLogo from "@/public/assets/logo/dnklogo_1.webp";
 import Image from "next/image";
+import { MdLocationOn } from "react-icons/md";
 
 export default function ClientsideLinkPort() {
   const params = useParams();
   const slug = params?.slug;
 
   const [RoadshowLink, setRoadshowLinkData] = useState(null);
-  const [partnerData, setPartnerData] = useState([]);
   const { getRoadshowLinkById } = userRoadshowServices();
 
-  // Fetch Roadshow link
   useEffect(() => {
     const fetchRoadshowLinkData = async () => {
       try {
@@ -34,28 +32,12 @@ export default function ClientsideLinkPort() {
     if (slug) fetchRoadshowLinkData();
   }, [slug]);
 
-  // Fetch Partner data
-  useEffect(() => {
-    const fetchPartnerData = async () => {
-      try {
-        const partner = await getPartner();
-        if (partner && Array.isArray(partner)) {
-          const sortedPartner = partner
-            .map((item) => ({ ...item, sortKey: Math.random() }))
-            .sort((a, b) => a.sortKey - b.sortKey)
-            .slice(0, 12);
-          setPartnerData(sortedPartner);
-        }
-      } catch (error) {
-        console.error("Error fetching partner data:", error);
-      }
-    };
-
-    fetchPartnerData();
-  }, []);
-
   if (!RoadshowLink) {
-    return <div className="text-white text-center mt-10">Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0E14]">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+      </div>
+    );
   }
 
   return (
@@ -66,39 +48,46 @@ export default function ClientsideLinkPort() {
         <meta name="description" content="Attendance" />
       </Head>
 
-      <div className="relative w-full md:h-screen">
-        {/* YouTube Background */}
-        <div className="absolute inset-0 z-0 ">
-          <div className="w-full h-full origin-center">
-            <Image
-              src={BackgroundImg}
-              alt="Roadshow Background"
-              fill
-              priority
-              className="object-cover"
-            />
-          </div>
+      <div className="relative min-h-screen w-full py-10 sm:py-14">
+        {/* Background */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={BackgroundImg}
+            alt="Roadshow Background"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/85" />
         </div>
 
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
-
-        {/* Content on top of video */}
-        <div className="relative z-10 bg-black bg-opacity-60 w-full h-full flex items-center justify-center">
-          <div className="container max-w-[1240px] py-4 sm:px-4 md:py-9 relative">
-            <div className="w-full md:w-[70%] sm:w-[90%] m-auto">
-              <div className="bg-gray-700 rounded-2xl  py-10 px-3 sm:px-6 md:mt-4 m-4 relative z-20">
-                <h3 className="text-white text-[1.5rem] font-semibold mb-4 text-center">
-                  {`${RoadshowLink.place} Registration Form`}
-                </h3>
-                <FormRoadshow />
+        {/* Content */}
+        <div className="relative z-10 flex min-h-screen w-full items-center justify-center px-4">
+          <div className="w-full max-w-[640px]">
+            <div className="mb-6 flex flex-col items-center text-center">
+              <div className="relative h-12 w-[130px]">
+                <Image src={dnkLogo} alt="DNK Logo" fill style={{ objectFit: "contain" }} />
               </div>
+              <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-white/70 backdrop-blur-sm">
+                <MdLocationOn className="text-[#CE8745]" />
+                {RoadshowLink.place}
+              </div>
+              <h1 className="mt-4 text-2xl font-semibold text-white sm:text-3xl">
+                We&apos;re Coming to Your City!
+              </h1>
+              <p className="mt-2 max-w-md text-sm text-white/60">
+                {[RoadshowLink.date, RoadshowLink.date2].filter(Boolean).join(" - ")}
+                {RoadshowLink.hotelName ? ` | ${RoadshowLink.hotelName}` : ""}. Fill in your
+                details below to book your slot now.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-2xl backdrop-blur-xl sm:p-8">
+              <FormRoadshow />
             </div>
           </div>
         </div>
       </div>
-
-      {/* <PartnerSection partnerData={partnerData}  /> */}
     </div>
   );
 }

@@ -1,92 +1,84 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit, MdHowToReg } from "react-icons/md";
 import { FaFilePdf } from "react-icons/fa6";
 import { IoSearch } from "react-icons/io5";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { userRoadshowServices } from "@/services/roadshowService";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import Card from "@/app/dashboard/components/ui/Card";
+import Badge from "@/app/dashboard/components/ui/Badge";
+import { MdArrowBack } from "react-icons/md";
 
 const RegisterList = () => {
   const [registerList, setRegisterList] = useState([]);
   const [searchedList, setSearchedList] = useState([]);
-  const [eventFilter, setEventFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchedEventList, setSearchedEventList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
   const slug = pathname.split("/").pop();
 
-  const { getRoadshowRegister, deleteRegister, updateRegister, getRoadshow, getActiveRM } =
+  const { getRoadshowRegister, deleteRegister, updateRegister, getActiveRM } =
     userRoadshowServices();
-  
-  const generateSlug = (name) => {
-    return name
+
+  const generateSlug = (name) =>
+    name
       .toLowerCase()
       .replace(/[^\w\s-]/g, "")
       .trim()
       .replace(/\s+/g, "-");
-  };
 
   useEffect(() => {
     getRegisterData();
-    getEventData();
   }, []);
 
   useEffect(() => {
-    setSearchedList(registerList);
-  }, [registerList]);
+    filterList(registerList, searchQuery);
+  }, [registerList, searchQuery]);
 
   useEffect(() => {
-    const refreshData = () => {
-      if (eventFilter) {
-        setSearchedList(
-          registerList.filter((item) => item.eventName === eventFilter)
-        );
-      } else {
-        getRegisterData();
-      }
-    };
-    const intervalId = setInterval(refreshData, 30000);
+    const intervalId = setInterval(() => {
+      if (!searchQuery) getRegisterData();
+    }, 30000);
     return () => clearInterval(intervalId);
-  }, [eventFilter, registerList]);
+  }, [searchQuery]);
 
- const getRegisterData = async () => {
-   try {
-     const response = await getRoadshowRegister();
-     if (response.success) {
-       const sortedData = response.data.sort(
-         (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
-       );
-
-       const filtered = sortedData.filter(
-         (item) => generateSlug(item.eventName) === slug
-       );
-
-       setRegisterList(filtered);
-       setSearchedList(filtered);
-     }
-   } catch (err) {
-     console.error("Error fetching register list:", err);
-   }
- };
-
-  const getEventData = async () => {
+  const getRegisterData = async () => {
     try {
-      const response = await getRoadshow();
+      const response = await getRoadshowRegister();
       if (response.success) {
         const sortedData = response.data.sort(
           (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
         );
-        setSearchedEventList(sortedData);
+        const filtered = sortedData.filter(
+          (item) => generateSlug(item.eventName) === slug
+        );
+        setRegisterList(filtered);
       }
     } catch (err) {
-      console.error("Error fetching event list:", err);
+      console.error("Error fetching register list:", err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const filterList = (list, search) => {
+    setSearchedList(
+      search
+        ? list.filter((item) => item.sourcedRm?.toLowerCase().includes(search))
+        : list
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchQuery(term);
   };
 
   const handleDelete = async (id) => {
@@ -95,8 +87,7 @@ const RegisterList = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#dc2626",
       confirmButtonText: "Yes, delete it!",
     });
 
@@ -104,9 +95,7 @@ const RegisterList = () => {
       try {
         const response = await deleteRegister(id);
         if (response.success) {
-          setRegisterList((prevList) =>
-            prevList.filter((item) => item._id !== id)
-          );
+          setRegisterList((prevList) => prevList.filter((item) => item._id !== id));
           Swal.fire("Deleted!", "Your item has been deleted.", "success");
         } else {
           Swal.fire("Failed!", "Failed to delete the item.", "error");
@@ -170,30 +159,6 @@ const RegisterList = () => {
       Swal.fire("Error", "Something went wrong.", "error");
     }
   };
-
-  const handleFilterChange = (e) => {
-    const selectedEvent = e.target.value;
-    setEventFilter(selectedEvent);
-    filterList(registerList, selectedEvent);
-  };
-
-   const handleSearchChange = (e) => {
-     const term = e.target.value.toLowerCase();
-     setSearchQuery(term);
-     filterList(registerList, eventFilter, term);
-   };
-
- const filterList = (list, filter, search) => {
-   setSearchedList(
-     list.filter((item) => {
-       const matchesEvent = filter ? item.eventName === filter : true;
-       const matchesSearch = search
-         ? item.sourcedRm?.toLowerCase().includes(search)
-         : true;
-       return matchesEvent && matchesSearch;
-     })
-   );
- };
 
   const generatePDF = () => {
     const doc = new jsPDF();
@@ -277,112 +242,124 @@ const RegisterList = () => {
     XLSX.writeFile(workbook, "register_list.xlsx");
   };
 
+  const th = "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8791A1] whitespace-nowrap";
+  const td = "px-4 py-3 text-sm text-[#33394B] whitespace-nowrap";
+
   return (
-    <div className="overflow-hidden relative bg-[#1E1E1E] p-4">
-      <h2 className="text-center text-[0.9rem] md:text-[1.5rem] mb-2 md:mb-5">
-        {registerList[0]?.eventName}
-      </h2>
-      <div className="flex gap-5">
-        <button
-          onClick={generatePDF}
-          className="mb-4 px-4 py-2 bg-red-500 text-white rounded"
-        >
-          <FaFilePdf />
-        </button>
-        <button
-          onClick={exportToExcel}
-          className="mb-4 px-4 py-2 bg-green-500 text-white rounded"
-        >
-          <PiMicrosoftExcelLogoFill />
-        </button>
-        <div className="mb-4 w-full md:w-[30%] flex items-center border border-[#fff] p-2 rounded">
-              <input
-                type="text"
-                placeholder="Search Sourced RM name..."
-                className="w-full bg-transparent text-[#fff]"
-                value={searchQuery}
-                onChange={handleSearchChange}
-              />
-            <IoSearch className="text-[#fff] text-[1.2rem]" />
+    <div>
+      <button
+        onClick={() => router.push("/roadshow")}
+        className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-[#4B5566] hover:text-[#0F2C45]"
+      >
+        <MdArrowBack /> Back to events
+      </button>
+
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold text-[#1A2233]">
+            {registerList[0]?.eventName || "Registrations"}
+          </h1>
+          <p className="mt-1 text-sm text-[#7A8494]">
+            {searchedList.length} registration{searchedList.length === 1 ? "" : "s"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={generatePDF}
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+            title="Export PDF"
+          >
+            <FaFilePdf />
+          </button>
+          <button
+            onClick={exportToExcel}
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+            title="Export Excel"
+          >
+            <PiMicrosoftExcelLogoFill />
+          </button>
         </div>
       </div>
 
-      <div className="overflow-x-auto max-h-full">
-        <table className="w-full border text-[0.8rem]">
-          <thead>
-            <tr>
-              <th>Event Name</th>
-              <th>Client Name</th>
-              <th>Email</th>
-              <th>Mobile Number</th>
-              <th>Status</th>
-              <th>Property type</th>
-              <th>Budget</th>
-              <th>Sourced RM</th>
-              <th>Attened RM</th>
-              <th>Event Attended Time</th>
-              <th>Remark</th>
-              {pathname === "/roadshow/register" && <th></th>}
-            </tr>
-          </thead>
-          <tbody>
-            {searchedList.length > 0 ? (
-              searchedList.map((data, i) => (
-                <tr key={i}>
-                  <td>{data.eventName}</td>
-                  <td>{data.fullName}</td>
-                  <td>{data.email}</td>
-                  <td>{data.phone}</td>
-                  <td>{data.status}</td>
-                  <td>{data.type}</td>
-                  <td>{data.budget}</td>
-                  <td>
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span>{data.sourcedRm}</span>
-                      <MdEdit
-                        onClick={() => handleEditRm(data)}
-                        className="cursor-pointer text-blue-400 hover:text-blue-300"
-                        title="Change Sourced RM"
-                      />
-                    </div>
-                  </td>
-                  <td>{data.attendedRm}</td>
-                  <td>
-                    {new Date(data.updatedAt).toLocaleString(undefined, {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                  <td>{data.remark}</td>
-                  <td className="text-center">
-                    <MdDelete
-                      onClick={() => handleDelete(data._id)}
-                      className="text-[1rem] m-auto cursor-pointer text-red-500"
-                    />
-                  </td>
+      <Card className="mb-4 flex items-center gap-2 px-3.5 py-2.5 sm:max-w-xs">
+        <IoSearch className="shrink-0 text-[#8791A1]" />
+        <input
+          type="text"
+          placeholder="Search Sourced RM name..."
+          className="w-full bg-transparent text-sm text-[#1A2233] outline-none placeholder:text-[#9AA4B2]"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </Card>
+
+      <Card className="overflow-hidden">
+        {loading ? (
+          <div className="py-14 text-center text-sm text-[#8791A1]">Loading registrations...</div>
+        ) : searchedList.length === 0 ? (
+          <div className="flex flex-col items-center gap-2 py-14 text-center">
+            <MdHowToReg className="text-3xl text-[#C4CAD4]" />
+            <p className="text-sm text-[#8791A1]">No registrations found.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[1200px] border-collapse">
+              <thead className="bg-[#F8F9FB]">
+                <tr>
+                  <th className={th}>Client Name</th>
+                  <th className={th}>Email</th>
+                  <th className={th}>Mobile</th>
+                  <th className={th}>Status</th>
+                  <th className={th}>Property Type</th>
+                  <th className={th}>Budget</th>
+                  <th className={th}>Sourced RM</th>
+                  <th className={th}>Attended RM</th>
+                  <th className={th}>Attended Time</th>
+                  <th className={th}>Remark</th>
+                  <th className={`${th} text-center`}>Delete</th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={12}>
-                  <div className="flex justify-center w-full py-4">
-                    <div className="bg-[#040406] text-center rounded-3xl p-1">
-                      <p className="m-auto loader !w-[24px] !h-[24px]"></p>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            )}
-            <tr>
-              <th>Total:</th>
-              <td className="px-4 py-2 text-center">{searchedList.length}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody className="divide-y divide-[#EEF0F4]">
+                {searchedList.map((data) => (
+                  <tr key={data._id} className="hover:bg-[#F8F9FB]">
+                    <td className={`${td} font-medium text-[#1A2233]`}>{data.fullName}</td>
+                    <td className={td}>{data.email}</td>
+                    <td className={td}>{data.phone}</td>
+                    <td className={td}>
+                      {data.status && <Badge>{data.status}</Badge>}
+                    </td>
+                    <td className={td}>{data.type}</td>
+                    <td className={td}>{data.budget}</td>
+                    <td className={td}>
+                      <div className="flex items-center gap-1.5">
+                        <span>{data.sourcedRm}</span>
+                        <button onClick={() => handleEditRm(data)} title="Change Sourced RM">
+                          <MdEdit className="cursor-pointer text-[#0F2C45]/50 hover:text-[#0F2C45]" />
+                        </button>
+                      </div>
+                    </td>
+                    <td className={td}>{data.attendedRm}</td>
+                    <td className={td}>
+                      {new Date(data.updatedAt).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+                    <td className={td}>{data.remark}</td>
+                    <td className="text-center">
+                      <button onClick={() => handleDelete(data._id)} title="Delete">
+                        <MdDelete className="cursor-pointer text-lg text-red-400 hover:text-red-600" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
     </div>
   );
 };

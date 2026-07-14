@@ -1,24 +1,27 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { userRoadshowServices } from "@/services/roadshowService";
 import SourceRMList from "./SourceRMList";
+import Card from "@/app/dashboard/components/ui/Card";
+import PageHeader from "@/app/dashboard/components/ui/PageHeader";
+import Button from "@/app/dashboard/components/ui/Button";
+import { Input } from "@/app/dashboard/components/ui/Field";
 
 const AddSourceRM = (props) => {
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
   const [submit, setSubmit] = useState(false);
 
   const initialState = {
     name: "",
-    email: "",   // ✅ Added email here
+    email: "",
   };
 
   const [addSourceRM, setAddSourceRM] = useState(initialState);
 
-  const { postSourceRM, getSourceRM, updateSourceRM, deleteSourceRM } =
-    userRoadshowServices();
+  const { postSourceRM, getSourceRM, updateSourceRM } = userRoadshowServices();
 
   useEffect(() => {
     if (props?.mode === "update" && props?.user_id) {
@@ -48,7 +51,6 @@ const AddSourceRM = (props) => {
     setErrors({});
   };
 
-  // ✅ Basic Validation
   const validate = () => {
     let newErrors = {};
 
@@ -68,9 +70,9 @@ const AddSourceRM = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validate()) return;
 
+    setSaving(true);
     try {
       const formdata = new FormData();
       Object.entries(addSourceRM).forEach(([key, value]) =>
@@ -94,76 +96,62 @@ const AddSourceRM = (props) => {
     } catch (err) {
       console.error(err);
       Swal.fire("Failed", "Error while processing sourceRM", "error");
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
-    <div className="bg-[#1E1E1E] p-4">
-      <div className="w-full">
-        <div className="bg-[#1E1E1E] rounded-2xl relative">
-          <h3 className="text-[#fff] text-[1.5rem] font-semibold mb-6 text-center">
-            Add sourceRM
-          </h3>
+    <div>
+      <PageHeader
+        title="Add Source RM"
+        description="Manage the relationship managers who can be credited as a lead source."
+      />
 
-          <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <div className="grid sm:grid-cols-2">
-
-              {/* Name Field */}
-              <div className="mx-2 mb-4">
-                <label>SourceRM Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="SourceRM Name*"
-                  value={addSourceRM.name || ""}
-                  onChange={handleChange}
-                  className="w-full bg-transparent border border-[#fff] p-[10px] rounded text-[#fff]"
-                />
-                {errors.name && (
-                  <p className="text-[0.9rem] text-[#FF0202]">
-                    {errors.name}
-                  </p>
-                )}
-              </div>
-
-              {/* ✅ Email Field */}
-              <div className="mx-2 mb-4">
-                <label>Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email*"
-                  value={addSourceRM.email || ""}
-                  onChange={handleChange}
-                  className="w-full bg-transparent border border-[#fff] p-[10px] rounded text-[#fff]"
-                />
-                {errors.email && (
-                  <p className="text-[0.9rem] text-[#FF0202]">
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-
-            </div>
-
-            <button
-              type="submit"
-              className="bg-[#00A3FF] hover:bg-[#6A9F43] px-[2.5rem] py-[0.4rem] rounded-md text-[#ffffff]"
-            >
-              {addSourceRM?.id ? "Update" : "Add"}
-            </button>
-          </form>
-        </div>
-
-        <div className="relative pt-4">
-          <Suspense fallback={<div>Loading...</div>}>
-            <SourceRMList
-              addSourceRM={addSourceRM}
-              setAddSourceRM={setAddSourceRM}
-              submit={submit}
+      <Card className="p-5 sm:p-6">
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Input
+              label="Source RM Name"
+              required
+              name="name"
+              placeholder="Source RM Name"
+              value={addSourceRM.name || ""}
+              onChange={handleChange}
             />
-          </Suspense>
-        </div>
+            {errors.name && <p className="-mt-3 text-xs text-red-500">{errors.name}</p>}
+
+            <Input
+              label="Email"
+              required
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={addSourceRM.email || ""}
+              onChange={handleChange}
+            />
+            {errors.email && <p className="-mt-3 text-xs text-red-500">{errors.email}</p>}
+          </div>
+
+          <div className="mt-5 flex items-center gap-3">
+            <Button type="submit" loading={saving}>
+              {addSourceRM?.id ? "Update" : "Add Source RM"}
+            </Button>
+            {addSourceRM?.id && (
+              <Button type="button" variant="secondary" onClick={handleReset}>
+                Cancel edit
+              </Button>
+            )}
+          </div>
+        </form>
+      </Card>
+
+      <div className="mt-6">
+        <SourceRMList
+          addSourceRM={addSourceRM}
+          setAddSourceRM={setAddSourceRM}
+          submit={submit}
+        />
       </div>
     </div>
   );

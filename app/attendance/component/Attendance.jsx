@@ -3,6 +3,7 @@
 import React from "react";
 import Head from "next/head";
 import FormEvent from "./FormEvent";
+import AnnouncementComposer from "./AnnouncementComposer";
 
 const Attendance = () => {
   return (
@@ -34,6 +35,7 @@ const Attendance = () => {
         <div className="relative z-10 bg-black bg-opacity-60 w-full h-full flex items-center justify-center">
           <div className="container max-w-[1240px] py-6 sm:px-4 md:py-9 relative">
             <div className="w-ful">
+              <AnnouncementComposer />
               <FormEvent />
             </div>
           </div>

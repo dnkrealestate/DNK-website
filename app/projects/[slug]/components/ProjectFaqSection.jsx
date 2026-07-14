@@ -17,8 +17,27 @@ export default function ProjectFaqSection({projectId}) {
     setOpenIndex(openIndex === i ? null : i);
   };
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqData.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a || "",
+      },
+    })),
+  };
+
   return (
     <section className="w-full bg-black py-2 px-4">
+      {faqData.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className="max-w-[900px] m-auto">
         {projectId.faqTitle && (
           <h2 className="text-white text-center font-semibold mb-8 tracking-wide">

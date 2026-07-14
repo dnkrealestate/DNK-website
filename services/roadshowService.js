@@ -143,6 +143,28 @@ export const userRoadshowServices = () => {
         return response.data
     }
 
+    // Office-staff announcement broadcast, read aloud as a big popup on the
+    // matching /live/[slug] TV screen.
+    const postAnnouncement = async (eventplace, message) => {
+        const response = await axiosPrivate.post('/event/announcement', { eventplace, message })
+        return response.data
+    }
+
+    const getLatestAnnouncement = async (eventplace) => {
+        const response = await axiosPrivate.get('/event/announcement/' + eventplace)
+        return response.data
+    }
+
+    const verifyAnnouncementPin = async (pin) => {
+        const response = await axiosPrivate.post('/event/announcement-pin/verify', { pin })
+        return response.data
+    }
+
+    const updateAnnouncementPin = async (pin) => {
+        const response = await axiosPrivate.put('/event/announcement-pin', { pin })
+        return response.data
+    }
+
     return {
         postRoadshowResgister,
         getRoadshowRegister,
@@ -167,6 +189,10 @@ export const userRoadshowServices = () => {
         getRmDirectory,
         getMeetings,
         deleteMeeting,
+        postAnnouncement,
+        getLatestAnnouncement,
+        verifyAnnouncementPin,
+        updateAnnouncementPin,
     }
 
 }

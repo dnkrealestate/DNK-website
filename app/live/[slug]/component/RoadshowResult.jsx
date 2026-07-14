@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { userRoadshowServices } from "@/services/roadshowService";
 import RegisterData from "./RegisterData";
 import EventAttendData from "./EventAttendData";
+import AnnouncementPopup from "./AnnouncementPopup";
 import BackgroundImg from "@/public/assets/banner-img/full-bg.webp";
 import Image from "next/image";
 
@@ -115,6 +116,7 @@ export default function RoadshowResult() {
         <title>{`Result ${roadshowLink.place}`}</title>
         <meta name="description" content="Attendance" />
       </Head>
+      <AnnouncementPopup eventplace={roadshowLink.place} />
       <div className="relative h-full w-full">
         {/* Background */}
         <div className="absolute inset-0 z-0">

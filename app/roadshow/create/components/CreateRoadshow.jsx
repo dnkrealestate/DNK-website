@@ -1,13 +1,26 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import RoadshowList from "./RoadshowList";
 import { userRoadshowServices } from "@/services/roadshowService";
+import Card from "@/app/dashboard/components/ui/Card";
+import PageHeader from "@/app/dashboard/components/ui/PageHeader";
+import Button from "@/app/dashboard/components/ui/Button";
+import { Input } from "@/app/dashboard/components/ui/Field";
+
+const FIELDS = [
+  { name: "name", label: "Roadshow Name" },
+  { name: "hotelName", label: "Hotel Name" },
+  { name: "address", label: "Hotel Address" },
+  { name: "date", label: "Event Date Day 1" },
+  { name: "date2", label: "Event Date Day 2" },
+  { name: "place", label: "Place Name" },
+];
 
 const CreateRoadshow = (props) => {
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
   const [submit, setSubmit] = useState(false);
 
   const initialState = {
@@ -48,10 +61,12 @@ const CreateRoadshow = (props) => {
 
   const handleReset = () => {
     setAddRoadshow(initialState);
+    setErrors({});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSaving(true);
 
     try {
       const formdata = new FormData();
@@ -76,66 +91,52 @@ const CreateRoadshow = (props) => {
     } catch (err) {
       console.error(err);
       Swal.fire("Failed", "Error while processing roadshow", "error");
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
-    <div className="bg-[#1E1E1E] p-4">
-      <div className="w-full">
-        {/* Create Roadshow Form */}
-        <div className="bg-[#1E1E1E] rounded-2xl relative">
-          <h3 className="text-[#fff] text-[1.5rem] font-semibold mb-6 text-center">
-            Create Roadshow
-          </h3>
+    <div>
+      <PageHeader
+        title="Create Roadshow"
+        description="Set up a new roadshow event, or edit an existing one from the list below."
+      />
 
-          <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <div className="grid sm:grid-cols-2">
-              {[
-                { name: "name", label: "Roadshow Name" },
-                { name: "hotelName", label: "Hotel Name" },
-                { name: "address", label: "Hotel Address" },
-                { name: "date", label: "Event Date Day 1" },
-                { name: "date2", label: "Event Date Day 2" },
-                { name: "place", label: "Place Name" },
-              ].map((field) => (
-                <div key={field.name} className="mx-2 mb-4">
-                  <label>{field.label}</label>
-                  <input
-                    type="text"
-                    name={field.name}
-                    placeholder={`${field.label}*`}
-                    value={addRoadshow[field.name] || ""}
-                    onChange={handleChange}
-                    className="w-full bg-transparent border border-[#fff] p-[10px] rounded text-[#fff]"
-                  />
-                  {errors[field.name] && (
-                    <p className="error text-[0.9rem] text-[#FF0202]">
-                      {errors[field.name]}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
+      <Card className="p-5 sm:p-6">
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {FIELDS.map((field) => (
+              <Input
+                key={field.name}
+                label={field.label}
+                name={field.name}
+                placeholder={field.label}
+                value={addRoadshow[field.name] || ""}
+                onChange={handleChange}
+              />
+            ))}
+          </div>
 
-            <button
-              type="submit"
-              className="bg-[#00A3FF] hover:bg-[#6A9F43] px-[2.5rem] py-[0.4rem] rounded-md text-[#ffffff]"
-            >
-              {addRoadshow?.id ? "Update" : "Submit"}
-            </button>
-          </form>
-        </div>
+          <div className="mt-5 flex items-center gap-3">
+            <Button type="submit" loading={saving}>
+              {addRoadshow?.id ? "Update Roadshow" : "Create Roadshow"}
+            </Button>
+            {addRoadshow?.id && (
+              <Button type="button" variant="secondary" onClick={handleReset}>
+                Cancel edit
+              </Button>
+            )}
+          </div>
+        </form>
+      </Card>
 
-        {/* Roadshow List */}
-        <div className="relative pt-4">
-          <Suspense fallback={<div>Loading...</div>}>
-            <RoadshowList
-              addRoadshow={addRoadshow}
-              setAddRoadshow={setAddRoadshow}
-              submit={submit}
-            />
-          </Suspense>
-        </div>
+      <div className="mt-6">
+        <RoadshowList
+          addRoadshow={addRoadshow}
+          setAddRoadshow={setAddRoadshow}
+          submit={submit}
+        />
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ const FILTERS = [
   { value: "off-plan", label: "Off-Plan" },
   { value: "buy", label: "Buy" },
   { value: "rent", label: "Rent" },
+  { value: "draft", label: "Drafts" },
 ];
 
 const STATUS_TONE = { "off-plan": "off-plan", buy: "buy", rent: "rent", sell: "sell" };
@@ -52,7 +53,11 @@ export default function ProjectGrid() {
   }, []);
 
   const filtered = projects
-    .filter((p) => filter === "all" || p.status === filter)
+    .filter((p) => {
+      if (filter === "all") return true;
+      if (filter === "draft") return Boolean(p.isDraft);
+      return p.status === filter;
+    })
     .filter((p) =>
       (p.projectname || "").toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -125,6 +130,11 @@ export default function ProjectGrid() {
             >
               <Card className="overflow-hidden transition-shadow group-hover:shadow-md">
                 <div className="relative h-36 w-full bg-[#F0F2F5]">
+                  {project.isDraft && (
+                    <span className="absolute left-2 top-2 z-10 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow">
+                      Draft
+                    </span>
+                  )}
                   {project.thumbnail ? (
                     <Image
                       src={URL + project.thumbnail}

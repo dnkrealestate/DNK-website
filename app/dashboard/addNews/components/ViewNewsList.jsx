@@ -60,6 +60,7 @@ const ViewNewsList = ({ setCreateNews, submit, params }) => {
       newsurl: data.newsurl,
       type: data.type,
       alt: data.alt,
+      isDraft: data.isDraft,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -115,6 +116,7 @@ const ViewNewsList = ({ setCreateNews, submit, params }) => {
           <tr>
             <th>News Headline</th>
             <th>Publish Date</th>
+            <th>Status</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -125,6 +127,17 @@ const ViewNewsList = ({ setCreateNews, submit, params }) => {
               <tr key={i}>
                 <td>{data.newstitle}</td>
                 <td>{data.published}</td>
+                <td className="text-center">
+                  {data.isDraft ? (
+                    <span className="rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                      Draft
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                      Live
+                    </span>
+                  )}
+                </td>
                 <td className="text-center">
                   <MdModeEditOutline
                     onClick={() => handleEdit(data)}
@@ -141,7 +154,7 @@ const ViewNewsList = ({ setCreateNews, submit, params }) => {
             ))
           ) : (
             <tr>
-              <td colSpan={4} className="text-center py-4">
+              <td colSpan={5} className="text-center py-4">
                 No News updated yet.
               </td>
             </tr>

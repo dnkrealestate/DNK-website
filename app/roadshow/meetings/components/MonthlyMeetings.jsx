@@ -1,32 +1,39 @@
-'use client'
-import { useParams } from "next/navigation";
+"use client";
+import { useParams, useRouter } from "next/navigation";
+import { MdArrowBack } from "react-icons/md";
 import MeetingsList from "./MeetingsList";
+import Card from "@/app/dashboard/components/ui/Card";
 
 export default function MonthlyMeetings({ meetings = [] }) {
-  const { slug: month } = useParams(); // YYYY-MM
+  const { slug: month } = useParams();
+  const router = useRouter();
 
-  const monthlyData = meetings.filter(item => {
+  const monthlyData = meetings.filter((item) => {
     if (!item.attendDate) return false;
-
-   const [day, monthNum, year] = item.attendDate.split("-");
+    const [, monthNum, year] = item.attendDate.split("-");
     const key = `${year}-${String(monthNum).padStart(2, "0")}`;
-
     return key === month;
   });
 
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-semibold mb-4">
-        {new Date(month + '-01').toLocaleString('default', {
-          month: 'long',
-          year: 'numeric'
-        })} Meetings
-      </h2>
+    <div>
+      <button
+        onClick={() => router.push("/roadshow/meetings")}
+        className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-[#4B5566] hover:text-[#0F2C45]"
+      >
+        <MdArrowBack /> Back to months
+      </button>
+
+      <h1 className="mb-5 text-xl font-semibold text-[#1A2233]">
+        {new Date(month + "-01").toLocaleString("default", {
+          month: "long",
+          year: "numeric",
+        })}{" "}
+        Meetings
+      </h1>
 
       {!monthlyData.length ? (
-        <div className="text-center py-10 text-gray-500">
-          Loading...
-        </div>
+        <Card className="py-14 text-center text-sm text-[#8791A1]">Loading...</Card>
       ) : (
         <MeetingsList meetings={monthlyData} />
       )}

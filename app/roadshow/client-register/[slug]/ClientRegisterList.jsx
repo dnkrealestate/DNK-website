@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { usePathname, useRouter } from "next/navigation";
+import { MdDelete, MdEdit, MdHowToReg, MdArrowBack } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { FaFilePdf } from "react-icons/fa6";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
@@ -11,35 +11,34 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { userRoadshowServices } from "@/services/roadshowService";
+import Card from "@/app/dashboard/components/ui/Card";
 
 const ClientRegisterList = () => {
   const [registerList, setRegisterList] = useState([]);
   const [searchedList, setSearchedList] = useState([]);
-  const [eventFilter, setEventFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchedEventList, setSearchedEventList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
   const slug = pathname.split("/").pop();
 
-  const { getClientRegister, deleteClentRegister, updateClientRegister, getRoadshow, getActiveRM } =
+  const { getClientRegister, deleteClentRegister, updateClientRegister, getActiveRM } =
     userRoadshowServices();
-  
-   const generateSlug = (name) => {
-     return name
-       .toLowerCase()
-       .replace(/[^\w\s-]/g, "")
-       .trim()
-       .replace(/\s+/g, "-");
-   };
+
+  const generateSlug = (name) =>
+    name
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-");
 
   useEffect(() => {
     getClientRegisterData();
-    getEventData();
   }, []);
 
   useEffect(() => {
-    filterList(registerList, eventFilter, searchQuery);
-  }, [registerList, eventFilter, searchQuery]);
+    filterList(registerList, searchQuery);
+  }, [registerList, searchQuery]);
 
   const getClientRegisterData = async () => {
     try {
@@ -48,17 +47,28 @@ const ClientRegisterList = () => {
         const sortedData = response.data.sort(
           (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
         );
-
         const filtered = sortedData.filter(
           (item) => generateSlug(item.eventName) === slug
         );
-
         setRegisterList(filtered);
-        setSearchedList(filtered);
       }
     } catch (err) {
       console.error("Error fetching register list:", err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const filterList = (list, search) => {
+    setSearchedList(
+      search
+        ? list.filter((item) => item.sourcedRm?.toLowerCase().includes(search))
+        : list
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value.toLowerCase());
   };
 
   const handleDelete = async (id) => {
@@ -67,8 +77,7 @@ const ClientRegisterList = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#dc2626",
       confirmButtonText: "Yes, delete it!",
     });
 
@@ -76,9 +85,7 @@ const ClientRegisterList = () => {
       try {
         const response = await deleteClentRegister(id);
         if (response.success) {
-          setRegisterList((prevList) =>
-            prevList.filter((item) => item._id !== id)
-          );
+          setRegisterList((prevList) => prevList.filter((item) => item._id !== id));
           Swal.fire("Deleted!", "Your item has been deleted.", "success");
         } else {
           Swal.fire("Failed!", "Failed to delete the item.", "error");
@@ -144,44 +151,6 @@ const ClientRegisterList = () => {
     }
   };
 
-  const getEventData = async () => {
-    try {
-      const response = await getRoadshow();
-      if (response.success) {
-        const sortedData = response.data.sort(
-          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
-        );
-        setSearchedEventList(sortedData);
-      }
-    } catch (err) {
-      console.error("Error fetching event list:", err);
-    }
-  };
-
-  const handleFilterChange = (e) => {
-    const selectedEvent = e.target.value;
-    setEventFilter(selectedEvent);
-    filterList(registerList, selectedEvent, searchQuery);
-  };
-
-  const handleSearchChange = (e) => {
-    const term = e.target.value.toLowerCase();
-    setSearchQuery(term);
-    filterList(registerList, eventFilter, term);
-  };
-
-  const filterList = (list, filter, search) => {
-    setSearchedList(
-      list.filter((item) => {
-        const matchesEvent = filter ? item.eventName === filter : true;
-        const matchesSearch = search
-          ? item.sourcedRm?.toLowerCase().includes(search)
-          : true;
-        return matchesEvent && matchesSearch;
-      })
-    );
-  };
-
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.text("DNK Real Estate Client Register List", 14, 10);
@@ -189,16 +158,7 @@ const ClientRegisterList = () => {
     doc.autoTable({
       startY: 20,
       head: [
-        [
-          "Sourced RM",
-          "Event Name",
-          "Client Name",
-          "Email",
-          "Mobile Number",
-          "Date",
-          "Time",
-          "Budget",
-        ],
+        ["Sourced RM", "Event Name", "Client Name", "Email", "Mobile Number", "Date", "Time", "Budget"],
       ],
       body: searchedList.map((data) => [
         data.sourcedRm,
@@ -217,16 +177,7 @@ const ClientRegisterList = () => {
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(
       searchedList.map(
-        ({
-          sourcedRm,
-          eventName,
-          fullName,
-          email,
-          phone,
-          attendDate,
-          attendTime,
-          budget,
-        }) => ({
+        ({ sourcedRm, eventName, fullName, email, phone, attendDate, attendTime, budget }) => ({
           "Sourced RM": sourcedRm,
           "Event Name": eventName,
           "Full Name": fullName,
@@ -243,103 +194,108 @@ const ClientRegisterList = () => {
     XLSX.writeFile(workbook, "register_list.xlsx");
   };
 
+  const th = "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#8791A1] whitespace-nowrap";
+  const td = "px-4 py-3 text-sm text-[#33394B] whitespace-nowrap";
+
   return (
-    <div className="w-full flex items-start justify-center h-full bg-[#1E1E1E]">
-      <div className="w-full">
-        <div className="rounded-2xl p-4 sm:px-6 m-4 relative">
-          <div className="overflow-hidden relative">
-            <h2 className="text-center text-[0.9rem] md:text-[1.5rem] mb-2 md:mb-5">
-              Registration {registerList[0]?.eventName}
-            </h2>
-            <div className="sm:flex gap-5">
-              <div className="flex gap-4">
-                <button
-                  onClick={generatePDF}
-                  className="mb-4 px-4 py-2 bg-red-500 text-white rounded"
-                >
-                  <FaFilePdf />
-                </button>
-                <button
-                  onClick={exportToExcel}
-                  className="mb-4 px-4 py-2 bg-green-500 text-white rounded"
-                >
-                  <PiMicrosoftExcelLogoFill />
-                </button>
-              </div>
-              <div className="mb-4 w-full md:w-[30%] flex items-center border border-[#fff] p-2 rounded">
-                <input
-                  type="text"
-                  placeholder="Search Sourced RM name..."
-                  className="w-full bg-transparent text-[#fff]"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                />
-                <IoSearch className="text-[#fff] text-[1.2rem]" />
-              </div>
-            </div>
-            <div className="overflow-x-auto max-h-full">
-              <table className="w-full border text-sm">
-                <thead>
-                  <tr>
-                    <th>Sourced RM</th>
-                    <th>Event Name</th>
-                    <th>Client Name</th>
-                    <th>Email</th>
-                    <th>Mobile Number</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Budget</th>
-                    {pathname === "/roadshow/clientregisterlist" && <th></th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {searchedList.length > 0 ? (
-                    searchedList.map((data, i) => (
-                      <tr key={i}>
-                        <td>
-                          <div className="flex items-center justify-center gap-1.5">
-                            <span>{data.sourcedRm}</span>
-                            <MdEdit
-                              onClick={() => handleEditRm(data)}
-                              className="cursor-pointer text-blue-400 hover:text-blue-300"
-                              title="Change Sourced RM"
-                            />
-                          </div>
-                        </td>
-                        <td>{data.eventName}</td>
-                        <td>{data.fullName}</td>
-                        <td>{data.email}</td>
-                        <td>{data.phone}</td>
-                        <td>{data.attendDate}</td>
-                        <td>{data.attendTime}</td>
-                        <td>{data.budget || "N/A"}</td>
-                        <td className="text-center">
-                          <MdDelete
-                            onClick={() => handleDelete(data._id)}
-                            className="text-lg m-auto cursor-pointer text-red-500"
-                          />
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="8" className="text-center py-4">
-                        Loading...
-                      </td>
-                    </tr>
-                  )}
-                  <tr>
-                    <th>Total:</th>
-                    <td colSpan="7" className="text-left pl-5">
-                      {searchedList.length}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+    <div>
+      <button
+        onClick={() => router.push("/roadshow/client-register")}
+        className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-[#4B5566] hover:text-[#0F2C45]"
+      >
+        <MdArrowBack /> Back to events
+      </button>
+
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold text-[#1A2233]">
+            {registerList[0]?.eventName || "Client Registrations"}
+          </h1>
+          <p className="mt-1 text-sm text-[#7A8494]">
+            {searchedList.length} client{searchedList.length === 1 ? "" : "s"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={generatePDF}
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+            title="Export PDF"
+          >
+            <FaFilePdf />
+          </button>
+          <button
+            onClick={exportToExcel}
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+            title="Export Excel"
+          >
+            <PiMicrosoftExcelLogoFill />
+          </button>
         </div>
       </div>
+
+      <Card className="mb-4 flex items-center gap-2 px-3.5 py-2.5 sm:max-w-xs">
+        <IoSearch className="shrink-0 text-[#8791A1]" />
+        <input
+          type="text"
+          placeholder="Search Sourced RM name..."
+          className="w-full bg-transparent text-sm text-[#1A2233] outline-none placeholder:text-[#9AA4B2]"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </Card>
+
+      <Card className="overflow-hidden">
+        {loading ? (
+          <div className="py-14 text-center text-sm text-[#8791A1]">Loading...</div>
+        ) : searchedList.length === 0 ? (
+          <div className="flex flex-col items-center gap-2 py-14 text-center">
+            <MdHowToReg className="text-3xl text-[#C4CAD4]" />
+            <p className="text-sm text-[#8791A1]">No registrations found.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[1000px] border-collapse">
+              <thead className="bg-[#F8F9FB]">
+                <tr>
+                  <th className={th}>Sourced RM</th>
+                  <th className={th}>Client Name</th>
+                  <th className={th}>Email</th>
+                  <th className={th}>Mobile</th>
+                  <th className={th}>Date</th>
+                  <th className={th}>Time</th>
+                  <th className={th}>Budget</th>
+                  <th className={`${th} text-center`}>Delete</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#EEF0F4]">
+                {searchedList.map((data) => (
+                  <tr key={data._id} className="hover:bg-[#F8F9FB]">
+                    <td className={td}>
+                      <div className="flex items-center gap-1.5">
+                        <span>{data.sourcedRm}</span>
+                        <button onClick={() => handleEditRm(data)} title="Change Sourced RM">
+                          <MdEdit className="cursor-pointer text-[#0F2C45]/50 hover:text-[#0F2C45]" />
+                        </button>
+                      </div>
+                    </td>
+                    <td className={`${td} font-medium text-[#1A2233]`}>{data.fullName}</td>
+                    <td className={td}>{data.email}</td>
+                    <td className={td}>{data.phone}</td>
+                    <td className={td}>{data.attendDate}</td>
+                    <td className={td}>{data.attendTime}</td>
+                    <td className={td}>{data.budget || "N/A"}</td>
+                    <td className="text-center">
+                      <button onClick={() => handleDelete(data._id)} title="Delete">
+                        <MdDelete className="cursor-pointer text-lg text-red-400 hover:text-red-600" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
     </div>
   );
 };

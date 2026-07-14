@@ -1,22 +1,25 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { userRoadshowServices } from "@/services/roadshowService";
 import Link from "next/link";
+import { MdHowToReg, MdArrowForward } from "react-icons/md";
+import { userRoadshowServices } from "@/services/roadshowService";
+import Card from "@/app/dashboard/components/ui/Card";
+import PageHeader from "@/app/dashboard/components/ui/PageHeader";
+import { Input } from "@/app/dashboard/components/ui/Field";
 
 const RegisterView = () => {
-  const [registerList, setRegisterList] = useState([]);
   const [searchedEventList, setSearchedEventList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
 
-  const { getClientRegister, deleteRegister, getRoadshow } =
-    userRoadshowServices();
+  const { getClientRegister } = userRoadshowServices();
 
-  const generateSlug = (name) => {
-    return name
+  const generateSlug = (name) =>
+    name
       .toLowerCase()
       .replace(/[^\w\s-]/g, "")
       .trim()
       .replace(/\s+/g, "-");
-  };
 
   useEffect(() => {
     getEventData();
@@ -27,7 +30,6 @@ const RegisterView = () => {
       const response = await getClientRegister();
       if (response.success) {
         const eventArray = response.data;
-
         const eventMap = {};
 
         eventArray.forEach((item) => {
@@ -40,17 +42,13 @@ const RegisterView = () => {
             };
           } else {
             eventMap[event].count += 1;
-
-            const currentLatest = new Date(eventMap[event].latestUpdate);
             const newUpdated = new Date(item.updatedAt);
-
-            if (newUpdated > currentLatest) {
+            if (newUpdated > eventMap[event].latestUpdate) {
               eventMap[event].latestUpdate = newUpdated;
             }
           }
         });
 
-        // Convert to array and sort by latest update (descending)
         const eventCountsArray = Object.values(eventMap).sort(
           (a, b) => b.latestUpdate - a.latestUpdate
         );
@@ -59,46 +57,70 @@ const RegisterView = () => {
       }
     } catch (err) {
       console.error("Error fetching event list:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="about-section w-full bg-[#121215]">
-      <div className="py-5 sm:px-4 md:py-9 relative">
-        <h1 className="p-1">Registration Dashboard</h1>
-        <div className="w-full relative grid grid-cols-2 md:grid-cols-3 gap-1">
-          {searchedEventList.map((data, i) => {
-            const slug = generateSlug(data.eventName);
+  const filteredList = searchedEventList.filter((data) =>
+    data.eventName.toLowerCase().includes(query.toLowerCase())
+  );
 
+  return (
+    <div>
+      <PageHeader
+        title="Registration Dashboard"
+        description="Browse events and open their client self-registration lists."
+      />
+
+      <div className="mb-5 max-w-sm">
+        <Input
+          placeholder="Search events..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
+
+      {loading ? (
+        <Card className="flex items-center justify-center py-16 text-sm text-[#8791A1]">
+          Loading events...
+        </Card>
+      ) : filteredList.length === 0 ? (
+        <Card className="flex flex-col items-center justify-center gap-2 py-14 text-center">
+          <MdHowToReg className="text-3xl text-[#C4CAD4]" />
+          <p className="text-sm text-[#8791A1]">
+            {searchedEventList.length === 0
+              ? "No client registrations yet."
+              : "No events match your search."}
+          </p>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredList.map((data, i) => {
+            const slug = generateSlug(data.eventName);
             return (
-              <Link
-                href={`/roadshow/client-register/${slug}`}
-                key={i}
-                className="bg-gray-700 rounded-2xl py-5 md:py-10 px-3 sm:px-6 m-2 relative cursor-pointer group hover:bg-[#18A4A0]"
-              >
-                <div className="flex justify-between">
-                  <div>
-                    <h2 className="text-[0.8rem] md:text-[1rem] group-hover:text-white text-gray-500 font-semibold">
-                      Event Name
-                    </h2>
-                    <h3 className="text-[0.8rem] md:text-[1rem] m-0 text-[#fff]">
+              <Link href={`/roadshow/client-register/${slug}`} key={i}>
+                <Card className="group flex h-full flex-col justify-between p-5 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#18A4A0]/10 text-[#18A4A0]">
+                      <MdHowToReg className="text-xl" />
+                    </div>
+                    <MdArrowForward className="mt-2 text-[#C4CAD4] transition-transform group-hover:translate-x-1 group-hover:text-[#18A4A0]" />
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="truncate text-sm font-semibold text-[#1A2233]" title={data.eventName}>
                       {data.eventName}
                     </h3>
+                    <p className="mt-1 text-xs text-[#8791A1]">
+                      {data.count} client{data.count === 1 ? "" : "s"}
+                    </p>
                   </div>
-                  <div>
-                    <h2 className="text-[0.5rem] md:text-[1rem] group-hover:text-white text-gray-500 font-semibold">
-                      Count
-                    </h2>
-                    <h3 className="text-[0.8rem] md:text-[1rem] m-0 text-center text-[#fff]">
-                      {data.count}
-                    </h3>
-                  </div>
-                </div>
+                </Card>
               </Link>
             );
           })}
         </div>
-      </div>
+      )}
     </div>
   );
 };

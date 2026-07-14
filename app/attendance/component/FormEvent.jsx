@@ -5,9 +5,16 @@ import PhoneInput from "react-phone-input-2";
 import Swal from "sweetalert2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import { MdPersonSearch } from "react-icons/md";
 import { userRoadshowServices } from "@/services/roadshowService";
 import { findBestNameMatch } from "@/utils/matchRmName";
+
+const BUYING_TIMELINE_OPTIONS = [
+  { label: "Immediate", value: "Immediate" },
+  { label: "Next 30 Days", value: "Next 30 Days" },
+  { label: "Flexible", value: "Flexible" },
+];
 
 const selectStyles = {
   control: (base) => ({
@@ -66,6 +73,7 @@ const FormEvent = () => {
     phone: "91",
     type: "",
     budget: "",
+    buyingTimeline: "",
     status: "",
     event: "",
     sourcedRm: "",
@@ -233,6 +241,7 @@ const FormEvent = () => {
       phone: prev.phone.slice(0, 2),
       type: "",
       budget: "",
+      buyingTimeline: "",
       status: "",
       sourcedRm: "",
       attendedRm: "",
@@ -254,6 +263,7 @@ const FormEvent = () => {
         status: addRegister.status,
         type: addRegister.type,
         budget: addRegister.budget,
+        buyingTimeline: addRegister.buyingTimeline,
         remark: addRegister.remark,
         sourcedRm: addRegister.sourcedRm,
         attendedRm: addRegister.attendedRm,
@@ -334,7 +344,7 @@ const FormEvent = () => {
             <FieldError>{errors.email}</FieldError>
           </div>
 
-          <div className="phoneInput">
+          <div className="phoneInput phoneInputBordered">
             <FieldLabel>Mobile Number</FieldLabel>
             <PhoneInput
               placeholder="Mobile Number*"
@@ -347,19 +357,6 @@ const FormEvent = () => {
               enableAreaCodeStretch
               inputProps={{ required: true }}
               containerClass="w-full"
-              inputStyle={{
-                width: "100%",
-                background: "rgba(0,0,0,0.2)",
-                border: "1px solid rgba(255,255,255,0.15)",
-                borderRadius: "0.5rem",
-                color: "#fff",
-                height: "42px",
-              }}
-              buttonStyle={{
-                background: "rgba(0,0,0,0.2)",
-                border: "1px solid rgba(255,255,255,0.15)",
-                borderRadius: "0.5rem 0 0 0.5rem",
-              }}
             />
             <FieldError>{errors.phone}</FieldError>
             {!valid && <FieldError>Invalid phone number.</FieldError>}
@@ -421,8 +418,28 @@ const FormEvent = () => {
             </select>
             <FieldError>{errors.budget}</FieldError>
           </div>
-        </div>
 
+          
+        </div>
+          <div className="mt-4">
+            <FieldLabel>When do you plan to buy?</FieldLabel>
+            <CreatableSelect
+              options={BUYING_TIMELINE_OPTIONS}
+              placeholder="Select or type your own"
+              value={
+                addRegister.buyingTimeline
+                  ? { label: addRegister.buyingTimeline, value: addRegister.buyingTimeline }
+                  : null
+              }
+              onChange={(selected) =>
+                setAddRegister((prev) => ({
+                  ...prev,
+                  buyingTimeline: selected?.value || "",
+                }))
+              }
+              styles={selectStyles}
+            />
+          </div>
         <SectionHeading>Relationship DNK Real Estate</SectionHeading>
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           <div>

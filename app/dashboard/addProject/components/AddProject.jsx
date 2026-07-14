@@ -109,6 +109,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
     a4: "",
     q5: "",
     a5: "",
+    isDraft: false,
   };
 
 
@@ -171,10 +172,14 @@ export default function AddProject({ mode = "create", user_id = null }) {
     try {
       const formdata = new FormData();
       for (const [key, value] of Object.entries(createProject)) {
+        // _id/id are handled separately below for updates — appending them
+        // here too would duplicate the field and break the backend's $set.
+        if (key === "_id" || key === "id") continue;
         if (value instanceof File || typeof value === "string") {
           formdata.append(key, value);
         }
       }
+      formdata.append("isDraft", createProject.isDraft ? "true" : "false");
 
       let response;
       const isUpdate = Boolean(createProject.id);
@@ -1359,12 +1364,28 @@ export default function AddProject({ mode = "create", user_id = null }) {
           </div>
         )}
 
-        <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex justify-end gap-3 border-t border-[#E5E8EE] bg-[#F5F6F8]/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
+        <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-[#E5E8EE] bg-[#F5F6F8]/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
+          <label className="mr-auto flex items-center gap-2 text-sm font-medium text-[#33394B]">
+            <input
+              type="checkbox"
+              name="isDraft"
+              checked={Boolean(createProject.isDraft)}
+              onChange={(e) =>
+                setCreateProject((prev) => ({ ...prev, isDraft: e.target.checked }))
+              }
+              className="h-4 w-4 rounded border-[#D7DCE3]"
+            />
+            Save as draft (hidden from the live site)
+          </label>
           <Button type="button" variant="secondary" onClick={handleReset}>
             Clear
           </Button>
           <Button type="submit" loading={saving}>
-            {isEditMode ? "Update Project" : "Create Project"}
+            {createProject.isDraft
+              ? "Save Draft"
+              : isEditMode
+              ? "Update & Publish"
+              : "Publish Project"}
           </Button>
         </div>
       </form>

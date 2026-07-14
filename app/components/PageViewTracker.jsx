@@ -2,9 +2,10 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { trackPageView } from "@/services/analyticsServices";
+import { trackPageView, sendHeartbeat } from "@/services/analyticsServices";
 
 const VISITOR_KEY = "dnk_visitor_id";
+const HEARTBEAT_INTERVAL_MS = 25000;
 
 function getVisitorId() {
   try {
@@ -31,8 +32,46 @@ export default function PageViewTracker() {
     }
     const visitorId = getVisitorId();
     if (visitorId) {
-      trackPageView(pathname, visitorId);
+      trackPageView(pathname, visitorId, document.referrer);
     }
+  }, [pathname]);
+
+  // Periodic heartbeat keeps the visitor counted as "online" between page
+  // views, not just at navigation. Paused while the tab is hidden.
+  useEffect(() => {
+    if (!pathname || pathname.startsWith("/dashboard") || pathname.startsWith("/admin")) {
+      return;
+    }
+    const visitorId = getVisitorId();
+    if (!visitorId) return;
+
+    let interval = null;
+
+    const ping = () => sendHeartbeat(visitorId);
+    const start = () => {
+      if (interval) return;
+      ping();
+      interval = setInterval(ping, HEARTBEAT_INTERVAL_MS);
+    };
+    const stop = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") start();
+      else stop();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    start();
+
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, [pathname]);
 
   return null;

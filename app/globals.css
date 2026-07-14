@@ -500,6 +500,43 @@ p {
   color: #000000;
 }
 
+/* Bordered variant used on the roadshow /link and /attendance forms — the
+   base .phoneInput rule above strips the input's border/background with
+   !important (relied on by ~20 other contact forms), so this needs its own
+   class rather than overriding that shared one. */
+.phoneInputBordered .form-control {
+  width: 100% !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 0.75rem !important;
+  color: #fff !important;
+  height: 48px !important;
+  transition: border-color 0.15s ease;
+}
+.phoneInputBordered .form-control:focus {
+  border-color: #ce8745 !important;
+  box-shadow: none !important;
+}
+.phoneInputBordered .flag-dropdown {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-right: none !important;
+  border-radius: 0.75rem 0 0 0.75rem !important;
+}
+.phoneInputBordered .flag-dropdown.open,
+.phoneInputBordered .flag-dropdown:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Live-page announcement popup: pop-in entrance, then an infinite glow pulse.
+   Two separate Tailwind animate-* utilities can't coexist (both set the same
+   `animation` property), so this combines them into one declaration. */
+.announcement-pop {
+  animation:
+    popIn 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    glowPulse 1.8s ease-in-out 0.7s infinite;
+}
+
 .footer-head {
   border-bottom: solid 1px #575769;
 }

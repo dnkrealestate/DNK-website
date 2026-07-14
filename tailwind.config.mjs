@@ -186,6 +186,19 @@ export default {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' },
         },
+        fadeIn: {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        popIn: {
+          '0%': { opacity: '0', transform: 'scale(0.6)' },
+          '70%': { opacity: '1', transform: 'scale(1.05)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        glowPulse: {
+          '0%, 100%': { boxShadow: '0 0 0px 0px rgba(206,135,69,0.5)' },
+          '50%': { boxShadow: '0 0 45px 12px rgba(206,135,69,0.45)' },
+        },
       },
       animation: {
         wiggle: 'wiggle 1s ease-in-out infinite',
@@ -200,6 +213,8 @@ export default {
         jello: 'jello 2s infinite',
         blink: 'blink 1s infinite',
         greenPulse: 'greenPulse 2s infinite',
+        fadeIn: 'fadeIn 0.4s ease-out',
+        popIn: 'popIn 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
       },
       backgroundImage: {
         'custom-gradient': 'linear-gradient(to right, #C3082D, #1E4A8E, #1BBF61, #E8D82B, #F86713)',

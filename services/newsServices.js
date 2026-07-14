@@ -9,7 +9,7 @@ export const userNewsServices = () => {
     }
 
     const getNewsR = async () => {
-        const response = await axiosPrivate.get('/news/get-news')
+        const response = await axiosPrivate.get('/news/get-news?admin=true')
         return response.data
     };
 

@@ -14,9 +14,11 @@ import PageHeader from "../../components/ui/PageHeader";
 import Card from "../../components/ui/Card";
 import Badge from "../../components/ui/Badge";
 import LiveIndicator from "../../components/ui/LiveIndicator";
+import DateRangeSelect from "../../components/ui/DateRangeSelect";
+import DeltaBadge from "../../components/ui/DeltaBadge";
 import { usePolling } from "../../hooks/usePolling";
+import { bucketDailySeries, formatBucketLabel } from "../../utils/timeSeries";
 
-const RANGE_DAYS = 30;
 const POLL_INTERVAL_MS = 15000;
 
 const TYPE_META = {
@@ -34,27 +36,17 @@ const FILTERS = [
   { value: "chatbot", label: "Chatbot" },
 ];
 
-function buildDailySeries(dailyCounts, days) {
-  const map = new Map(dailyCounts.map((d) => [d.date, d.count]));
-  const series = [];
-  const today = new Date();
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(today);
-    d.setUTCDate(d.getUTCDate() - i);
-    const key = d.toISOString().slice(0, 10);
-    series.push({ date: key, count: map.get(key) || 0 });
-  }
-  return series;
-}
-
-function StatTile({ icon: Icon, label, value }) {
+function StatTile({ icon: Icon, label, value, current, previous }) {
   return (
     <Card className="flex items-center gap-3 p-4">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0F2C45]/10 text-[#0F2C45]">
         <Icon className="text-lg" />
       </div>
       <div>
-        <p className="text-xl font-semibold text-[#1A2233]">{value}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-xl font-semibold text-[#1A2233]">{value}</p>
+          {current !== undefined && <DeltaBadge current={current} previous={previous} />}
+        </div>
         <p className="text-xs text-[#8791A1]">{label}</p>
       </div>
     </Card>
@@ -63,6 +55,7 @@ function StatTile({ icon: Icon, label, value }) {
 
 export default function LeadsView() {
   const { getLeads, getLeadsSummary } = useLeadServices();
+  const [days, setDays] = useState(30);
   const [summary, setSummary] = useState(null);
   const [leads, setLeads] = useState([]);
   const [loadingSummary, setLoadingSummary] = useState(true);
@@ -75,18 +68,18 @@ export default function LeadsView() {
 
   const fetchSummary = useCallback(async () => {
     try {
-      const response = await getLeadsSummary(RANGE_DAYS);
+      const response = await getLeadsSummary(days);
       if (response.success) setSummary(response.data);
     } catch (err) {
       console.error("Failed to load leads summary:", err);
     } finally {
       setLoadingSummary(false);
     }
-  }, []);
+  }, [days]);
 
   const fetchLeads = useCallback(async () => {
     try {
-      const response = await getLeads({ type: typeFilter || undefined, days: RANGE_DAYS });
+      const response = await getLeads({ type: typeFilter || undefined, days });
       if (response.success) {
         const freshLeads = response.data;
 
@@ -118,7 +111,7 @@ export default function LeadsView() {
     } finally {
       setLoadingLeads(false);
     }
-  }, [typeFilter]);
+  }, [typeFilter, days]);
 
   // Switching the filter tab starts a fresh "known leads" baseline so the
   // reshuffled list doesn't get misread as a wave of new leads arriving.
@@ -128,12 +121,20 @@ export default function LeadsView() {
     setTypeFilter(value);
   };
 
+  const handleRangeChange = (value) => {
+    knownIdsRef.current = null;
+    setLoadingSummary(true);
+    setLoadingLeads(true);
+    setDays(value);
+  };
+
   const { lastUpdated: summaryUpdated } = usePolling(fetchSummary, {
     intervalMs: POLL_INTERVAL_MS,
+    deps: [days],
   });
   const { lastUpdated, refreshing, refresh } = usePolling(fetchLeads, {
     intervalMs: POLL_INTERVAL_MS,
-    deps: [typeFilter],
+    deps: [typeFilter, days],
   });
 
   const countByType = useMemo(() => {
@@ -144,14 +145,16 @@ export default function LeadsView() {
     return map;
   }, [summary]);
 
-  const series = summary ? buildDailySeries(summary.dailyCounts, RANGE_DAYS) : [];
+  const { series, granularity } = summary
+    ? bucketDailySeries(summary.dailyCounts, days, "count")
+    : { series: [], granularity: "day" };
   const maxCount = Math.max(...series.map((d) => d.count), 1);
 
   return (
     <div>
       <PageHeader
         title="Leads"
-        description={`All website form submissions, WhatsApp clicks, calls, and chatbot leads from the last ${RANGE_DAYS} days.`}
+        description="All website form submissions, WhatsApp clicks, calls, and chatbot leads."
         actions={
           <LiveIndicator
             lastUpdated={lastUpdated || summaryUpdated}
@@ -161,6 +164,10 @@ export default function LeadsView() {
         }
       />
 
+      <div className="mb-4">
+        <DateRangeSelect value={days} onChange={handleRangeChange} />
+      </div>
+
       {loadingSummary ? (
         <Card className="mb-6 flex items-center justify-center py-14 text-sm text-[#8791A1]">
           Loading leads summary...
@@ -168,7 +175,13 @@ export default function LeadsView() {
       ) : (
         <>
           <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <StatTile icon={MdPeopleAlt} label={`Total (${RANGE_DAYS}d)`} value={summary?.total ?? 0} />
+            <StatTile
+              icon={MdPeopleAlt}
+              label="Total leads"
+              value={summary?.total ?? 0}
+              current={summary?.total ?? 0}
+              previous={summary?.previousTotal ?? 0}
+            />
             {Object.entries(TYPE_META).map(([key, meta]) => (
               <StatTile
                 key={key}
@@ -180,7 +193,7 @@ export default function LeadsView() {
           </div>
 
           <Card className="mb-6 p-5">
-            <h3 className="mb-4 text-sm font-semibold text-[#1A2233]">Daily leads</h3>
+            <h3 className="mb-4 text-sm font-semibold text-[#1A2233]">Leads over time</h3>
             <div className="flex h-40 items-end gap-[3px]">
               {series.map((d) => {
                 const heightPct = Math.max((d.count / maxCount) * 100, d.count > 0 ? 4 : 2);
@@ -194,11 +207,7 @@ export default function LeadsView() {
                   >
                     {isHovered && (
                       <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#1A2233] px-2 py-1 text-xs text-white shadow-lg">
-                        {new Date(d.date).toLocaleDateString(undefined, {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                        : {d.count} lead{d.count === 1 ? "" : "s"}
+                        {formatBucketLabel(d, granularity)}: {d.count} lead{d.count === 1 ? "" : "s"}
                       </div>
                     )}
                     <div
@@ -212,19 +221,10 @@ export default function LeadsView() {
               })}
             </div>
             <div className="mt-2 flex justify-between text-[10px] text-[#9AA4B2]">
-              <span>
-                {series[0] &&
-                  new Date(series[0].date).toLocaleDateString(undefined, {
-                    month: "short",
-                    day: "numeric",
-                  })}
-              </span>
+              <span>{series[0] && formatBucketLabel(series[0], granularity)}</span>
               <span>
                 {series[series.length - 1] &&
-                  new Date(series[series.length - 1].date).toLocaleDateString(undefined, {
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  formatBucketLabel(series[series.length - 1], granularity)}
               </span>
             </div>
           </Card>
