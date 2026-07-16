@@ -20,10 +20,10 @@ function StatTile({ icon: Icon, label, value, current, previous, extra }) {
       </div>
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          <p className="text-2xl font-semibold text-[#1A2233]">{value}</p>
+          <p className="text-2xl font-semibold text-[#1A2233] mb-0">{value}</p>
           {current !== undefined && <DeltaBadge current={current} previous={previous} />}
         </div>
-        <p className="truncate text-xs text-[#8791A1]">{label}</p>
+        <p className="truncate text-xs text-[#8791A1] mb-0">{label}</p>
       </div>
       {extra}
     </Card>

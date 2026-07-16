@@ -7,6 +7,8 @@ const palette = {
   whatsapp_click: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
   call_click: "bg-amber-50 text-amber-700 ring-amber-600/20",
   chatbot: "bg-purple-50 text-purple-700 ring-purple-600/20",
+  error: "bg-red-50 text-red-700 ring-red-600/20",
+  paused: "bg-slate-100 text-slate-600 ring-slate-500/20",
   default: "bg-[#F0F2F5] text-[#4B5566] ring-[#D7DCE3]",
 };
 

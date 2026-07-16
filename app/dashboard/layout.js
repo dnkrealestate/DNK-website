@@ -20,6 +20,8 @@ import {
   MdMenu,
   MdClose,
   MdPeopleAlt,
+  MdMail,
+  MdFolder,
 } from "react-icons/md";
 import Swal from "sweetalert2";
 import dnkLogo from "@/public/assets/logo/dnklogo_1.webp";
@@ -40,6 +42,13 @@ const NAV_SECTIONS = [
       { href: "/dashboard/addPromotion", label: "Add Promotion", icon: MdLocalOffer },
       { href: "/dashboard/addNews", label: "Add News", icon: MdArticle },
       { href: "/dashboard/ad", label: "Add Ad", icon: MdCampaign },
+    ],
+  },
+  {
+    label: "Marketing",
+    items: [
+      { href: "/dashboard/email-broadcast", label: "Email Broadcast", icon: MdMail },
+      { href: "/dashboard/contact-folders", label: "Contact Folders", icon: MdFolder },
     ],
   },
   {
