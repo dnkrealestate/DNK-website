@@ -12,14 +12,20 @@ const STATUS_TONE = {
   pending: "default",
   sending: "form",
   paused: "paused",
+  throttled: "call_click",
   sent: "whatsapp_click",
   failed: "error",
+};
+
+const STATUS_LABEL = {
+  throttled: "waiting (daily limit)",
 };
 
 const DELETE_COPY = {
   draft: { title: "Delete this draft?", confirm: "Yes, delete it", successTitle: "Deleted" },
   pending: { title: "Cancel this scheduled broadcast?", confirm: "Yes, cancel it", successTitle: "Cancelled" },
   paused: { title: "Remove this paused broadcast?", confirm: "Yes, remove it", successTitle: "Removed" },
+  throttled: { title: "Remove this broadcast?", confirm: "Yes, remove it", successTitle: "Removed" },
   sent: { title: "Remove this from your broadcast history?", confirm: "Yes, remove it", successTitle: "Removed" },
   failed: { title: "Remove this from your broadcast history?", confirm: "Yes, remove it", successTitle: "Removed" },
 };
@@ -168,7 +174,7 @@ export default function CampaignHistory({ refreshKey, onResumeDraft }) {
               {campaigns.map((c) => {
                 const remaining = c.recipientCount - c.sentCount;
                 const canResend =
-                  remaining > 0 && ["paused", "failed", "sent"].includes(c.status);
+                  remaining > 0 && ["paused", "throttled", "failed", "sent"].includes(c.status);
                 return (
                   <tr key={c._id} className="hover:bg-[#F8F9FB]">
                     <td
@@ -185,7 +191,14 @@ export default function CampaignHistory({ refreshKey, onResumeDraft }) {
                       {c.openedCount} / {c.clickedCount}
                     </td>
                     <td className={td}>
-                      <Badge tone={STATUS_TONE[c.status] || "default"}>{c.status}</Badge>
+                      <Badge tone={STATUS_TONE[c.status] || "default"}>
+                        {STATUS_LABEL[c.status] || c.status}
+                      </Badge>
+                      {c.status === "throttled" && (
+                        <p className="mt-0.5 text-[10px] text-[#9AA4B2]">
+                          Resumes automatically
+                        </p>
+                      )}
                     </td>
                     <td className={td}>
                       {c.scheduledAt

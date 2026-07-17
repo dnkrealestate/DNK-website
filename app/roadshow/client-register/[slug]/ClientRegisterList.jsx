@@ -1,29 +1,51 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { MdDelete, MdEdit, MdHowToReg, MdArrowBack } from "react-icons/md";
-import { IoSearch } from "react-icons/io5";
+import { MdDelete, MdEdit, MdHowToReg, MdArrowBack, MdEditNote } from "react-icons/md";
+import { IoSearch, IoLogoWhatsapp } from "react-icons/io5";
 import { FaFilePdf } from "react-icons/fa6";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import html2canvas from "html2canvas";
 import { userRoadshowServices } from "@/services/roadshowService";
+import { useInvitationTemplateServices } from "@/services/invitationTemplateServices";
 import Card from "@/app/dashboard/components/ui/Card";
+import InvitationTemplateEditor from "./InvitationTemplateEditor";
+import InvitationPoster, { resolveInvitationTemplate, substituteTokens } from "./InvitationPoster";
+
+function preloadImage(url) {
+  return new Promise((resolve) => {
+    if (!url) return resolve();
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = url;
+  });
+}
 
 const ClientRegisterList = () => {
   const [registerList, setRegisterList] = useState([]);
   const [searchedList, setSearchedList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showInvitationEditor, setShowInvitationEditor] = useState(false);
+  const [sharingClientId, setSharingClientId] = useState(null);
+  const [captureData, setCaptureData] = useState(null);
   const pathname = usePathname();
   const router = useRouter();
   const slug = pathname.split("/").pop();
+  const eventplace = registerList[0]?.eventplace || slug;
+  const captureRef = useRef(null);
+  const captureResolveRef = useRef(null);
 
   const { getClientRegister, deleteClentRegister, updateClientRegister, getActiveRM } =
     userRoadshowServices();
+  const { getInvitationTemplate } = useInvitationTemplateServices();
 
   const generateSlug = (name) =>
     name
@@ -39,6 +61,51 @@ const ClientRegisterList = () => {
   useEffect(() => {
     filterList(registerList, searchQuery);
   }, [registerList, searchQuery]);
+
+  // Renders the hidden poster node with the requested template + tokens, waits
+  // for its images to actually load, then rasterizes it with html2canvas —
+  // this is what turns the template into a real shareable PNG per client.
+  useEffect(() => {
+    if (!captureData) return;
+
+    const run = async () => {
+      try {
+        await Promise.all([
+          preloadImage(captureData.backgroundImageUrl),
+          ...captureData.blocks
+            .filter((b) => b.type === "image" && b.imageUrl)
+            .map((b) => preloadImage(b.imageUrl)),
+        ]);
+        // Let the browser paint the freshly-loaded images before capturing.
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+        const node = captureRef.current;
+        if (!node) throw new Error("Capture node not ready");
+
+        const canvas = await html2canvas(node, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#0B0E14",
+        });
+        canvas.toBlob((blob) => {
+          captureResolveRef.current?.(blob);
+        }, "image/png");
+      } catch (err) {
+        console.error("Failed to capture invitation image:", err);
+        captureResolveRef.current?.(null);
+      } finally {
+        setCaptureData(null);
+      }
+    };
+    run();
+  }, [captureData]);
+
+  const capturePosterImage = (backgroundImageUrl, blocks, tokens, width, height) => {
+    return new Promise((resolve) => {
+      captureResolveRef.current = resolve;
+      setCaptureData({ backgroundImageUrl, blocks, tokens, width, height });
+    });
+  };
 
   const getClientRegisterData = async () => {
     try {
@@ -151,6 +218,93 @@ const ClientRegisterList = () => {
     }
   };
 
+  const handleShareInvitation = async (row) => {
+    setSharingClientId(row._id);
+    try {
+      const response = await getInvitationTemplate(eventplace);
+      if (!response.success || !response.data) {
+        Swal.fire(
+          "No invitation set up",
+          "Click 'Customize Invitation' first to design one for this event.",
+          "info"
+        );
+        return;
+      }
+
+      const tokens = {
+        name: row.fullName || "there",
+        date: row.attendDate || "",
+        time: row.attendTime || "",
+        eventName: row.eventName || "DNK Real Estate",
+      };
+      const resolved = resolveInvitationTemplate(response.data);
+      const caption = substituteTokens(
+        response.data.whatsappMessage ||
+          "Hi {{name}}, you're invited to our {{eventName}} event on {{date}} at {{time}}!",
+        tokens
+      );
+
+      const blob = await capturePosterImage(
+        resolved.backgroundImageUrl,
+        resolved.blocks,
+        tokens,
+        resolved.posterWidth,
+        resolved.posterHeight
+      );
+      if (!blob) {
+        Swal.fire("Error", "Could not generate the invitation image. Please try again.", "error");
+        return;
+      }
+
+      const fileName = `invitation-${(row.fullName || "client").replace(/\s+/g, "-").toLowerCase()}.png`;
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], text: caption });
+          return;
+        } catch (err) {
+          if (err?.name === "AbortError") return; // user cancelled the share sheet
+          console.error("navigator.share failed, falling back to download:", err);
+        }
+      }
+
+      // Desktop (or unsupported browsers): download the image, then open
+      // WhatsApp with the caption pre-filled so it's one attach away.
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Invitation image downloaded — attach it in the WhatsApp chat that just opened",
+        showConfirmButton: false,
+        timer: 4000,
+      });
+
+      // No stored number (or the admin just wants to pick a recipient
+      // manually) — wa.me with no number opens WhatsApp's own contact
+      // picker instead of a specific chat.
+      const phoneDigits = (row.phone || "").replace(/\D/g, "");
+      const waUrl = phoneDigits
+        ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(caption)}`
+        : `https://wa.me/?text=${encodeURIComponent(caption)}`;
+      window.open(waUrl, "_blank");
+    } catch (err) {
+      console.error("Error sharing invitation:", err);
+      Swal.fire("Error", "Something went wrong while preparing the invitation.", "error");
+    } finally {
+      setSharingClientId(null);
+    }
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.text("DNK Real Estate Client Register List", 14, 10);
@@ -217,6 +371,13 @@ const ClientRegisterList = () => {
         </div>
         <div className="flex items-center gap-2">
           <button
+            onClick={() => setShowInvitationEditor(true)}
+            className="flex h-9 items-center gap-1.5 rounded-lg bg-[#0F2C45]/5 px-3 text-sm font-medium text-[#0F2C45] hover:bg-[#0F2C45]/10"
+            title="Customize WhatsApp Invitation"
+          >
+            <MdEditNote className="text-lg" /> Customize Invitation
+          </button>
+          <button
             onClick={generatePDF}
             className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
             title="Export PDF"
@@ -264,6 +425,7 @@ const ClientRegisterList = () => {
                   <th className={th}>Date</th>
                   <th className={th}>Time</th>
                   <th className={th}>Budget</th>
+                  <th className={`${th} text-center`}>Invite</th>
                   <th className={`${th} text-center`}>Delete</th>
                 </tr>
               </thead>
@@ -285,6 +447,19 @@ const ClientRegisterList = () => {
                     <td className={td}>{data.attendTime}</td>
                     <td className={td}>{data.budget || "N/A"}</td>
                     <td className="text-center">
+                      <button
+                        onClick={() => handleShareInvitation(data)}
+                        disabled={sharingClientId === data._id}
+                        title="Share via WhatsApp"
+                      >
+                        {sharingClientId === data._id ? (
+                          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-emerald-500/30 border-t-emerald-500" />
+                        ) : (
+                          <IoLogoWhatsapp className="cursor-pointer text-lg text-emerald-500 hover:text-emerald-600" />
+                        )}
+                      </button>
+                    </td>
+                    <td className="text-center">
                       <button onClick={() => handleDelete(data._id)} title="Delete">
                         <MdDelete className="cursor-pointer text-lg text-red-400 hover:text-red-600" />
                       </button>
@@ -296,6 +471,30 @@ const ClientRegisterList = () => {
           </div>
         )}
       </Card>
+
+      {showInvitationEditor && (
+        <InvitationTemplateEditor
+          eventplace={eventplace}
+          onClose={() => setShowInvitationEditor(false)}
+        />
+      )}
+
+      {/* Off-screen render used only to rasterize the per-client invitation
+          image via html2canvas — rendered at the template's real pixel size
+          so the exported image matches the editor preview exactly, never
+          visible to the user. */}
+      {captureData && (
+        <div style={{ position: "fixed", left: "-9999px", top: 0 }}>
+          <InvitationPoster
+            ref={captureRef}
+            backgroundImageUrl={captureData.backgroundImageUrl}
+            blocks={captureData.blocks}
+            tokens={captureData.tokens}
+            width={captureData.width}
+            height={captureData.height}
+          />
+        </div>
+      )}
     </div>
   );
 };
