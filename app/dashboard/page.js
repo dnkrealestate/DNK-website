@@ -1,6 +1,7 @@
 "use client";
 import PageHeader from "./components/ui/PageHeader";
 import AnalyticsSummary from "./components/AnalyticsSummary";
+import ServerStatus from "./components/ServerStatus";
 
 export const DashboardHome = () => {
   return (
@@ -11,6 +12,7 @@ export const DashboardHome = () => {
       />
 
       <AnalyticsSummary />
+      <ServerStatus />
     </div>
   );
 };

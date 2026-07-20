@@ -127,10 +127,18 @@ const ClientRegisterList = () => {
   };
 
   const filterList = (list, search) => {
+    if (!search) {
+      setSearchedList(list);
+      return;
+    }
+    const digitsOnly = search.replace(/\D/g, "");
     setSearchedList(
-      search
-        ? list.filter((item) => item.sourcedRm?.toLowerCase().includes(search))
-        : list
+      list.filter((item) => {
+        const matchesRm = item.sourcedRm?.toLowerCase().includes(search);
+        const matchesName = item.fullName?.toLowerCase().includes(search);
+        const matchesPhone = digitsOnly && item.phone?.replace(/\D/g, "").includes(digitsOnly);
+        return matchesRm || matchesName || matchesPhone;
+      })
     );
   };
 
@@ -398,7 +406,7 @@ const ClientRegisterList = () => {
         <IoSearch className="shrink-0 text-[#8791A1]" />
         <input
           type="text"
-          placeholder="Search Sourced RM name..."
+          placeholder="Search by client name, phone, or Sourced RM..."
           className="w-full bg-transparent text-sm text-[#1A2233] outline-none placeholder:text-[#9AA4B2]"
           value={searchQuery}
           onChange={handleSearchChange}
