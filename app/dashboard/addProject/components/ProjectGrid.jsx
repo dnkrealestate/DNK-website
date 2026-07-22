@@ -164,7 +164,7 @@ export default function ProjectGrid() {
                   </div>
                   <p className="truncate text-xs text-[#7A8494] mb-0">
                     {project.developer || "No developer set"}
-                  </p>
+                  </p> 
                   {project.handover && (
                     <p className="mt-1.5 text-xs text-[#8791A1]">
                       Handover: {project.handover}
