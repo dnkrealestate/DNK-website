@@ -17,6 +17,7 @@ import DemoImage from "@/public/assets/icons/image_demo.webp";
 import useSliderLazyLoad from "@/app/hooks/useSliderLazyLoad";
 import { useProjectServices } from "@/services/projectServices";
 import PopupClick from "./PopupClick";
+import { getCreatedTime } from "@/utils/projectSort";
 
 const ListApartment = ({ params }) => {
   const [searchedList, setSearchedList] = useState([]);
@@ -34,7 +35,7 @@ const ListApartment = ({ params }) => {
           (typeKey) => data[typeKey] === "apartment"
         )
       )
-      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
     setSearchedList(tempList);
   }, [params, projectList]);
 
@@ -52,7 +53,7 @@ const ListApartment = ({ params }) => {
               (typeKey) => data[typeKey] === "apartment"
             )
           )
-          .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+          .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
         setProjectList(sortedProjects);
         setSearchedList(sortedProjects);
       }

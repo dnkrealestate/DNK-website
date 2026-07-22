@@ -5,6 +5,7 @@ import NewsMain from './components/NewsMain';
 import { getProjectList } from '@/services/projectServices';
 import { WWURL } from '@/url/axios';
 import { notFound } from 'next/navigation';
+import { getCreatedTime } from '@/utils/projectSort';
 
 // Utility: generate consistent slugs
 function generateSlug(name) {
@@ -75,11 +76,6 @@ export async function generateMetadata({ params }) {
         alternates: {
             canonical: canonicalUrl,
         },
-        link: [
-            { rel: "canonical", href: canonicalUrl },
-            { rel: "preload", as: "image", href: thumbnailUrl, type: "image/webp", fetchpriority: "high" },
-            { rel: "shortcut icon", href: "https://www.dnkre.com/favicon.ico" },
-        ],
         icons: {
             icon: [
                 { url: "/favicon.ico", sizes: "any" },
@@ -93,48 +89,53 @@ export async function generateMetadata({ params }) {
             author: "DNK Real Estate",
             robots: "index, follow",
         },
-        jsonLd: [
-            {
-                "@context": "http://schema.org",
-                "@type": "Organization",
-                name: "DNK Real Estate",
-                logo: "https://www.dnkre.com/favicon.ico",
-                url: "https://dnkre.com",
-                sameAs: [
-                    "https://www.instagram.com/dnk_re/",
-                    "https://www.facebook.com/dnkrealestate1/",
-                    "https://www.linkedin.com/company/dnkrealestate/",
-                    "https://www.youtube.com/channel/UCKH7d3Sx2dkfb4pEXXaMpFA",
-                ],
-                telephone: "+971555769195",
-                email: "info@dnkre.com",
-                address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
-            },
-            {
-                "@context": "http://schema.org",
-                "@type": "BreadcrumbList",
-                itemListElement: [
-                    { "@type": "ListItem", position: 1, item: { "@id": "https://dnkre.com", name: "Home" } },
-                    { "@type": "ListItem", position: 2, item: { "@id": "https://www.dnkre.com/news", name: "News" } },
-                    { "@type": "ListItem", position: 3, item: { "@id": "https://dnkre.com/off-plan-project", name: "Properties" } },
-                    { "@type": "ListItem", position: 4, item: { "@id": "https://dnkre.com/contact", name: "Contact" } },
-                ],
-                numberOfItems: 4,
-            },
-            {
-                "@context": "http://schema.org",
-                "@type": "WebPage",
-                mainEntity: {
-                    "@type": "WebPage",
-                    name: title,
-                    description,
-                    keywords: title,
-                    url: canonicalUrl,
-                    image: thumbnailUrl,
-                },
-            },
-        ],
     };
+}
+
+// JSON-LD builders — rendered as real <script> tags directly in NewsDetail's
+// JSX below, since generateMetadata's custom "jsonLd" field never renders.
+function buildNewsSchemas({ title, description, thumbnailUrl, canonicalUrl }) {
+    return [
+        {
+            "@context": "http://schema.org",
+            "@type": "Organization",
+            name: "DNK Real Estate",
+            logo: "https://www.dnkre.com/favicon.ico",
+            url: "https://dnkre.com",
+            sameAs: [
+                "https://www.instagram.com/dnk_re/",
+                "https://www.facebook.com/dnkrealestate1/",
+                "https://www.linkedin.com/company/dnkrealestate/",
+                "https://www.youtube.com/channel/UCKH7d3Sx2dkfb4pEXXaMpFA",
+            ],
+            telephone: "+971555769195",
+            email: "info@dnkre.com",
+            address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
+        },
+        {
+            "@context": "http://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+                { "@type": "ListItem", position: 1, item: { "@id": "https://dnkre.com", name: "Home" } },
+                { "@type": "ListItem", position: 2, item: { "@id": "https://www.dnkre.com/news", name: "News" } },
+                { "@type": "ListItem", position: 3, item: { "@id": "https://dnkre.com/off-plan-project", name: "Properties" } },
+                { "@type": "ListItem", position: 4, item: { "@id": "https://dnkre.com/contact", name: "Contact" } },
+            ],
+            numberOfItems: 4,
+        },
+        {
+            "@context": "http://schema.org",
+            "@type": "WebPage",
+            mainEntity: {
+                "@type": "WebPage",
+                name: title,
+                description,
+                keywords: title,
+                url: canonicalUrl,
+                image: thumbnailUrl,
+            },
+        },
+    ];
 }
 
 // ✅ Step 3: Render the page
@@ -170,12 +171,28 @@ export default async function NewsDetail({ params }) {
     }
 
     const filteredProjects = projects
-        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+        .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
         .filter((data) => data.status === "off-plan")
         .slice(0, 10);
 
+    const canonicalUrl = `https://www.dnkre.com/news/${slug}`;
+    const thumbnailUrl = `${WWURL}${newsData.newsthumbnail}`;
+    const newsSchemas = buildNewsSchemas({
+        title: newsData.newstitle || 'News',
+        description: newsData.newspara1 || '',
+        thumbnailUrl,
+        canonicalUrl,
+    });
+
     return (
         <>
+            {newsSchemas.map((schema, i) => (
+                <script
+                    key={i}
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+                />
+            ))}
             <MainBannerNews newsId={newsData} />
             <NewsMain
                 projects={filteredProjects}

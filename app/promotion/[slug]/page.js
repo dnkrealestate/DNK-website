@@ -1,5 +1,6 @@
 import { URL, WWURL } from '@/url/axios';
 import HomeAddressHills from './components/HomeAddressHills'
+import { PromotionJsonLd } from './promotionSchema'
 
 
 async function fetchPromotions() {
@@ -98,114 +99,39 @@ export async function generateMetadata({ params }) {
       robots: 'index, follow',
     },
     metadataBase: "https://www.dnkre.com",
-    jsonLd: [
-      {
-        "@context": "http://schema.org",
-        "@type": "Organization",
-        name: "DNK Real Estate",
-        logo: "https://www.dnkre.com/favicon.ico",
-        url: "https://dnkre.com",
-        sameAs: [
-          "https://www.instagram.com/dnk_re/",
-          "https://www.facebook.com/dnkrealestate1/",
-          "https://www.linkedin.com/company/dnkrealestate/",
-          "https://www.youtube.com/channel/UCKH7d3Sx2dkfb4pEXXaMpFA",
-        ],
-        telephone: "+971555769195",
-        email: "info@dnkre.com",
-        address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
-      },
-      {
-        "@context": "http://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            item: {
-              "@id": `https://dnkre.com/promotion/${promotionData.promoUrl.replace(/\s+/g, "-").toLowerCase()}`,
-              name: "Home",
-            },
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            item: {
-              "@type": "AboutPage",
-              name: "About",
-              "@id": `https://dnkre.com/promotion/${promotionData.promoUrl.replace(/\s+/g, "-").toLowerCase()}/about`,
-            },
-          },
-          {
-            "@type": "ListItem",
-            position: 3,
-            item: {
-              "@type": "ContactPage",
-              name: "Contact",
-              "@id": `https://dnkre.com/promotion/${promotionData.promoUrl.replace(/\s+/g, "-").toLowerCase()}/contact`,
-            },
-          },
-          {
-            "@type": "ListItem",
-            position: 4,
-            item: {
-              "@type": "PaymentPlan",
-              name: "Payment-Plan",
-              "@id": `https://dnkre.com/promotion/${promotionData.promoUrl.replace(/\s+/g, "-").toLowerCase()}/paymentPlan`,
-            },
-          },
-        ],
-        numberOfItems: 4,
-      },
-      {
-        "@context": "http://schema.org",
-        "@type": "ItemPage",
-        mainEntity: {
-          "@type": "WebPage",
-          name: title,
-          description: description,
-          keywords: keywords.join(', '),
-          url: canonicalUrl,
-          image: thumbnailUrl,
-          offers: [
-            {
-              "@type": "Offer",
-              name: title,
-              price: promotionData?.startingPrice,
-              priceCurrency: "AED",
-              itemOffered: {
-                "@type": "House",
-                name: title,
-                logo: thumbnailUrl,
-                url: canonicalUrl,
-                image: thumbnailUrl,
-              },
-              offeredBy: {
-                "@type": "Organization",
-                name: "DNK Real Estate",
-                address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
-                telephone: "+971555769195",
-                email: "info@dnkre.com",
-                image: thumbnailUrl,
-                sponsor: {
-                  "@type": "Organization",
-                  url: canonicalUrl,
-                  name: promotionData?.developer.replace(/-/g, " "),
-                },
-              },
-            },
-          ],
-        },
-      },
-    ],
   };
 }
 
 
-export default function AddressVillaPage() {
+export default async function AddressVillaPage({ params }) {
+  const { slug } = await params;
+  const promotionData = await fetchPromotionBySlug(slug);
+
+  if (!promotionData) {
+    return <HomeAddressHills />;
+  }
+
+  const title = `${promotionData.seoTitle}`;
+  const description = `${promotionData?.projectdescription}`;
+  const keywordsStr = [
+    promotionData.projectName,
+    promotionData.projectkeyword,
+    promotionData.developer.replace(/-/g, ' '),
+  ].join(', ');
+  const canonicalUrl = `https://www.dnkre.com/promotion/${promotionData.promoUrl.replace(/\s+/g, "-").toLowerCase()}`;
+  const thumbnailUrl = promotionData?.aboutImg1 ? `${WWURL}${promotionData.aboutImg1}` : null;
+
   return (
     <>
-        <HomeAddressHills />
+      <PromotionJsonLd
+        promotionData={promotionData}
+        title={title}
+        description={description}
+        keywordsStr={keywordsStr}
+        canonicalUrl={canonicalUrl}
+        thumbnailUrl={thumbnailUrl}
+      />
+      <HomeAddressHills />
     </>
   )
 }

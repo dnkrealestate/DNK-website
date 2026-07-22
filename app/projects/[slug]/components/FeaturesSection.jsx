@@ -144,18 +144,18 @@ export default function FeaturesSection({ projectId }) {
             Life style at {projectId?.projectname}
           </h2>
 
-          <p
-            className="text-justify"
+          <div
+            className="rich-content text-justify"
             dangerouslySetInnerHTML={{ __html: projectId?.about }}
-          ></p>
-          <p
-            className="text-justify"
+          ></div>
+          <div
+            className="rich-content text-justify"
             dangerouslySetInnerHTML={{ __html: projectId?.about1 }}
-          ></p>
-          <p
-            className="text-justify"
+          ></div>
+          <div
+            className="rich-content text-justify"
             dangerouslySetInnerHTML={{ __html: projectId?.about2 }}
-          ></p>
+          ></div>
           <h2 className="text-[#ffffff] text-left text-[1rem] sm:text-[1rem] font-semibold mb-2">
             {projectId?.pointhead}
           </h2>

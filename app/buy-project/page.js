@@ -5,6 +5,7 @@ import ProjectGridList from './components/ProjectGridList'
 import TalkSection from '../components/talkSection/TalkSection'
 import { getProjectList } from '@/services/projectServices';
 import { getPartner } from '@/services/partnerServices';
+import { getCreatedTime } from '@/utils/projectSort';
 
 const keywords = [
     "Properties for Sale",
@@ -146,7 +147,7 @@ export default async function page() {
         
         const filteredProjects = projects
         .filter((data) => data.status === "buy")
-        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
     
   return (
     <>

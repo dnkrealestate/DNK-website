@@ -3,6 +3,7 @@ import { getProjectList } from '@/services/projectServices';
 import DeveloperInfo from "./components/DeveloperInfo";
 import DeveloperProjectGridList from "./components/DeveloperProjectGridList";
 import { WWURL } from "@/url/axios";
+import { getCreatedTime } from "@/utils/projectSort";
 
 
 // ✅ Slug generator
@@ -135,7 +136,7 @@ export default async function DeveloperInfoPage({ params }) {
 
   const filteredProjects = projects
     .filter((data) => data.developer === slug)
-    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
 
   return (
     <>

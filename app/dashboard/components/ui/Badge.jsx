@@ -12,11 +12,11 @@ const palette = {
   default: "bg-[#F0F2F5] text-[#4B5566] ring-[#D7DCE3]",
 };
 
-export default function Badge({ children, tone = "default" }) {
+export default function Badge({ children, tone = "default", className = "" }) {
   const style = palette[tone] || palette.default;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ring-1 ring-inset ${style}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ring-1 ring-inset ${style} ${className}`}
     >
       {children}
     </span>

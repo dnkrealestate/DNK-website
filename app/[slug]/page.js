@@ -3,6 +3,7 @@ import { getProjectList } from "@/services/projectServices";
 import { WWURL } from "@/url/axios";
 import Image from "next/image";
 import Link from "next/link";
+import { getCreatedTime } from "@/utils/projectSort";
 
 
 // Slug generator
@@ -132,7 +133,7 @@ export default async function Page({ params }) {
           proj.developer?.toLowerCase() ===
           matchedDeveloper.partnername.toLowerCase()
       )
-      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
 
   } catch (error) {
     console.error("Error fetching developer or projects:", error);

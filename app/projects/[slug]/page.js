@@ -3,6 +3,7 @@ import React from 'react';
 import { getTeamList } from '@/services/teamServices';
 import { URL, WWURL } from '@/url/axios';
 import ProjectDetailClient from './components/ProjectDetailClient';
+import { getCreatedTime } from '@/utils/projectSort';
 
 // Utility function to generate slug
 function generateSlug(name) {
@@ -78,19 +79,17 @@ export async function generateMetadata({ params }) {
     locationname,
     developer,
     projectdescription,
-    about,
     projectkeyword,
     coverimage,
     developerlogo,
     thumbnail,
     gallary1,
-    startingprice,
   } = project.data;
 
   const currentYear = new Date().getFullYear();
 
   const title = `${projectname} at ${locationname} - ${developer.replace(/-/g, ' ')}`;
-  const description = `${projectdescription}${about}`;
+  const description = `${projectdescription}`;
   const keywords = [
     projectname,
     projectkeyword,
@@ -162,115 +161,125 @@ export async function generateMetadata({ params }) {
       robots: 'index, follow',
     },
     metadataBase: "https://www.dnkre.com",
-    jsonLd: [
+  };
+}
+
+// JSON-LD builders — rendered as real <script> tags directly in the page
+// component's JSX (see ProjectDetail below), since Next's Metadata API has
+// no built-in "jsonLd" field; a custom one silently renders nothing.
+function buildOrganizationSchema() {
+  return {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    name: "DNK Real Estate",
+    logo: "https://www.dnkre.com/favicon.ico",
+    url: "https://dnkre.com",
+    sameAs: [
+      "https://www.instagram.com/dnk_re/",
+      "https://www.facebook.com/dnkrealestate1/",
+      "https://www.linkedin.com/company/dnkrealestate/",
+      "https://www.youtube.com/channel/UCKH7d3Sx2dkfb4pEXXaMpFA",
+    ],
+    telephone: "+971555769195",
+    email: "info@dnkre.com",
+    address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
+  };
+}
+
+function buildBreadcrumbSchema({ locationname, developer, projectname, canonicalUrl }) {
+  return {
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
       {
-        "@context": "http://schema.org",
-        "@type": "Organization",
-        name: "DNK Real Estate",
-        logo: "https://www.dnkre.com/favicon.ico",
-        url: "https://dnkre.com",
-        sameAs: [
-          "https://www.instagram.com/dnk_re/",
-          "https://www.facebook.com/dnkrealestate1/",
-          "https://www.linkedin.com/company/dnkrealestate/",
-          "https://www.youtube.com/channel/UCKH7d3Sx2dkfb4pEXXaMpFA",
-        ],
-        telephone: "+971555769195",
-        email: "info@dnkre.com",
-        address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
+        "@type": "ListItem",
+        position: 1,
+        item: {
+          "@id": "https://dnkre.com",
+          name: "Home",
+        },
       },
       {
-        "@context": "http://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            item: {
-              "@id": "https://dnkre.com",
-              name: "Home",
-            },
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            item: {
-              "@type": "Place",
-              name: locationname,
-              "@id": canonicalUrl,
-            },
-          },
-          {
-            "@type": "ListItem",
-            position: 3,
-            item: {
-              "@type": "Brand",
-              name: developer.replace(/-/g, " "),
-              "@id": canonicalUrl,
-            },
-          },
-          {
-            "@type": "ListItem",
-            position: 4,
-            item: {
-              "@type": "House",
-              name: projectname,
-              "@id": canonicalUrl,
-            },
-          },
-        ],
-        numberOfItems: 4,
+        "@type": "ListItem",
+        position: 2,
+        item: {
+          "@type": "Place",
+          name: locationname,
+          "@id": canonicalUrl,
+        },
       },
       {
-        "@context": "http://schema.org",
-        "@type": "ItemPage",
-        mainEntity: {
-          "@type": "WebPage",
-          name: title,
-          description: about,
-          keywords: keywords.join(', '),
-          url: canonicalUrl,
-          image: thumbnailUrl,
-
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.6",
-            bestRating: "5",
-            ratingCount: "245",
-            reviewCount: "245",
-          },
-
-          offers: [
-            {
-              "@type": "Offer",
-              name: title,
-              price: startingprice,
-              priceCurrency: "AED",
-              itemOffered: {
-                "@type": "House",
-                name: title,
-                logo: thumbnailUrl,
-                url: canonicalUrl,
-                image: thumbnailUrl,
-              },
-              offeredBy: {
-                "@type": "Organization",
-                name: "DNK Real Estate",
-                address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
-                telephone: "+971555769195",
-                email: "info@dnkre.com",
-                image: thumbnailUrl,
-                sponsor: {
-                  "@type": "Organization",
-                  url: canonicalUrl,
-                  name: developer.replace(/-/g, " "),
-                },
-              },
-            },
-          ],
+        "@type": "ListItem",
+        position: 3,
+        item: {
+          "@type": "Brand",
+          name: developer.replace(/-/g, " "),
+          "@id": canonicalUrl,
+        },
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        item: {
+          "@type": "House",
+          name: projectname,
+          "@id": canonicalUrl,
         },
       },
     ],
+    numberOfItems: 4,
+  };
+}
+
+function buildItemPageSchema({ title, about, keywordsStr, canonicalUrl, thumbnailUrl, startingprice, developer }) {
+  return {
+    "@context": "http://schema.org",
+    "@type": "ItemPage",
+    mainEntity: {
+      "@type": "WebPage",
+      name: title,
+      description: about,
+      keywords: keywordsStr,
+      url: canonicalUrl,
+      image: thumbnailUrl,
+
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "4.6",
+        bestRating: "5",
+        ratingCount: "245",
+        reviewCount: "245",
+      },
+
+      offers: [
+        {
+          "@type": "Offer",
+          name: title,
+          price: startingprice,
+          priceCurrency: "AED",
+          itemOffered: {
+            "@type": "House",
+            name: title,
+            logo: thumbnailUrl,
+            url: canonicalUrl,
+            image: thumbnailUrl,
+          },
+          offeredBy: {
+            "@type": "Organization",
+            name: "DNK Real Estate",
+            address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
+            telephone: "+971555769195",
+            email: "info@dnkre.com",
+            image: thumbnailUrl,
+            sponsor: {
+              "@type": "Organization",
+              url: canonicalUrl,
+              name: developer.replace(/-/g, " "),
+            },
+          },
+        },
+      ],
+    },
   };
 }
 
@@ -314,18 +323,75 @@ export default async function ProjectDetail({ params }) {
 
   const filteredProjects = projects
     .filter((data) => data.status === "off-plan")
-    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+    .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
     .slice(0, 6);
 
   if (!projectData) {
     return <div>Error: Project not found</div>;
   }
 
+  const {
+    projectname,
+    locationname,
+    developer,
+    about,
+    projectkeyword,
+    thumbnail,
+    gallary1,
+    startingprice,
+  } = projectData;
+
+  const currentYear = new Date().getFullYear();
+  const canonicalUrl = `https://www.dnkre.com/projects/${slug}`;
+  const title = `${projectname} at ${locationname} - ${developer.replace(/-/g, ' ')}`;
+  const thumbnailUrl = thumbnail ? `${WWURL}${gallary1}` : null;
+  const keywordsStr = [
+    projectname,
+    projectkeyword,
+    developer.replace(/-/g, ' '),
+    `${projectname} by ${developer.replace(/-/g, ' ')}`,
+    `${projectname} at ${locationname}`,
+    `${locationname} properties`,
+    `Best property ${currentYear}`,
+    `Luxury properties in Dubai`,
+    `Dubai off-plan properties`,
+    `Cheap property for sale in Dubai`,
+    `Dubai property market ${currentYear}`,
+    `${currentYear} Dubai real estate`,
+    `${developer.replace(/-/g, ' ')} Best Project?`,
+  ].join(', ');
+
+  const organizationSchema = buildOrganizationSchema();
+  const breadcrumbSchema = buildBreadcrumbSchema({ locationname, developer, projectname, canonicalUrl });
+  const itemPageSchema = buildItemPageSchema({
+    title,
+    about,
+    keywordsStr,
+    canonicalUrl,
+    thumbnailUrl,
+    startingprice,
+    developer,
+  });
+
   return (
-    <ProjectDetailClient
-      projectData={projectData}
-      teamData={teamData}
-      filteredProjects={filteredProjects}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemPageSchema) }}
+      />
+      <ProjectDetailClient
+        projectData={projectData}
+        teamData={teamData}
+        filteredProjects={filteredProjects}
+      />
+    </>
   );
 }

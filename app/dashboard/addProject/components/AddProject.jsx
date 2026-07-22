@@ -12,6 +12,7 @@ import { userPartnerServices } from "@/services/partnerServices";
 import { URL } from "@/url/axios";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
+import RichTextEditor from "../../components/ui/RichTextEditor";
 
 function SectionHeading({ title, description }) {
   return (
@@ -124,6 +125,10 @@ export default function AddProject({ mode = "create", user_id = null }) {
     developerlogo: null,
     projectlogo: null,
   });
+  // Additional gallery images beyond gallary1-3. Each slot is either an
+  // "existing" image (already saved, referenced by filename) or a "new"
+  // one (a freshly-picked File with a local blob preview).
+  const [galleryImages, setGalleryImages] = useState([]);
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -166,6 +171,33 @@ export default function AddProject({ mode = "create", user_id = null }) {
     }));
   };
 
+  const addGalleryImageSlot = () => {
+    setGalleryImages((prev) => [
+      ...prev,
+      {
+        id: `new-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        file: null,
+        existingName: null,
+        previewUrl: null,
+      },
+    ]);
+  };
+
+  const removeGalleryImageSlot = (id) => {
+    setGalleryImages((prev) => prev.filter((slot) => slot.id !== id));
+  };
+
+  const handleGalleryImageChange = (id, file) => {
+    if (!file) return;
+    setGalleryImages((prev) =>
+      prev.map((slot) =>
+        slot.id === id
+          ? { ...slot, file, existingName: null, previewUrl: window.URL.createObjectURL(file) }
+          : slot
+      )
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -180,6 +212,20 @@ export default function AddProject({ mode = "create", user_id = null }) {
         }
       }
       formdata.append("isDraft", createProject.isDraft ? "true" : "false");
+
+      // Additional gallery images live in separate state (not on createProject,
+      // since FormData can't carry arrays) — sent as a galleryMeta ordering
+      // manifest plus one gallery_image_<index> file per newly-picked image.
+      const galleryMeta = [];
+      galleryImages.forEach((slot, idx) => {
+        if (slot.file) {
+          galleryMeta.push({ type: "new", index: idx });
+          formdata.append(`gallery_image_${idx}`, slot.file);
+        } else if (slot.existingName) {
+          galleryMeta.push({ type: "existing", value: slot.existingName });
+        }
+      });
+      formdata.append("galleryMeta", JSON.stringify(galleryMeta));
 
       let response;
       const isUpdate = Boolean(createProject.id);
@@ -261,6 +307,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
       developerlogo: null,
       projectlogo: null,
     });
+    setGalleryImages([]);
   };
 
   useEffect(() => {
@@ -306,6 +353,16 @@ export default function AddProject({ mode = "create", user_id = null }) {
         developerlogo: null,
         projectlogo: null,
       });
+      setGalleryImages(
+        Array.isArray(project.gallery)
+          ? project.gallery.map((name) => ({
+              id: `existing-${name}`,
+              file: null,
+              existingName: name,
+              previewUrl: null,
+            }))
+          : []
+      );
     } catch (err) {
       if (err?.response?.status === 404) {
         Swal.fire("Not found", "This project no longer exists.", "error");
@@ -942,6 +999,59 @@ export default function AddProject({ mode = "create", user_id = null }) {
             </div>
           </div>
         </div>
+
+        <div className="mt-6 border-t border-[#E5E8EE] pt-5">
+          <div className="mb-3 flex items-center justify-between">
+            <div>
+              <label className="block text-sm font-medium text-[#33394B]">
+                Additional Gallery Images
+              </label>
+              <p className="text-xs text-[#8791A1]">
+                Shown on the project page after Gallary Images 1-3.
+              </p>
+            </div>
+            <Button type="button" size="sm" variant="secondary" onClick={addGalleryImageSlot}>
+              + Add Image
+            </Button>
+          </div>
+          {galleryImages.length > 0 && (
+            <div className="flex flex-wrap gap-3">
+              {galleryImages.map((slot) => (
+                <div key={slot.id} className="w-fit">
+                  <div className="relative h-[133px] w-[190px]">
+                    <label htmlFor={`gallery-${slot.id}`} className="cursor-pointer">
+                      <Image
+                        fill
+                        sizes="190px"
+                        className="object-cover object-center"
+                        src={
+                          slot.previewUrl ||
+                          (slot.existingName ? URL + slot.existingName : projectImage)
+                        }
+                        alt="additional gallery image"
+                      />
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      id={`gallery-${slot.id}`}
+                      onChange={(e) => handleGalleryImageChange(slot.id, e.target.files[0])}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImageSlot(slot.id)}
+                      className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-white shadow"
+                      aria-label="Remove image"
+                    >
+                      <MdDelete size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         </Card>
 
         <Card className="p-6">
@@ -970,39 +1080,24 @@ export default function AddProject({ mode = "create", user_id = null }) {
         />
 
         <label className="mb-1.5 block text-sm font-medium text-[#33394B]">About Paragraph 1</label>
-        <textarea
+        <RichTextEditor
           placeholder="About Paragraph 1"
-          type="text"
-          name="about"
-          onChange={handleChange}
           value={createProject.about || ""}
-          cols="30"
-          rows="5"
-          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
+          onChange={(html) => setCreateProject((prev) => ({ ...prev, about: html }))}
         />
 
         <label className="mb-1.5 block text-sm font-medium text-[#33394B]">About Paragraph 2</label>
-        <textarea
+        <RichTextEditor
           placeholder="About Paragraph 2"
-          type="text"
-          name="about1"
-          onChange={handleChange}
           value={createProject.about1 || ""}
-          cols="30"
-          rows="5"
-          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
+          onChange={(html) => setCreateProject((prev) => ({ ...prev, about1: html }))}
         />
 
         <label className="mb-1.5 block text-sm font-medium text-[#33394B]">About Paragraph 3</label>
-        <textarea
+        <RichTextEditor
           placeholder="About Paragraph 3"
-          type="text"
-          name="about2"
-          onChange={handleChange}
           value={createProject.about2 || ""}
-          cols="30"
-          rows="5"
-          className="w-full rounded-lg border border-[#D7DCE3] bg-white px-3.5 py-2.5 text-sm text-[#1A2233] placeholder:text-[#9AA4B2] transition-colors focus:border-[#0F2C45] focus:outline-none focus:ring-2 focus:ring-[#0F2C45]/10 mb-5"
+          onChange={(html) => setCreateProject((prev) => ({ ...prev, about2: html }))}
         />
         </Card>
 

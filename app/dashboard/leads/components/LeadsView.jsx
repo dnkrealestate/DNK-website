@@ -6,6 +6,9 @@ import {
   MdCall,
   MdSmartToy,
   MdPeopleAlt,
+  MdChatBubbleOutline,
+  MdClose,
+  MdDelete,
 } from "react-icons/md";
 import { RiWhatsappFill } from "react-icons/ri";
 import Swal from "sweetalert2";
@@ -20,6 +23,26 @@ import { usePolling } from "../../hooks/usePolling";
 import { bucketDailySeries, formatBucketLabel } from "../../utils/timeSeries";
 
 const POLL_INTERVAL_MS = 15000;
+
+// The Call/WhatsApp click buttons across the site dial fixed company numbers
+// (not the visitor's own number, which a click never reveals) — label the
+// known ones so they read as "which line got clicked" instead of looking
+// like a customer's phone number.
+const KNOWN_STAFF_NUMBERS = {
+  "+971555769195": "Dann",
+  "+97145546904": "Waseem",
+};
+
+function PhoneCell({ phone }) {
+  if (!phone) return "—";
+  const staffName = KNOWN_STAFF_NUMBERS[phone];
+  if (!staffName) return phone;
+  return (
+    <span>
+      {phone} <span className="text-xs text-[#8791A1]">({staffName})</span>
+    </span>
+  );
+}
 
 const TYPE_META = {
   form: { label: "Form Submissions", icon: MdContactMail },
@@ -53,8 +76,32 @@ function StatTile({ icon: Icon, label, value, current, previous }) {
   );
 }
 
+const SOURCE_TRUNCATE_LENGTH = 28;
+
+function SourceCell({ source }) {
+  const [expanded, setExpanded] = useState(false);
+  const text = source || "—";
+
+  if (text.length <= SOURCE_TRUNCATE_LENGTH) {
+    return <span className="font-medium text-[#1A2233]">{text}</span>;
+  }
+
+  return (
+    <div className="max-w-[220px]">
+      <p className={`font-medium text-[#1A2233] ${expanded ? "" : "truncate"}`}>{text}</p>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className="text-[11px] font-medium text-[#0F2C45]/70 hover:text-[#0F2C45] hover:underline"
+      >
+        {expanded ? "Show less" : "Read more"}
+      </button>
+    </div>
+  );
+}
+
 export default function LeadsView() {
-  const { getLeads, getLeadsSummary } = useLeadServices();
+  const { getLeads, getLeadsSummary, deleteLead } = useLeadServices();
   const [days, setDays] = useState(30);
   const [summary, setSummary] = useState(null);
   const [leads, setLeads] = useState([]);
@@ -63,6 +110,7 @@ export default function LeadsView() {
   const [typeFilter, setTypeFilter] = useState("");
   const [hovered, setHovered] = useState(null);
   const [newLeadIds, setNewLeadIds] = useState(new Set());
+  const [chatDetail, setChatDetail] = useState(null);
   const knownIdsRef = useRef(null);
   const highlightTimerRef = useRef(null);
 
@@ -126,6 +174,38 @@ export default function LeadsView() {
     setLoadingSummary(true);
     setLoadingLeads(true);
     setDays(value);
+  };
+
+  const handleDeleteLead = async (lead) => {
+    const result = await Swal.fire({
+      title: "Delete this lead?",
+      text: `${lead.name || lead.phone || "This lead"} will be permanently removed.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      confirmButtonText: "Yes, delete it",
+    });
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await deleteLead(lead._id);
+      if (response.success) {
+        setLeads((prev) => prev.filter((l) => l._id !== lead._id));
+        knownIdsRef.current?.delete(lead._id);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Lead deleted",
+          showConfirmButton: false,
+          timer: 2500,
+        });
+      } else {
+        Swal.fire("Failed", response.message || "Could not delete this lead.", "error");
+      }
+    } catch (err) {
+      Swal.fire("Error", err?.response?.data?.message || "Something went wrong.", "error");
+    }
   };
 
   const { lastUpdated: summaryUpdated } = usePolling(fetchSummary, {
@@ -262,18 +342,20 @@ export default function LeadsView() {
                 <th className="px-5 py-3">Phone</th>
                 <th className="px-5 py-3">Email</th>
                 <th className="px-5 py-3">Page</th>
+                <th className="px-5 py-3">Chat</th>
+                <th className="px-5 py-3 text-center">Delete</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#EFF1F5]">
               {loadingLeads ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center text-[#8791A1]">
+                  <td colSpan={9} className="px-5 py-12 text-center text-[#8791A1]">
                     Loading leads...
                   </td>
                 </tr>
               ) : leads.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center text-[#8791A1]">
+                  <td colSpan={9} className="px-5 py-12 text-center text-[#8791A1]">
                     No leads found for this filter.
                   </td>
                 </tr>
@@ -305,12 +387,35 @@ export default function LeadsView() {
                           {TYPE_META[lead.type]?.label.replace(/s$/, "") || lead.type}
                         </Badge>
                       </td>
-                      <td className="px-5 py-3 font-medium text-[#1A2233]">{lead.source || "—"}</td>
+                      <td className="px-5 py-3">
+                        <SourceCell source={lead.source} />
+                      </td>
                       <td className="px-5 py-3">{lead.name || "—"}</td>
-                      <td className="px-5 py-3">{lead.phone || "—"}</td>
+                      <td className="px-5 py-3">
+                        <PhoneCell phone={lead.phone} />
+                      </td>
                       <td className="px-5 py-3">{lead.email || "—"}</td>
                       <td className="max-w-[160px] truncate px-5 py-3 text-[#4B5566]" title={lead.page}>
                         {lead.page || "—"}
+                      </td>
+                      <td className="px-5 py-3">
+                        {lead.chatHistory?.length > 0 ? (
+                          <button
+                            onClick={() => setChatDetail(lead)}
+                            className="flex items-center gap-1 text-[#0F2C45] hover:underline"
+                            title="View conversation"
+                          >
+                            <MdChatBubbleOutline className="text-base" />
+                            <span className="text-xs">{lead.chatHistory.length}</span>
+                          </button>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                      <td className="px-5 py-3 text-center">
+                        <button onClick={() => handleDeleteLead(lead)} title="Delete lead">
+                          <MdDelete className="cursor-pointer text-lg text-red-400 hover:text-red-600" />
+                        </button>
                       </td>
                     </tr>
                   );
@@ -320,6 +425,66 @@ export default function LeadsView() {
           </table>
         </div>
       </Card>
+
+      {chatDetail && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setChatDetail(null)}
+        >
+          <div
+            className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-[#E5E8EE] px-5 py-4">
+              <div>
+                <h3 className="text-sm font-semibold text-[#1A2233]">
+                  {chatDetail.name || "Visitor"}'s conversation with DNK Agent
+                </h3>
+                <p className="mt-0.5 text-xs text-[#8791A1]">{chatDetail.phone}</p>
+              </div>
+              <button onClick={() => setChatDetail(null)} title="Close">
+                <MdClose className="text-lg text-[#8791A1] hover:text-[#1A2233]" />
+              </button>
+            </div>
+
+            {(chatDetail.bedroom || chatDetail.location || chatDetail.developer || chatDetail.budget) && (
+              <div className="grid grid-cols-2 gap-3 border-b border-[#E5E8EE] px-5 py-3 text-xs">
+                <div>
+                  <span className="text-[#8791A1]">Bedroom: </span>
+                  <span className="font-medium text-[#1A2233]">{chatDetail.bedroom || "—"}</span>
+                </div>
+                <div>
+                  <span className="text-[#8791A1]">Location: </span>
+                  <span className="font-medium text-[#1A2233]">{chatDetail.location || "—"}</span>
+                </div>
+                <div>
+                  <span className="text-[#8791A1]">Developer: </span>
+                  <span className="font-medium text-[#1A2233]">{chatDetail.developer || "—"}</span>
+                </div>
+                <div>
+                  <span className="text-[#8791A1]">Budget: </span>
+                  <span className="font-medium text-[#1A2233]">{chatDetail.budget || "—"}</span>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-2 px-5 py-4">
+              {(chatDetail.chatHistory || []).map((m, i) => (
+                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div
+                    className={`max-w-[80%] rounded-lg px-3 py-2 text-xs ${
+                      m.role === "user"
+                        ? "bg-[#0F2C45] text-white"
+                        : "bg-[#F3F5F8] text-[#1A2233]"
+                    }`}
+                    dangerouslySetInnerHTML={{ __html: m.content }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

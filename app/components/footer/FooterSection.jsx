@@ -544,86 +544,90 @@ export default function FooterSection() {
           </Link>
         </div>
       </div> */}
-      <div className="call-widget fixed bottom-24 right-5 z-50">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="animate-ping border border-[#18A436] rounded-full w-[50px] h-[50px]"></div>
-        </div>
-        {/* Pulse Animation Circle */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="animate-ping bg-[#18A436] rounded-full w-[50px] h-[50px]"></div>
-        </div>
+      {!pathname?.startsWith("/link/") && (
+        <>
+          <div className="call-widget fixed bottom-24 right-5 z-50">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="animate-ping border border-[#18A436] rounded-full w-[50px] h-[50px]"></div>
+            </div>
+            {/* Pulse Animation Circle */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="animate-ping bg-[#18A436] rounded-full w-[50px] h-[50px]"></div>
+            </div>
 
-        {/* Call Button */}
-        <div
-          onClick={handleCallClick}
-          className="relative z-10 bg-[#18A436] rounded-full p-3 shadow-lg cursor-pointer group hover:bg-[#54ff79] transition"
-        >
-          <IoIosCall className="text-[#fff] group-hover:text-[#000]  text-[2rem]" />
-        </div>
-
-        {/* Call Form Popup */}
-        {showCallForm && (
-          <div className="absolute bottom-16 right-0 bg-white text-black p-4 rounded-lg shadow-lg w-64 animate-slideIn">
-            <button
-              type="button"
-              onClick={() => setShowCallForm(false)}
-              className="absolute top-2 right-3 text-gray-500 hover:text-black text-lg"
-              aria-label="Close"
+            {/* Call Button */}
+            <div
+              onClick={handleCallClick}
+              className="relative z-10 bg-[#18A436] rounded-full p-3 shadow-lg cursor-pointer group hover:bg-[#54ff79] transition"
             >
-              ✕
-            </button>
-            <h3 className="font-semibold mb-2">Request a Call</h3>
-            <p className="text-[0.8rem] text-gray-800">
-              Let’s talk! Leave your number and we’ll reach out immediately.
-            </p>
-            <form onSubmit={handleSubmit}>
-              {errors.fullName && (
-                <p className="error text-[0.9rem] m-0 text-[#FF0202]">
-                  {errors.fullName}
-                </p>
-              )}
-              <input
-                type="text"
-                placeholder="Your Name"
-                className="w-full border border-[#000] px-2 p-2 mb-3 rounded text-[0.9rem]"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
+              <IoIosCall className="text-[#fff] group-hover:text-[#000]  text-[2rem]" />
+            </div>
 
-              <div className="phoneInput ">
-                {errors.phoneNumber && (
-                  <p className="error text-[0.9rem] m-0 text-[#FF0202]">
-                    {errors.phoneNumber}
-                  </p>
-                )}
-                <PhoneInput
-                  placeholder="Mobile Number*"
-                  type="text"
-                  country={"ae"}
-                  value={phoneNumber}
-                  onChange={handleChange}
-                  enableAreaCodeStretch
-                  inputProps={{
-                    required: true,
-                  }}
-                  className="w-full bg-transparent border border-[#000] p-[1px] pl-0 mb-6 rounded text-[#000] text-[0.9rem]"
-                />
+            {/* Call Form Popup */}
+            {showCallForm && (
+              <div className="absolute bottom-16 right-0 bg-white text-black p-4 rounded-lg shadow-lg w-64 animate-slideIn">
+                <button
+                  type="button"
+                  onClick={() => setShowCallForm(false)}
+                  className="absolute top-2 right-3 text-gray-500 hover:text-black text-lg"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+                <h3 className="font-semibold mb-2">Request a Call</h3>
+                <p className="text-[0.8rem] text-gray-800">
+                  Let’s talk! Leave your number and we’ll reach out immediately.
+                </p>
+                <form onSubmit={handleSubmit}>
+                  {errors.fullName && (
+                    <p className="error text-[0.9rem] m-0 text-[#FF0202]">
+                      {errors.fullName}
+                    </p>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    className="w-full border border-[#000] px-2 p-2 mb-3 rounded text-[0.9rem]"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+
+                  <div className="phoneInput ">
+                    {errors.phoneNumber && (
+                      <p className="error text-[0.9rem] m-0 text-[#FF0202]">
+                        {errors.phoneNumber}
+                      </p>
+                    )}
+                    <PhoneInput
+                      placeholder="Mobile Number*"
+                      type="text"
+                      country={"ae"}
+                      value={phoneNumber}
+                      onChange={handleChange}
+                      enableAreaCodeStretch
+                      inputProps={{
+                        required: true,
+                      }}
+                      className="w-full bg-transparent border border-[#000] p-[1px] pl-0 mb-6 rounded text-[#000] text-[0.9rem]"
+                    />
+                  </div>
+                  <button
+                    className="w-full bg-[#CE8745] text-[#fff] py-2 rounded hover:bg-[#ffb066] transition"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <div className="loader !w-[24px] !h-[24px] FormSubmitButton m-auto"></div>
+                    ) : (
+                      "Call Me!"
+                    )}
+                  </button>
+                </form>
               </div>
-              <button
-                className="w-full bg-[#CE8745] text-[#fff] py-2 rounded hover:bg-[#ffb066] transition"
-                disabled={loading}
-              >
-                {loading ? (
-                  <div className="loader !w-[24px] !h-[24px] FormSubmitButton m-auto"></div>
-                ) : (
-                  "Call Me!"
-                )}
-              </button>
-            </form>
+            )}
           </div>
-        )}
-      </div>
-      <ChatBot />
+          <ChatBot />
+        </>
+      )}
     </footer>
   );
 };

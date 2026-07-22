@@ -8,6 +8,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import Image from "next/image";
 import { WWURL } from "@/url/axios";
+import { getCreatedTime } from "@/utils/projectSort";
 
 
 export default function DeveloperProjectGridList({ projects, developerData }) {
@@ -26,7 +27,7 @@ export default function DeveloperProjectGridList({ projects, developerData }) {
 
     const tempList = projectList
       .filter((data) => data.developer === statusValue)
-      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
     setSearchedList(tempList);
   }, [projectList]);
 

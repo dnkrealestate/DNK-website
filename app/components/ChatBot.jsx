@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 
 const CHAT_KEY = "dnk_chat_history";
 const CHAT_TIME_KEY = "dnk_chat_time";
+const REQUIREMENT_KEY = "dnk_chat_requirement";
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export default function ChatBot() {
@@ -23,6 +24,7 @@ export default function ChatBot() {
   const [name, setName] = useState(null);
   const [hasPhone, setHasPhone] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [requirement, setRequirement] = useState({});
   const messagesEndRef = useRef(null);
   const pathname = usePathname();
 
@@ -58,14 +60,29 @@ export default function ChatBot() {
     if (typeof window !== "undefined") {
       const storedName = localStorage.getItem("chat_user_name");
       const savedPhone = localStorage.getItem("chat_phone");
+      // Only replace the greeting with a name-aware one when there's no
+      // restored conversation to preserve — otherwise this silently wipes
+      // the chat history the effect above just loaded.
+      const hasRestoredChat = !!localStorage.getItem(CHAT_KEY);
 
       if (storedName) {
         setName(storedName);
-        setMessages([{ role: "bot", content: `👋 Hi ${storedName}! How can I help you today?` }]);
+        if (!hasRestoredChat) {
+          setMessages([{ role: "bot", content: `👋 Hi ${storedName}! How can I help you today?` }]);
+        }
       }
 
       if (savedPhone) {
         setHasPhone(true);
+      }
+
+      const savedRequirement = localStorage.getItem(REQUIREMENT_KEY);
+      if (savedRequirement) {
+        try {
+          setRequirement(JSON.parse(savedRequirement));
+        } catch {
+          // ignore malformed cache
+        }
       }
     }
   }, []);
@@ -128,6 +145,7 @@ export default function ChatBot() {
           hasPhone,
           name,
           history: messages,
+          requirement,
         }),
       });
 
@@ -143,6 +161,13 @@ export default function ChatBot() {
       if (data.savePhone && !hasPhone) {
         setHasPhone(true);
         localStorage.setItem("chat_phone", data.savePhone);
+      }
+
+      // Track lead qualification progress (leadId, stage, bedroom/location/
+      // developer/budget) across turns so the AI knows where it left off.
+      if (data.requirement) {
+        setRequirement(data.requirement);
+        localStorage.setItem(REQUIREMENT_KEY, JSON.stringify(data.requirement));
       }
 
       // Progressive streaming for human-like typing

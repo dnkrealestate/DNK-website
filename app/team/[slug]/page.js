@@ -5,6 +5,7 @@ import OurProcess from '@/app/components/ourProcess/OurProcess';
 import TalkSection from '@/app/components/talkSection/TalkSection';
 import ReviewSection from '@/app/components/reviewSection/ReviewSection';
 import { getReview } from '@/services/reviewServices';
+import { WWURL } from '@/url/axios';
 
 export async function generateMetadata({params}) {
     const { slug } = await params;
@@ -16,13 +17,59 @@ export async function generateMetadata({params}) {
         };
     }
 
-    const { id, name, position, aboutpara1 } = team.data;
+    const { name, position, aboutpara1, image } = team.data;
 
-    const title = `Best ${position} in DNK ${name}`;
-    const description = `${aboutpara1}`;
+    const title = `${name} - ${position} at DNK Real Estate Dubai`;
+    const description = aboutpara1 || `Meet ${name}, ${position} at DNK Real Estate — Dubai's trusted real estate brokerage.`;
     const keywords = [
-        
-    ]
+        name,
+        position,
+        `${name} DNK Real Estate`,
+        'DNK Real Estate team',
+        'Dubai real estate agent',
+    ];
+    const canonicalUrl = `https://www.dnkre.com/team/${slug}`;
+    const imageUrl = image ? `${WWURL}${image}` : 'https://www.dnkre.com/favicon.ico';
+
+    return {
+        title,
+        description,
+        keywords: keywords.join(', '),
+        openGraph: {
+            title,
+            description,
+            url: canonicalUrl,
+            siteName: 'DNK Real Estate',
+            type: 'profile',
+            images: [
+                {
+                    url: imageUrl,
+                    width: 1200,
+                    height: 630,
+                    alt: name,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [imageUrl],
+        },
+        alternates: {
+            canonical: canonicalUrl,
+        },
+        icons: {
+            icon: [
+                { url: "/favicon.ico", sizes: "any" },
+                { url: "/favicon-96x96.png", sizes: "96x96" },
+                { url: "/favicon.svg", type: "image/svg+xml" }
+            ],
+            apple: "/apple-touch-icon.png",
+        },
+        metadataBase: "https://www.dnkre.com",
+        robots: "index, follow",
+    };
 }
 
 export async function generateStaticParams() {
@@ -70,8 +117,27 @@ export default async function teamDetail({ params }) {
         return <div>Error: Team not found</div>;
     }
 
+    const personSchema = {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        name: teamData.name,
+        jobTitle: teamData.position,
+        worksFor: {
+            "@type": "Organization",
+            name: "DNK Real Estate",
+            url: "https://dnkre.com",
+        },
+        image: teamData.image ? `${WWURL}${teamData.image}` : undefined,
+        url: `https://www.dnkre.com/team/${slug}`,
+        telephone: teamData.phone,
+    };
+
   return (
       <>
+          <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+          />
           <TeamDetail teamData={teamData} />
           <OurProcess />
           <ReviewSection reviewData={sortReview} />

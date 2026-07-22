@@ -9,6 +9,9 @@ import { BsLink } from "react-icons/bs";
 import Link from "next/link";
 import Image from "next/image";
 import { WWURL } from "@/url/axios";
+import { getCreatedTime } from "@/utils/projectSort";
+import { applyProjectFilters } from "@/utils/projectFilters";
+import MegaFilterPanel, { EMPTY_FILTERS } from "@/app/components/projectFilters/MegaFilterPanel";
 
 export const ProjectGridList = ({ projects, partnerData }) => {
   const [projectList, setProjectList] = useState([]);
@@ -16,6 +19,7 @@ export const ProjectGridList = ({ projects, partnerData }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedDeveloper, setSelectedDeveloper] = useState("");
+  const [megaFilters, setMegaFilters] = useState(EMPTY_FILTERS);
   const [itemsPerPage] = useState(12);
 
   const statusValue = "buy";
@@ -25,13 +29,13 @@ export const ProjectGridList = ({ projects, partnerData }) => {
 
     const tempList = projectList
       .filter((data) => data.status === statusValue)
-     .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+     .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
     setSearchedList(tempList);
   }, [projectList]);
   
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchTerm, selectedDeveloper]);
+  }, [searchTerm, selectedDeveloper, megaFilters]);
 
   useEffect(() => {
     getData();
@@ -55,15 +59,18 @@ export const ProjectGridList = ({ projects, partnerData }) => {
   };
 
  const offset = currentPage * itemsPerPage;
- const filteredItems = searchedList.filter((data) => {
-   const matchesSearch = data.projectname
-     .toLowerCase()
-     .includes(searchTerm.toLowerCase());
-   const matchesDeveloper = selectedDeveloper
-     ? data.developer === selectedDeveloper
-     : true;
-   return matchesSearch && matchesDeveloper;
- });
+ const filteredItems = applyProjectFilters(
+   searchedList.filter((data) => {
+     const matchesSearch = data.projectname
+       .toLowerCase()
+       .includes(searchTerm.toLowerCase());
+     const matchesDeveloper = selectedDeveloper
+       ? data.developer === selectedDeveloper
+       : true;
+     return matchesSearch && matchesDeveloper;
+   }),
+   megaFilters
+ );
 
  const currentItems = filteredItems.slice(offset, offset + itemsPerPage);
  const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
@@ -102,7 +109,19 @@ export const ProjectGridList = ({ projects, partnerData }) => {
               <option value="">No developer list added</option>
             )}
           </select>
+          <div className="md:mt-0 mt-2">
+            <MegaFilterPanel
+              projects={projectList}
+              filters={megaFilters}
+              onChange={setMegaFilters}
+              resultCount={filteredItems.length}
+            />
+          </div>
         </div>
+
+        <p className="px-4 mt-3 text-white/60 text-xs">
+          {filteredItems.length} project{filteredItems.length === 1 ? "" : "s"} found
+        </p>
 
         <div className="grid sm:grid-cols-2  md:grid-cols-3">
           {currentItems.length > 0 ? (

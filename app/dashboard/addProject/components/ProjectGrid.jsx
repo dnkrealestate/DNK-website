@@ -136,13 +136,19 @@ export default function ProjectGrid() {
                     </span>
                   )}
                   {project.thumbnail ? (
-                    <Image
-                      src={URL + project.thumbnail}
-                      alt={project.altthumbnail || project.projectname}
-                      fill
-                      style={{ objectFit: "cover" }}
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                    />
+                    <div>
+                      <Badge className="z-10 absolute right-2 top-2" tone={STATUS_TONE[project.status] || "default"}>
+                        {project.status || "—"}
+                      </Badge>
+
+                      <Image
+                        src={URL + project.thumbnail}
+                        alt={project.altthumbnail || project.projectname}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                      />
+                    </div>
                   ) : (
                     <div className="flex h-full items-center justify-center">
                       <MdApartment className="text-3xl text-[#C4CAD4]" />
@@ -150,15 +156,13 @@ export default function ProjectGrid() {
                   )}
                 </div>
                 <div className="p-4">
-                  <div className="mb-1.5 flex items-start justify-between gap-2">
-                    <h3 className="truncate text-sm font-semibold text-[#1A2233]">
+                  <div className=" flex items-start justify-between gap-2">
+                    <h3 className="truncate text-sm font-semibold text-[#1A2233] !mb-1">
                       {project.projectname}
                     </h3>
-                    <Badge tone={STATUS_TONE[project.status] || "default"}>
-                      {project.status || "—"}
-                    </Badge>
+                    
                   </div>
-                  <p className="truncate text-xs text-[#7A8494]">
+                  <p className="truncate text-xs text-[#7A8494] mb-0">
                     {project.developer || "No developer set"}
                   </p>
                   {project.handover && (

@@ -5,6 +5,7 @@ import { getProjectList } from '@/services/projectServices';
 import OffPlanProjectGridList from './components/OffPlanProjectGridList';
 import { getPartner } from '@/services/partnerServices';
 import TalkSection from '../components/talkSection/TalkSection';
+import { getCreatedTime } from '@/utils/projectSort';
 
 const keywords = [
     "Latest",
@@ -144,7 +145,7 @@ export default async function page() {
     
     const filteredProjects = projects
         .filter((data) => data.status === "off-plan")
-        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
   return (
       <>
           <SubBanner />

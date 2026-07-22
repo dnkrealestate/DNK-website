@@ -27,5 +27,10 @@ export const useLeadServices = () => {
         return response.data;
     };
 
-    return { getLeads, getLeadsSummary };
+    const deleteLead = async (id) => {
+        const response = await axiosPrivate.delete(`/api/lead/${id}`);
+        return response.data;
+    };
+
+    return { getLeads, getLeadsSummary, deleteLead };
 };

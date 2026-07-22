@@ -13,6 +13,7 @@ import OurProcess from "./components/ourProcess/OurProcess";
 import { getPartner } from "@/services/partnerServices";
 import { getReview } from "@/services/reviewServices";
 import ReviewSection from "./components/reviewSection/ReviewSection";
+import { getCreatedTime } from "@/utils/projectSort";
 import PartnerSection from "./components/partner/PartnerSection";
 import TalkSection from "./components/talkSection/TalkSection";
 
@@ -115,9 +116,9 @@ export default async function Home() {
   }
 
   const filteredProjects = projects
-    .filter((data) => data.status === "off-plan") 
-    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)) 
-    .slice(0, 6); 
+    .filter((data) => data.status === "off-plan")
+    .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
+    .slice(0, 6);
   
   const sortReview = reviewData
     .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
