@@ -2,8 +2,17 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { MdDelete, MdEdit, MdHowToReg, MdArrowBack, MdEditNote } from "react-icons/md";
-import { IoSearch, IoLogoWhatsapp } from "react-icons/io5";
+import {
+  MdDelete,
+  MdEdit,
+  MdHowToReg,
+  MdArrowBack,
+  MdEditNote,
+  MdArrowUpward,
+  MdArrowDownward,
+  MdUnfoldMore,
+} from "react-icons/md";
+import { IoSearch, IoLogoWhatsapp, IoClose } from "react-icons/io5";
 import { FaFilePdf } from "react-icons/fa6";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import Swal from "sweetalert2";
@@ -32,6 +41,17 @@ const ClientRegisterList = () => {
   const [registerList, setRegisterList] = useState([]);
   const [searchedList, setSearchedList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  // attendDate/attendTime are picked from a small fixed set of options per
+  // event (e.g. "13th-Apr-2025", "12pm-1pm") — not free dates/times — so the
+  // filter is an exact-match dropdown built from whatever values are
+  // actually present, rather than a date/time picker.
+  const [filterDate, setFilterDate] = useState("");
+  const [filterTime, setFilterTime] = useState("");
+  // Click the Date or Time column header to sort chronologically — date is
+  // always the primary key with time as the tiebreaker within the same date,
+  // since sorting by time alone would scramble rows across different dates.
+  const [sorted, setSorted] = useState(false);
+  const [sortDirection, setSortDirection] = useState("asc"); // "asc" | "desc"
   const [loading, setLoading] = useState(true);
   const [showInvitationEditor, setShowInvitationEditor] = useState(false);
   const [sharingClientId, setSharingClientId] = useState(null);
@@ -59,8 +79,59 @@ const ClientRegisterList = () => {
   }, []);
 
   useEffect(() => {
-    filterList(registerList, searchQuery);
-  }, [registerList, searchQuery]);
+    filterList(registerList, searchQuery, filterDate, filterTime, sorted, sortDirection);
+  }, [registerList, searchQuery, filterDate, filterTime, sorted, sortDirection]);
+
+  // Sorts "2pm-3pm" style slots chronologically by their start hour, so the
+  // time dropdown/sort reads top-to-bottom in order instead of insertion order.
+  const parseSlotStartMinutes = (slot) => {
+    const match = slot?.match(/^(\d{1,2})(am|pm)/i);
+    if (!match) return Number.MAX_SAFE_INTEGER;
+    let hour = parseInt(match[1], 10);
+    const period = match[2].toLowerCase();
+    if (period === "pm" && hour !== 12) hour += 12;
+    if (period === "am" && hour === 12) hour = 0;
+    return hour * 60;
+  };
+
+  const MONTH_INDEX = {
+    jan: 0, january: 0,
+    feb: 1, february: 1,
+    mar: 2, march: 2,
+    apr: 3, april: 3,
+    may: 4,
+    jun: 5, june: 5,
+    jul: 6, july: 6,
+    aug: 7, august: 7,
+    sep: 8, sept: 8, september: 8,
+    oct: 9, october: 9,
+    nov: 10, november: 10,
+    dec: 11, december: 11,
+  };
+
+  // attendDate is a free-text field the admin types per event, so its format
+  // isn't consistent — seen so far: "13th-Apr-2025", "11th-Jan" (no year),
+  // "SUN 26th July" (day-of-week prefix, full month name, space-separated).
+  // Strip any leading day-of-week name, then pull out day/month/year from
+  // whatever's left so it sorts chronologically instead of alphabetically.
+  const parseAttendDateValue = (attendDate) => {
+    if (!attendDate) return Number.MAX_SAFE_INTEGER;
+    const cleaned = attendDate.replace(/^(mon|tue|wed|thu|fri|sat|sun)[a-z]*[\s,-]+/i, "").trim();
+    const match = cleaned.match(/^(\d{1,2})(?:st|nd|rd|th)?[\s-]+([A-Za-z]+)(?:[\s-]+(\d{4}))?/i);
+    if (!match) return Number.MAX_SAFE_INTEGER;
+    const day = parseInt(match[1], 10);
+    const month = MONTH_INDEX[match[2].toLowerCase()];
+    if (month === undefined) return Number.MAX_SAFE_INTEGER;
+    const year = match[3] ? parseInt(match[3], 10) : 0;
+    return year * 372 + month * 31 + day; // coarse but correctly orderable
+  };
+
+  const availableDates = Array.from(
+    new Set(registerList.map((item) => item.attendDate).filter(Boolean))
+  );
+  const availableTimes = Array.from(
+    new Set(registerList.map((item) => item.attendTime).filter(Boolean))
+  ).sort((a, b) => parseSlotStartMinutes(a) - parseSlotStartMinutes(b));
 
   // Renders the hidden poster node with the requested template + tokens, waits
   // for its images to actually load, then rasterizes it with html2canvas —
@@ -126,24 +197,64 @@ const ClientRegisterList = () => {
     }
   };
 
-  const filterList = (list, search) => {
-    if (!search) {
-      setSearchedList(list);
-      return;
-    }
+  const filterList = (list, search, date, time, sorted, sortDirection) => {
     const digitsOnly = search.replace(/\D/g, "");
-    setSearchedList(
-      list.filter((item) => {
+
+    const filtered = list.filter((item) => {
+      if (search) {
         const matchesRm = item.sourcedRm?.toLowerCase().includes(search);
         const matchesName = item.fullName?.toLowerCase().includes(search);
         const matchesPhone = digitsOnly && item.phone?.replace(/\D/g, "").includes(digitsOnly);
-        return matchesRm || matchesName || matchesPhone;
-      })
-    );
+        if (!matchesRm && !matchesName && !matchesPhone) return false;
+      }
+
+      if (date && item.attendDate !== date) return false;
+      if (time && item.attendTime !== time) return false;
+
+      return true;
+    });
+
+    if (sorted) {
+      const dir = sortDirection === "desc" ? -1 : 1;
+      filtered.sort((a, b) => {
+        const dateDiff = parseAttendDateValue(a.attendDate) - parseAttendDateValue(b.attendDate);
+        if (dateDiff !== 0) return dateDiff * dir;
+        return (parseSlotStartMinutes(a.attendTime) - parseSlotStartMinutes(b.attendTime)) * dir;
+      });
+    }
+
+    setSearchedList(filtered);
   };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value.toLowerCase());
+  };
+
+  // Date is always the primary sort key with time as the tiebreaker — either
+  // header triggers the same chronological sort, since sorting by time alone
+  // while ignoring date wouldn't make sense.
+  const handleSort = () => {
+    if (!sorted) {
+      setSorted(true);
+      setSortDirection("asc");
+    } else {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    }
+  };
+
+  const SortIcon = () => {
+    if (!sorted) return <MdUnfoldMore className="inline text-[#C4CAD4]" />;
+    return sortDirection === "asc" ? (
+      <MdArrowUpward className="inline text-[#0F2C45]" />
+    ) : (
+      <MdArrowDownward className="inline text-[#0F2C45]" />
+    );
+  };
+
+  const hasActiveFilters = Boolean(filterDate || filterTime);
+  const clearFilters = () => {
+    setFilterDate("");
+    setFilterTime("");
   };
 
   const handleDelete = async (id) => {
@@ -402,16 +513,59 @@ const ClientRegisterList = () => {
         </div>
       </div>
 
-      <Card className="mb-4 flex items-center gap-2 px-3.5 py-2.5 sm:max-w-xs">
-        <IoSearch className="shrink-0 text-[#8791A1]" />
-        <input
-          type="text"
-          placeholder="Search by client name, phone, or Sourced RM..."
-          className="w-full bg-transparent text-sm text-[#1A2233] outline-none placeholder:text-[#9AA4B2]"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-      </Card>
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <Card className="flex items-center gap-2 px-3.5 py-2.5 sm:max-w-xs sm:flex-1">
+          <IoSearch className="shrink-0 text-[#8791A1]" />
+          <input
+            type="text"
+            placeholder="Search by client name, phone, or Sourced RM..."
+            className="w-full bg-transparent text-sm text-[#1A2233] outline-none placeholder:text-[#9AA4B2]"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+        </Card>
+
+        <Card className="flex items-center gap-2 px-3.5 py-2.5">
+          <label className="text-xs font-medium text-[#8791A1]">Date</label>
+          <select
+            className="bg-transparent text-sm text-[#1A2233] outline-none"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+          >
+            <option value="">All dates</option>
+            {availableDates.map((date) => (
+              <option key={date} value={date}>
+                {date}
+              </option>
+            ))}
+          </select>
+        </Card>
+
+        <Card className="flex items-center gap-2 px-3.5 py-2.5">
+          <label className="text-xs font-medium text-[#8791A1]">Time</label>
+          <select
+            className="bg-transparent text-sm text-[#1A2233] outline-none"
+            value={filterTime}
+            onChange={(e) => setFilterTime(e.target.value)}
+          >
+            <option value="">All times</option>
+            {availableTimes.map((time) => (
+              <option key={time} value={time}>
+                {time}
+              </option>
+            ))}
+          </select>
+        </Card>
+
+        {hasActiveFilters && (
+          <button
+            onClick={clearFilters}
+            className="flex items-center gap-1 text-sm font-medium text-[#4B5566] hover:text-[#0F2C45]"
+          >
+            <IoClose /> Clear filters
+          </button>
+        )}
+      </div>
 
       <Card className="overflow-hidden">
         {loading ? (
@@ -430,8 +584,12 @@ const ClientRegisterList = () => {
                   <th className={th}>Client Name</th>
                   <th className={th}>Email</th>
                   <th className={th}>Mobile</th>
-                  <th className={th}>Date</th>
-                  <th className={th}>Time</th>
+                  <th className={`${th} cursor-pointer select-none`} onClick={handleSort}>
+                    Date <SortIcon />
+                  </th>
+                  <th className={`${th} cursor-pointer select-none`} onClick={handleSort}>
+                    Time <SortIcon />
+                  </th>
                   <th className={th}>Budget</th>
                   <th className={`${th} text-center`}>Invite</th>
                   <th className={`${th} text-center`}>Delete</th>
