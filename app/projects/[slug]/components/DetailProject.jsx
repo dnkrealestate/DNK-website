@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import TableDetail from "./TableDetail";
 import GallaySection from "./GallaySection";
 import VideoComponent from "./VideoComponent";
@@ -11,26 +11,6 @@ import MobileSliderInfo from "./MobileSliderInfo";
 
 
 export default function DetailProject({ projectId, teamData }) {
-  const [videoVisible, setVideoVisible] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
-
-  // Simulate fetching data
-  useEffect(() => {
-    setTimeout(() => {
-      setDataFetched(true);
-    }, 800); // Assuming data is fetched after 1 second
-  }, []);
-
-  useEffect(() => {
-    if (dataFetched) {
-      const timer = setTimeout(() => {
-        setVideoVisible(true);
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [dataFetched]);
-
   useEffect(() => {
     const handleScroll = () => {
       const stickyDiv = document.getElementById("stickyDiv");
@@ -69,28 +49,24 @@ export default function DetailProject({ projectId, teamData }) {
               <TableDetail projectId={projectId} />
               <div className="hidden sm:block">
                 <GallaySection projectId={projectId} />
-                {videoVisible && (
-                  <div className="mt-6">
-                    <VideoComponent
-                      youtubeLink={youtubeLink}
-                      thumbnailUrl={thumbnailUrl}
-                      projectData={projectId}
-                    />
-                  </div>
-                )}
+                <div className="mt-6">
+                  <VideoComponent
+                    youtubeLink={youtubeLink}
+                    thumbnailUrl={thumbnailUrl}
+                    projectData={projectId}
+                  />
+                </div>
               </div>
               <FeaturesSection projectId={projectId} />
               <div className="block sm:hidden">
                 <GallaySection projectId={projectId} />
-                {videoVisible && (
-                  <div className="mt-6 mb-2">
-                    <VideoComponent
-                      youtubeLink={youtubeLink}
-                      thumbnailUrl={thumbnailUrl}
-                      projectData={projectId}
-                    />
-                  </div>
-                )}
+                <div className="mt-6 mb-2">
+                  <VideoComponent
+                    youtubeLink={youtubeLink}
+                    thumbnailUrl={thumbnailUrl}
+                    projectData={projectId}
+                  />
+                </div>
               </div>
               {projectId?.location && (
                 <LocationComponent

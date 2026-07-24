@@ -43,10 +43,25 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function Linkpage() {
+export default async function Linkpage({ params }) {
+  const { slug } = await params;
+  const { getRoadshowLinkById } = userRoadshowServices();
+
+  // Fetched here (server-side) so the registration form's location details
+  // are already in the HTML on first paint instead of a client-side spinner.
+  let initialRoadshowLink = null;
+  try {
+    const response = await getRoadshowLinkById(slug);
+    if (response.success && response.data) {
+      initialRoadshowLink = response.data;
+    }
+  } catch (error) {
+    console.error("Error fetching roadshow link data:", error);
+  }
+
   return (
     <>
-       <ClientsideLinkPort />
+       <ClientsideLinkPort initialRoadshowLink={initialRoadshowLink} />
       </>
   )
 }

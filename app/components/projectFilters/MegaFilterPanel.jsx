@@ -3,12 +3,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MdFilterList, MdClose, MdExpandMore, MdExpandLess } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
-import {
-  buildLocationOptions,
-  buildBedroomOptions,
-  buildUnitTypeOptions,
-  buildHandoverOptions,
-} from "@/utils/projectFilters";
 
 export const EMPTY_FILTERS = {
   locations: [],
@@ -73,7 +67,9 @@ function Pill({ active, onClick, children }) {
   );
 }
 
-export default function MegaFilterPanel({ projects, filters, onChange, resultCount }) {
+const EMPTY_OPTIONS = { locations: [], bedrooms: [], unitTypes: [], handoverYears: [] };
+
+export default function MegaFilterPanel({ filterOptions, filters, onChange, resultCount }) {
   const [isOpen, setIsOpen] = useState(false);
   const [locationSearch, setLocationSearch] = useState("");
   const containerRef = useRef(null);
@@ -89,10 +85,11 @@ export default function MegaFilterPanel({ projects, filters, onChange, resultCou
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  const locationOptions = useMemo(() => buildLocationOptions(projects || []), [projects]);
-  const bedroomOptions = useMemo(() => buildBedroomOptions(projects || []), [projects]);
-  const unitTypeOptions = useMemo(() => buildUnitTypeOptions(projects || []), [projects]);
-  const handoverOptions = useMemo(() => buildHandoverOptions(projects || []), [projects]);
+  const options = filterOptions || EMPTY_OPTIONS;
+  const locationOptions = options.locations;
+  const bedroomOptions = options.bedrooms;
+  const unitTypeOptions = options.unitTypes;
+  const handoverOptions = options.handoverYears;
 
   const visibleLocationOptions = useMemo(() => {
     if (!locationSearch.trim()) return locationOptions;

@@ -12,8 +12,6 @@ import { getCreatedTime } from "@/utils/projectSort";
 
 
 export default function DeveloperProjectGridList({ projects, developerData }) {
-  const [projectList, setProjectList] = useState([]);
-  const [searchedList, setSearchedList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedDeveloper, setSelectedDeveloper] = useState("");
@@ -22,30 +20,16 @@ export default function DeveloperProjectGridList({ projects, developerData }) {
   const statusValue = developerData.partnername;
   const generateSlug = (name) => name.replace(/\s+/g, "-").toLowerCase();
 
-  useEffect(() => {
-    if (!projectList || !Array.isArray(projectList)) return;
-
-    const tempList = projectList
-      .filter((data) => data.developer === statusValue)
-      .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
-    setSearchedList(tempList);
-  }, [projectList]);
+  // `projects` is already server-fetched — derived directly at render time
+  // instead of mirrored into state via a post-mount effect, so the first
+  // paint already has real cards instead of a skeleton.
+  const searchedList = (projects || [])
+    .filter((data) => data.developer === statusValue)
+    .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
 
   useEffect(() => {
     setCurrentPage(0);
   }, [searchTerm, selectedDeveloper]);
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = () => {
-    try {
-      setProjectList(projects);
-    } catch (err) {
-      console.error("Failed to fatch project list", err);
-    }
-  };
 
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);

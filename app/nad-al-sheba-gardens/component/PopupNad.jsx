@@ -140,7 +140,6 @@ export const PopupNad = ({ onClose }) => {
               alt="Nad Popup"
               fill
               quality={85}
-              objectFit="cover"
               className="object-cover"
               sizes="100vw"
               priority

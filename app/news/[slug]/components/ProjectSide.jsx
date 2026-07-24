@@ -21,16 +21,15 @@ export default function ProjectSide({ projects }) {
                               window.snaptr("track", "PROJECT_CLICK");
                             }
                           }}>
-                  <div className="md:grid grid-cols-4 overflow-hidden flex  border border-[#ffff] rounded-md shadow bg-[#040406] cursor-pointer mb-4">
-                    <div className="relative">
+                  <div className="flex flex-col overflow-hidden border border-[#ffff] rounded-md shadow bg-[#040406] cursor-pointer mb-4">
+                    <div className="relative h-[160px] w-full">
                       {data.thumbnail ? (
                         <Image
-                          className="max-w-full h-auto w-full"
                           src={`${WWURL}${data.thumbnail}`}
                           alt={data.alt || "Dubai Real Estate News"}
-                          width={400}
-                          height={400}
-                          priority
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          loading="lazy"
                           quality={80}
                           style={{
                             objectFit: "cover",
@@ -42,7 +41,7 @@ export default function ProjectSide({ projects }) {
                       )}
                     </div>
 
-                    <div className="px-3 py-1 col-span-3">
+                    <div className="px-3 py-2">
                       <h2 className="mb-0 text-[1rem] font-semibold tracking-tight text-white line-clamp-1">
                         {data.projectname}
                       </h2>

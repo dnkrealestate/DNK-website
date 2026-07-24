@@ -10,7 +10,7 @@ export default function BannerNews() {
         src={bannerImg}
         alt="News Report"
         fill
-        quality={100}
+        quality={80}
         sizes="100vw"
         priority
         style={{

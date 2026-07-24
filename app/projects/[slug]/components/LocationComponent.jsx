@@ -41,7 +41,7 @@ export default function LocationComponent({ projectData }) {
           ) : (
             <div
               className="map-placeholder"
-              style={{ width: "100%", height: "400px" }}
+              style={{ width: "100%", height: "324px" }}
             >
               <div className="bg-[#040406] text-center flex my-5">
                 <p>{projectData.projectname} Location</p>

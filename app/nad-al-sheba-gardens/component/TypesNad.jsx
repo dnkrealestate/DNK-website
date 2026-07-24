@@ -86,8 +86,9 @@ export const TypesNad = () => {
                     <Image
                       src={villa.image}
                       alt={villa.title}
-                      layout="fill"
-                      objectFit="cover"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      style={{ objectFit: "cover" }}
                       className="rounded-t-[10px]"
                       priority={index === 0}
                     />

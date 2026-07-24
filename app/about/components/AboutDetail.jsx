@@ -58,7 +58,7 @@ export default function AboutDetail() {
               className="w-[50%] m-auto"
               width={800}
               height={800}
-              quality={100}
+              quality={80}
             />
             {/* <h2 className='text-[#ffffff] text-[1.9rem] m-auto text-center'>DNK Real Estate</h2> */}
           </div>
@@ -108,7 +108,7 @@ export default function AboutDetail() {
               alt="Waseem, CEO, DNK Real Estate"
               width={800}
               height={1034.71}
-              quality={100}
+              quality={80}
             />
             <div className="text-center pt-1">
               <h5 className="mb-0 text-[1rem] md:text-2xl font-bold tracking-tight text-white">
@@ -126,7 +126,7 @@ export default function AboutDetail() {
               alt="Dann, Co-Founder, Managing Director, DNK Real Estate"
               width={800}
               height={1034}
-              quality={100}
+              quality={80}
             />
             <div className="text-center pt-1">
               <h5 className="mb-0 text-[1rem] md:text-2xl font-bold tracking-tight text-white">

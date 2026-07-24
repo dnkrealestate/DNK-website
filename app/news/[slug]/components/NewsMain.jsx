@@ -2,12 +2,11 @@
 import React, { Suspense, useState } from "react";
 import { WWURL } from "@/url/axios";
 import Image from "next/image";
-import ProjectSide from "./ProjectSide";
 import NewsGrid from "./NewsGrid";
 import MdNewsGrid from "./MdNewsGrid";
 import ContactForm from "@/app/components/contactForm/ContactForm";
 
-export default function NewsMain({ projects, newsId, newsList }) {
+export default function NewsMain({ newsId, newsList }) {
   const mainNewsImg = newsId.newsthumbnail ? (
     `${WWURL}${newsId.newsthumbnail}`
   ) : (
@@ -136,10 +135,6 @@ export default function NewsMain({ projects, newsId, newsList }) {
               Latest News
             </h2>
             <NewsGrid newsList={newsList} />
-            <h2 className="pb-2 text-[1rem] font-semibold tracking-tight text-white line-clamp-2 border border-x-0 border-t-0 border-b-[#fff]">
-              Latest Projects in Dubai
-            </h2>
-            <ProjectSide projects={projects} />
           </div>
         </div>
         <MdNewsGrid newsList={newsList} />

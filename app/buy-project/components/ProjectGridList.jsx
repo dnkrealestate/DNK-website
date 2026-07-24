@@ -1,79 +1,94 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
+import React, { useEffect, useRef, useState } from "react";
 import { MdLocationPin } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import DemoImage from "@/public/assets/icons/image_demo.webp";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { BsLink } from "react-icons/bs";
 import Link from "next/link";
 import Image from "next/image";
 import { WWURL } from "@/url/axios";
-import { getCreatedTime } from "@/utils/projectSort";
-import { applyProjectFilters } from "@/utils/projectFilters";
+import { getPaginatedProjectList } from "@/services/projectServices";
 import MegaFilterPanel, { EMPTY_FILTERS } from "@/app/components/projectFilters/MegaFilterPanel";
 
-export const ProjectGridList = ({ projects, partnerData }) => {
-  const [projectList, setProjectList] = useState([]);
-  const [searchedList, setSearchedList] = useState([]);
+const STATUS_VALUE = "buy";
+
+export const ProjectGridList = ({
+  partnerData,
+  initialData,
+  initialTotal,
+  initialNext,
+  initialFilterOptions,
+}) => {
+  // Seeded from the server-fetched first batch (see page.js) so the first
+  // paint already has real cards — no client fetch, no loading skeleton.
+  const [data, setData] = useState(initialData || []);
+  const [total, setTotal] = useState(initialTotal || 0);
+  const [next, setNext] = useState(initialNext ?? null);
+  const [filterOptions, setFilterOptions] = useState(initialFilterOptions || null);
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(0);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedDeveloper, setSelectedDeveloper] = useState("");
   const [megaFilters, setMegaFilters] = useState(EMPTY_FILTERS);
-  const [itemsPerPage] = useState(12);
+  const isFirstRun = useRef(true);
 
-  const statusValue = "buy";
-
+  // Search now triggers a real network request instead of an in-memory
+  // filter, so debounce it to avoid firing one per keystroke.
   useEffect(() => {
-    if (!projectList || !Array.isArray(projectList)) return;
+    const timer = setTimeout(() => setDebouncedSearchTerm(searchTerm), 400);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
-    const tempList = projectList
-      .filter((data) => data.status === statusValue)
-     .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
-    setSearchedList(tempList);
-  }, [projectList]);
-  
+  // Any filter/search/developer change starts a fresh "Load More" sequence
+  // from the top — replacing (not appending to) the current results. Skips
+  // the very first run: that data already arrived server-side via props.
   useEffect(() => {
-    setCurrentPage(0);
-  }, [searchTerm, selectedDeveloper, megaFilters]);
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    getPaginatedProjectList({
+      status: STATUS_VALUE,
+      next: 0,
+      search: debouncedSearchTerm || undefined,
+      developer: selectedDeveloper || undefined,
+      ...megaFilters,
+    })
+      .then((res) => {
+        if (cancelled) return;
+        setData(res.data || []);
+        setTotal(res.total || 0);
+        setNext(res.next ?? null);
+        if (res.filterOptions) setFilterOptions(res.filterOptions);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedSearchTerm, selectedDeveloper, megaFilters]);
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = async () => {
-     try {
-       setProjectList(projects);
-     } catch (err) {
-       console.error("Failed to fatch project list", err);
-     }
+  const handleLoadMore = async () => {
+    if (next == null || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const res = await getPaginatedProjectList({
+        status: STATUS_VALUE,
+        next,
+        search: debouncedSearchTerm || undefined,
+        developer: selectedDeveloper || undefined,
+        ...megaFilters,
+      });
+      setData((prev) => [...prev, ...(res.data || [])]);
+      setNext(res.next ?? null);
+    } finally {
+      setLoadingMore(false);
+    }
   };
-
-  const handleCardClick = (projectname) => {
-    const slug = projectname.replace(/\s+/g, "-").toLowerCase();
-    navigate(`/projects/${slug}`);
-  };
-
-  const handlePageClick = ({ selected }) => {
-    setCurrentPage(selected);
-  };
-
- const offset = currentPage * itemsPerPage;
- const filteredItems = applyProjectFilters(
-   searchedList.filter((data) => {
-     const matchesSearch = data.projectname
-       .toLowerCase()
-       .includes(searchTerm.toLowerCase());
-     const matchesDeveloper = selectedDeveloper
-       ? data.developer === selectedDeveloper
-       : true;
-     return matchesSearch && matchesDeveloper;
-   }),
-   megaFilters
- );
-
- const currentItems = filteredItems.slice(offset, offset + itemsPerPage);
- const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
 
   return (
     <div className="about-section w-full bg-[#040406] flex items-center justify-center">
@@ -100,9 +115,9 @@ export const ProjectGridList = ({ projects, partnerData }) => {
           >
             <option value={""}>Choose Developer</option>
             {partnerData.length > 0 ? (
-              partnerData.map((data, i) => (
-                <option key={i} value={data.partnername || ""}>
-                  {data.partnername?.replace(/-/g, " ") || "No name available"}
+              partnerData.map((item, i) => (
+                <option key={i} value={item.partnername || ""}>
+                  {item.partnername?.replace(/-/g, " ") || "No name available"}
                 </option>
               ))
             ) : (
@@ -111,45 +126,45 @@ export const ProjectGridList = ({ projects, partnerData }) => {
           </select>
           <div className="md:mt-0 mt-2">
             <MegaFilterPanel
-              projects={projectList}
+              filterOptions={filterOptions}
               filters={megaFilters}
               onChange={setMegaFilters}
-              resultCount={filteredItems.length}
+              resultCount={total}
             />
           </div>
         </div>
 
         <p className="px-4 mt-3 text-white/60 text-xs">
-          {filteredItems.length} project{filteredItems.length === 1 ? "" : "s"} found
+          {total} project{total === 1 ? "" : "s"} found
         </p>
 
         <div className="grid sm:grid-cols-2  md:grid-cols-3">
-          {currentItems.length > 0 ? (
-            currentItems.map((data) => (
-              <div className="p-4" key={data.projectname}>
-                <Link href={`/projects/${data.projectname}`}>
+          {!loading && data.length > 0 ? (
+            data.map((item) => (
+              <div className="p-4" key={item.projectname}>
+                <Link href={`/projects/${item.projectname}`}>
                   <div className="max-w-full overflow-hidden  border border-[#ffff] rounded-[10px] shadow bg-[#040406] cursor-pointer">
                     <div>
                       <div className="relative w-full h-[266px]">
                         <Image
                           src={
-                            data?.thumbnail
-                              ? WWURL + encodeURIComponent(data.thumbnail)
+                            item?.thumbnail
+                              ? WWURL + encodeURIComponent(item.thumbnail)
                               : DemoImage
                           }
-                          alt={`${data.projectname || "off plan, project"}, ${
-                            data.altthumbnail || "Dubai Apartment, villa"
+                          alt={`${item.projectname || "off plan, project"}, ${
+                            item.altthumbnail || "Dubai Apartment, villa"
                           }`}
                           fill
                           loading="lazy"
-                          quality={100}
+                          quality={80}
                           style={{
                             objectFit: "cover",
                             display: "block",
                           }}
                         />
                         <div className="z-10">
-                          {data.runingstatus === "newlaunch" && (
+                          {item.runingstatus === "newlaunch" && (
                             <div className="card-status-tag text-[0.8rem] bg-[#B30000] text-[#ffffff] rotate-[-40deg] w-fit px-9 absolute top-8 left-[-35px]">
                               <h2 className="text-[0.8rem] font-normal m-0 px-1 py-1">
                                 New Launch
@@ -163,17 +178,17 @@ export const ProjectGridList = ({ projects, partnerData }) => {
                             </h2>
                           </div>
 
-                          {data.runingstatus === "soldout" && (
+                          {item.runingstatus === "soldout" && (
                             <div className="card-status-tag text-[0.8rem] bg-[#FF9900] text-[#000000] rotate-[-40deg] w-fit px-12 absolute top-8 left-[-35px]">
                               <h2 className="text-[0.8rem] font-normal m-0 px-1 py-1">
                                 SOLD OUT
                               </h2>
                             </div>
                           )}
-                          {data.startingprice && (
+                          {item.startingprice && (
                             <div className="bg-[#FFC700] border border-[#fff] rounded-l-full rounded-r-none w-fit px-5 py-0 absolute bottom-[-10px] right-0">
                               <h2 className="line-clamp-1 text-[0.8rem] font-normal m-0 px-1 py-1 text-[#000]">
-                                Starting From: {data.startingprice}
+                                Starting From: {item.startingprice}
                               </h2>
                             </div>
                           )}
@@ -182,16 +197,16 @@ export const ProjectGridList = ({ projects, partnerData }) => {
 
                       <div className="p-5">
                         <h2 className="mb-2 text-2xl font-bold tracking-tight text-white line-clamp-1">
-                          {data.projectname}
+                          {item.projectname}
                         </h2>
                         <p className="m-0 font-normal text-gray-400 line-clamp-1">
-                          {data.developer.replace(/-/g, " ")}
+                          {item.developer.replace(/-/g, " ")}
                         </p>
-                        {data?.locationname && (
+                        {item?.locationname && (
                           <div className="flex items-center">
                             <MdLocationPin className="text-gray-400 text-[1rem]" />
                             <p className="m-0 font-normal text-gray-400 line-clamp-1">
-                              {data.locationname}
+                              {item.locationname}
                             </p>
                           </div>
                         )}
@@ -201,34 +216,30 @@ export const ProjectGridList = ({ projects, partnerData }) => {
                 </Link>
               </div>
             ))
-          ) : (
+          ) : loading ? (
             <div className="flex justify-center">
               <div className="bg-[#040406] text-center">
                 <p className="m-auto loader !w-[24px] !h-[24px]"></p>
               </div>
             </div>
+          ) : (
+            <p className="px-4 text-white/60">No projects found.</p>
           )}
         </div>
 
-        {/* Pagination */}
-        <div className="flex justify-center mt-5 pagination-block">
-          <ReactPaginate
-            className="flex text-[#fff]"
-            previousLabel={<IoIosArrowBack className="text-[1.5rem]" />}
-            nextLabel={<IoIosArrowForward className="text-[1.5rem]" />}
-            breakLabel={"..."}
-            breakClassName={"break-me"}
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination"}
-            activeClassName={"active"}
-            previousClassName={"previous-button"}
-            nextClassName={"next-button"}
-            disabledClassName={"disabled"}
-          />
-        </div>
+        {/* Load More */}
+        {next != null && (
+          <div className="flex justify-center mt-5">
+            <button
+              type="button"
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+              className="border border-[#FFC700] text-[#FFC700] px-8 py-2.5 rounded font-semibold text-sm hover:bg-[#FFC700] hover:text-black transition-colors disabled:opacity-50"
+            >
+              {loadingMore ? "Loading..." : "Load More"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

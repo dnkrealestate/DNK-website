@@ -2,10 +2,8 @@ import React from 'react';
 import { getNews, getNewsById } from '@/services/newsServices';
 import MainBannerNews from './components/MainBannerNews';
 import NewsMain from './components/NewsMain';
-import { getProjectList } from '@/services/projectServices';
 import { WWURL } from '@/url/axios';
 import { notFound } from 'next/navigation';
-import { getCreatedTime } from '@/utils/projectSort';
 
 // Utility: generate consistent slugs
 function generateSlug(name) {
@@ -113,15 +111,18 @@ function buildNewsSchemas({ title, description, thumbnailUrl, canonicalUrl }) {
             address: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
         },
         {
-            "@context": "http://schema.org",
+            // Per Google's BreadcrumbList spec, "item" must be a plain URL
+            // string with "name" on the ListItem itself — a nested object
+            // with no "@type" (as this used to be) is what Search Console
+            // flags as an invalid object type.
+            "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-                { "@type": "ListItem", position: 1, item: { "@id": "https://dnkre.com", name: "Home" } },
-                { "@type": "ListItem", position: 2, item: { "@id": "https://www.dnkre.com/news", name: "News" } },
-                { "@type": "ListItem", position: 3, item: { "@id": "https://dnkre.com/off-plan-project", name: "Properties" } },
-                { "@type": "ListItem", position: 4, item: { "@id": "https://dnkre.com/contact", name: "Contact" } },
+                { "@type": "ListItem", position: 1, name: "Home", item: "https://www.dnkre.com" },
+                { "@type": "ListItem", position: 2, name: "News", item: "https://www.dnkre.com/news" },
+                { "@type": "ListItem", position: 3, name: title, item: canonicalUrl },
             ],
-            numberOfItems: 4,
+            numberOfItems: 3,
         },
         {
             "@context": "http://schema.org",
@@ -145,13 +146,9 @@ export default async function NewsDetail({ params }) {
 
     let newsData = null;
     let newsList = [];
-    let projects = [];
 
     try {
-        const [allNews, projectData] = await Promise.all([
-            getNews(),
-            getProjectList()
-        ]);
+        const allNews = await getNews();
 
         const matchedNews = allNews.find(
             (n) => generateSlug(n.newsurl) === slug
@@ -163,17 +160,10 @@ export default async function NewsDetail({ params }) {
         newsList = allNews
             .filter((n) => generateSlug(n.newsurl) !== slug)
             .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
-        projects = Array.isArray(projectData) ? projectData : [];
     } catch (error) {
         console.error("Error fetching data:", error);
         return <div>Error loading news details.</div>;
     }
-
-    const filteredProjects = projects
-        .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
-        .filter((data) => data.status === "off-plan")
-        .slice(0, 10);
 
     const canonicalUrl = `https://www.dnkre.com/news/${slug}`;
     const thumbnailUrl = `${WWURL}${newsData.newsthumbnail}`;
@@ -195,7 +185,6 @@ export default async function NewsDetail({ params }) {
             ))}
             <MainBannerNews newsId={newsData} />
             <NewsMain
-                projects={filteredProjects}
                 newsId={newsData}
                 newsList={newsList}
             />

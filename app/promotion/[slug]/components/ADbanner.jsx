@@ -76,7 +76,7 @@ export const ADbanner = ({promotionData}) => {
         <Image
           src={imageUrl}
           alt="dubai view, Real estate, off plan, ROI, investment"
-          quality={100}
+          quality={80}
           fill
           priority
           style={{ objectFit: "cover" }}

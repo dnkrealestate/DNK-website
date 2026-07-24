@@ -1,38 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-const YouTubeFeed = () => {
-  const [videos, setVideos] = useState([]);
-  const [selectedVideo, setSelectedVideo] = useState(null);
+const YouTubeFeed = ({ initialVideos }) => {
+  // Already fetched server-side (see page.js) — used directly so the first
+  // paint already has real thumbnails instead of a spinner.
+  const videos = initialVideos || [];
+  const [selectedVideo, setSelectedVideo] = useState(videos[0] || null);
   const [currentPage, setCurrentPage] = useState(0);
   const videoPlayerRef = useRef(null);
   const videosPerPage = 20;
-  const [loading, setLoading] = useState(true);
-
- useEffect(() => {
-  const fetchVideos = async () => {
-    try {
-      const response = await fetch("/api/youtube");
-      const data = await response.json();
-
-      const videoItems = data.items.filter(
-        (item) => item.snippet?.resourceId?.videoId
-      );
-
-      setVideos(videoItems);
-      setSelectedVideo(videoItems[0]);
-    } catch (error) {
-      console.error("Error fetching YouTube videos:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchVideos();
-}, []);
 
   const offset = currentPage * videosPerPage;
   const currentVideos = videos.slice(offset, offset + videosPerPage);
@@ -90,7 +69,10 @@ const YouTubeFeed = () => {
                   "/fallback.jpg"
                 }
                 alt={video?.snippet?.title || "Video thumbnail"}
-                className="rounded-lg w-full"
+                width={320}
+                height={180}
+                loading="lazy"
+                className="rounded-lg w-full h-auto"
               />
               <p className="mt-2 text-sm font-medium">{video.snippet.title}</p>
             </div>

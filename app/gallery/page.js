@@ -36,11 +36,38 @@ export const metadata = {
     },
 };
 
-export default function YouTubePage() {
+const folderId = "1K06A7kVpfY2sJK1wkZ6uAWuZN3jXliLn";
+
+async function fetchGalleryImages() {
+    try {
+        const apiKey = process.env.GOOGLE_DRIVE_API;
+        const res = await fetch(
+            `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType+contains+'image/'&pageSize=20&key=${apiKey}`,
+            { next: { revalidate: 300 } }
+        );
+        if (!res.ok) throw new Error("Failed to fetch images");
+        const data = await res.json();
+        return (
+            data.files?.map((file) => ({
+                id: file.id,
+                name: file.name,
+                url: `https://drive.google.com/uc?export=view&id=${file.id}`,
+            })) || []
+        );
+    } catch (err) {
+        console.error("Gallery fetch error:", err);
+        return [];
+    }
+}
+
+export default async function YouTubePage() {
+    // Fetched here (server-side) so the API key never reaches the client
+    // bundle, and the images are already in the HTML on first paint.
+    const initialImages = await fetchGalleryImages();
     return (
         <div>
             <BannerGallery />
-            <GoogleGallery />
+            <GoogleGallery initialImages={initialImages} />
         </div>
     );
 }

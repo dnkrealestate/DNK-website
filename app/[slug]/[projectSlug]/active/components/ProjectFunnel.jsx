@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react"; 
-import { usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import FunnelContactForm from "./FunnelContactForm";
-import { getProjectList } from "@/services/projectServices"; // existing API
 import Image from "next/image";
 import { WWURL } from "@/url/axios";
 
@@ -33,38 +31,14 @@ const questions = [
   },
 ];
 
-export default function ProjectFunnel() {
+export default function ProjectFunnel({ initialProjectData }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [projectData, setProjectData] = useState(null);
+  // Already fetched server-side (see page.js) — used directly so the first
+  // paint already has the real project instead of a blank div.
+  const projectData = initialProjectData;
   const sectionRef = useRef(null);
-  const pathname = usePathname();
-
-  // Extract project slug from URL
-  const projectSlug = pathname.split("/")[2]; // correct index for project
-
-  // Fetch project data on mount
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const projects = await getProjectList();
-
-        // Match project by normalizing name
-        const project = projects.find(
-          (p) =>
-            p.projectname &&
-            p.projectname.toLowerCase().replace(/\s+/g, "-") === projectSlug
-        );
-
-        setProjectData(project || null);
-      } catch (err) {
-        console.error("Error fetching project:", err);
-      }
-    };
-
-    if (projectSlug) fetchProject();
-  }, [projectSlug]);
 
   // Scroll to top on step change
   useEffect(() => {

@@ -10,14 +10,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 
 export default function NewsList({ mainNews, SliderNews }) {
+  // Only the Swiper carousel below needs to wait for mount (avoids its SSR
+  // hydration mismatch) — gating the whole section on it was hiding the main
+  // article too, even though it doesn't use Swiper and has no such issue.
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // ⛔ Prevent SSR + hydration mismatch
-  if (!mounted) return null;
 
   const generateSlug = (name) =>
     name ? name.replace(/\s+/g, "-").toLowerCase() : "";
@@ -89,6 +89,7 @@ export default function NewsList({ mainNews, SliderNews }) {
 
           {/* SLIDER NEWS */}
           <div className="hidden xl:block">
+            {mounted && (
             <Swiper
               slidesPerView={3}
               loop
@@ -130,6 +131,7 @@ export default function NewsList({ mainNews, SliderNews }) {
                   );
                 })}
             </Swiper>
+            )}
           </div>
         </div>
       </div>

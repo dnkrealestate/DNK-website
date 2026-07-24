@@ -21,9 +21,8 @@ const KeyNad = () => {
             <Image
               src={image01M}
               alt="Nad Al Sheba Mobile"
-              layout="fill"
-              objectFit="cover"
-              objectPosition="bottom"
+              fill
+              style={{ objectFit: "cover", objectPosition: "bottom" }}
               priority
             />
           </div>

@@ -9,21 +9,8 @@ import DmobileImageUrl from "@/public/assets/banner-img/In-the-UAE-Everyone-is-E
 
 export default function BannerHome({ banner, event, ad }) {
   const [ShowPopup, setShowPopup] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const audioRef = useRef(null);
   const headlineRef = useRef(null);
-
-  // Detect screen size
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // <=768px is considered mobile
-    };
-
-    handleResize(); // check on mount
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const desktopImageUrl = banner?.image ? `${WWURL}${banner.image}` : null;
   const mobileImageUrl = banner?.mobileImage ? `${WWURL}${banner.mobileImage}` : desktopImageUrl;
@@ -134,29 +121,63 @@ useEffect(() => {
       className="banner w-full bg-[#040406] flex items-center justify-center relative h-[350px] sm:h-[420px] md:h-[550px]"
       style={{ width: "1400" }}
     >
+      {/* Art-directed responsive hero image: picking the image via CSS
+          breakpoints (not JS isMobile state) means the correct image starts
+          loading immediately at page load instead of only after hydration —
+          the old approach always rendered the desktop image first (isMobile
+          defaults false on both server and initial client render), then
+          swapped to the mobile image after mount, forcing mobile visitors —
+          the majority of traffic — to fetch two hero images sequentially. */}
       {desktopImageUrl || mobileImageUrl ? (
-        <Image
-          src={isMobile ? mobileImageUrl : desktopImageUrl}
-          alt="dubai view, Real estate, off plan, ROI, investment"
-          fill
-          quality={100}
-          sizes="100vw"
-          priority
-          fetchPriority="high"
-          style={{ objectFit: "cover" }}
-        />
+        <>
+          <Image
+            src={mobileImageUrl}
+            alt="dubai view, Real estate, off plan, ROI, investment"
+            fill
+            quality={80}
+            sizes="100vw"
+            priority
+            fetchPriority="high"
+            className="block sm:hidden"
+            style={{ objectFit: "cover" }}
+          />
+          <Image
+            src={desktopImageUrl}
+            alt="dubai view, Real estate, off plan, ROI, investment"
+            fill
+            quality={80}
+            sizes="100vw"
+            priority
+            fetchPriority="high"
+            className="hidden sm:block"
+            style={{ objectFit: "cover" }}
+          />
+        </>
       ) : (
-        // <div className="absolute h-full w-full bg-gray-600 animate-pulse"></div>
-        <Image
-          src={isMobile ? DmobileImageUrl : DdesktopImageUrl}
-          alt="dubai view, Real estate, off plan, ROI, investment"
-          fill
-          quality={100}
-          sizes="100vw"
-          priority
-          fetchPriority="high"
-          style={{ objectFit: "cover" }}
-        />
+        <>
+          <Image
+            src={DmobileImageUrl}
+            alt="dubai view, Real estate, off plan, ROI, investment"
+            fill
+            quality={80}
+            sizes="100vw"
+            priority
+            fetchPriority="high"
+            className="block sm:hidden"
+            style={{ objectFit: "cover" }}
+          />
+          <Image
+            src={DdesktopImageUrl}
+            alt="dubai view, Real estate, off plan, ROI, investment"
+            fill
+            quality={80}
+            sizes="100vw"
+            priority
+            fetchPriority="high"
+            className="hidden sm:block"
+            style={{ objectFit: "cover" }}
+          />
+        </>
       )}
 
       <div className="container max-w-[1240px] px-4 items-center overflow-hidden relative">

@@ -19,6 +19,34 @@ const poppins = Poppins({
 const coverImageUrl =
   "https://lh3.googleusercontent.com/p/AF1QipMGg3wpa6l31rxUQyV7-wHeGDKZ0GKjyPsso52e=s1360-w1360-h1020";
 
+const jsonLdSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "DNK Real Estate",
+  url: "https://www.dnkre.com",
+  logo: "https://www.dnkre.com/logo.webp",
+  sameAs: [
+    "https://www.instagram.com/dnk_re/",
+    "https://www.facebook.com/dnkrealestate1/",
+    "https://www.linkedin.com/company/dnkrealestate/",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+971555769195",
+    contactType: "Sales",
+    email: "info@dnkre.com",
+    areaServed: "United Arab Emirates",
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "AE",
+    streetAddress: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
+    addressLocality: "Al Barsha",
+    addressRegion: "Dubai",
+    postalCode: "26048",
+  },
+};
+
 /* ✅ GLOBAL SEO (Next.js App Router supported only) */
 export const metadata = {
   metadataBase: new URL("https://www.dnkre.com"),
@@ -31,6 +59,9 @@ export const metadata = {
     "Discover your ideal property in Dubai with DNK Real Estate. Explore off-plan projects, luxury apartments, villas, and high-ROI investment opportunities.",
   keywords:
     "Off Plan Properties Dubai, Dubai Real Estate, Apartments for Sale Dubai, Villas Dubai",
+  alternates: {
+    canonical: "https://www.dnkre.com",
+  },
   openGraph: {
     title:
       "Best Off Plan Properties in Dubai | Apartments, Villas & Investments",
@@ -118,25 +149,11 @@ export default async function RootLayout({ children }) {
         </noscript>
         
 
-        {/* ✅ JSON-LD (SEO safe) */}
-        <Script
-          id="jsonld-org"
+        {/* ✅ JSON-LD (server-rendered so crawlers see it without running JS) */}
+        <script
           type="application/ld+json"
-          strategy="afterInteractive"
-        >
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "DNK Real Estate",
-            url: "https://www.dnkre.com",
-            logo: "https://www.dnkre.com/logo.webp",
-            sameAs: [
-              "https://www.instagram.com/dnk_re/",
-              "https://www.facebook.com/dnkrealestate1/",
-              "https://www.linkedin.com/company/dnkrealestate/",
-            ],
-          })}
-        </Script>
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+        />
 
         {/* ✅ Snapchat Pixel */}
         <Script id="snapchat-pixel" strategy="afterInteractive">

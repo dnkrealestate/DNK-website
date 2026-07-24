@@ -186,48 +186,35 @@ function buildOrganizationSchema() {
   };
 }
 
-function buildBreadcrumbSchema({ locationname, developer, projectname, canonicalUrl }) {
+function buildBreadcrumbSchema({ developer, projectname, canonicalUrl }) {
+  // Per Google's BreadcrumbList spec, "item" must be a plain URL string (or
+  // omitted for the final/current page) with "name" on the ListItem itself —
+  // nesting an object with an arbitrary "@type" like "Place"/"Brand"/"House"
+  // here is invalid and is what Search Console flags as "Invalid object type".
   return {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
       {
         "@type": "ListItem",
         position: 1,
-        item: {
-          "@id": "https://dnkre.com",
-          name: "Home",
-        },
+        name: "Home",
+        item: "https://www.dnkre.com",
       },
       {
         "@type": "ListItem",
         position: 2,
-        item: {
-          "@type": "Place",
-          name: locationname,
-          "@id": canonicalUrl,
-        },
+        name: developer.replace(/-/g, " "),
+        item: `https://www.dnkre.com/developer/${developer.toLowerCase()}`,
       },
       {
         "@type": "ListItem",
         position: 3,
-        item: {
-          "@type": "Brand",
-          name: developer.replace(/-/g, " "),
-          "@id": canonicalUrl,
-        },
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        item: {
-          "@type": "House",
-          name: projectname,
-          "@id": canonicalUrl,
-        },
+        name: projectname,
+        item: canonicalUrl,
       },
     ],
-    numberOfItems: 4,
+    numberOfItems: 3,
   };
 }
 
@@ -362,7 +349,7 @@ export default async function ProjectDetail({ params }) {
   ].join(', ');
 
   const organizationSchema = buildOrganizationSchema();
-  const breadcrumbSchema = buildBreadcrumbSchema({ locationname, developer, projectname, canonicalUrl });
+  const breadcrumbSchema = buildBreadcrumbSchema({ developer, projectname, canonicalUrl });
   const itemPageSchema = buildItemPageSchema({
     title,
     about,

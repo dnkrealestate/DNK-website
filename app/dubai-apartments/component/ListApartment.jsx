@@ -15,52 +15,16 @@ import "swiper/css/pagination";
 import { URL } from "@/url/axios";
 import DemoImage from "@/public/assets/icons/image_demo.webp";
 import useSliderLazyLoad from "@/app/hooks/useSliderLazyLoad";
-import { useProjectServices } from "@/services/projectServices";
 import PopupClick from "./PopupClick";
-import { getCreatedTime } from "@/utils/projectSort";
 
-const ListApartment = ({ params }) => {
-  const [searchedList, setSearchedList] = useState([]);
-  const [projectList, setProjectList] = useState([]);
+const ListApartment = ({ initialProjects }) => {
+  // Already fetched, filtered, sorted, and sliced to 10 server-side (see
+  // page.js) — used directly so the first paint has real cards, no spinner.
+  const searchedList = initialProjects || [];
   const [selectedProject, setSelectedProject] = useState(null);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const { getProjectPublicList } = useProjectServices();
   const router = useRouter();
-
-  useEffect(() => {
-    const tempList = projectList
-      .filter((data) =>
-        ["type", "type2", "type3", "type4", "type5", "type6"].some(
-          (typeKey) => data[typeKey] === "apartment"
-        )
-      )
-      .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
-    setSearchedList(tempList);
-  }, [params, projectList]);
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = async () => {
-    try {
-      const response = await getProjectPublicList();
-      if (response.success) {
-        const sortedProjects = response.data
-          .filter((data) =>
-            ["type", "type2", "type3", "type4", "type5", "type6"].some(
-              (typeKey) => data[typeKey] === "apartment"
-            )
-          )
-          .sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
-        setProjectList(sortedProjects);
-        setSearchedList(sortedProjects);
-      }
-    } catch (err) {
-      console.error("Failed to fetch project list", err);
-    }
-  };
 
   const handleCardClick = (data) => {
     if (!isFormSubmitted) {

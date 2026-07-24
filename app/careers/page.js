@@ -23,22 +23,22 @@ const keywords = [
     "Join a Passionate Team",
 ];
 
+const description =
+    "Explore career opportunities at DNK Real Estate — join our dynamic Dubai real estate team in sales, marketing, and property management.";
+
 export const metadata = {
-    metadataBase: new URL("https://dnkre.com/careers"),
     title: {
         default: "Join Our Team at DNK Real Estate",
     },
-    description:
-        "At DNK Real Estate, we are committed to fostering a dynamic and inclusive workplace where talent thrives. Explore exciting career opportunities in the real estate sector, from sales and marketing to property management and administration. Join us and be part of a passionate team dedicated to excellence and innovation in Dubai's vibrant real estate market.",
+    description,
     keywords: keywords.join(", "),
     alternates: {
-        canonical: "https://dnkre.com/careers",
+        canonical: "https://www.dnkre.com/careers",
     },
     openGraph: {
         title: "Join Our Team at DNK Real Estate",
-        description:
-            "At DNK Real Estate, we are committed to fostering a dynamic and inclusive workplace where talent thrives. Explore exciting career opportunities in the real estate sector, from sales and marketing to property management and administration. Join us and be part of a passionate team dedicated to excellence and innovation in Dubai's vibrant real estate market.",
-        url: "https://dnkre.com/careers",
+        description,
+        url: "https://www.dnkre.com/careers",
         siteName: "DNK Real Estate",
         images: [
             {
@@ -54,59 +54,47 @@ export const metadata = {
     twitter: {
         card: "summary_large_image",
         title: "Join Our Team at DNK Real Estate",
-        description:
-            "At DNK Real Estate, we are committed to fostering a dynamic and inclusive workplace where talent thrives. Explore exciting career opportunities in the real estate sector, from sales and marketing to property management and administration. Join us and be part of a passionate team dedicated to excellence and innovation in Dubai's vibrant real estate market.",
+        description,
         images: ["https://www.dnkre.com/logo.webp"],
     },
     robots: "index, follow",
     author: "DNK Real Estate",
-    favicon: "https://www.dnkre.com/logo.ico",
-    appleTouchIcon: "https://www.dnkre.com/logo.webp",
-    openGraphMetaTags: {
-        url: "https://www.dnkre.com/careers",
-        title: "Join Our Team at DNK Real Estate",
-        description:
-            "At DNK Real Estate, we are committed to fostering a dynamic and inclusive workplace where talent thrives. Explore exciting career opportunities in the real estate sector, from sales and marketing to property management and administration. Join us and be part of a passionate team dedicated to excellence and innovation in Dubai's vibrant real estate market.",
-        image: "https://www.dnkre.com/logo.webp",
+};
+
+const jsonLdSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "#website",
+    headline: "Join Our Team at DNK Real Estate",
+    url: "https://www.dnkre.com/careers",
+    name: "DNK Real Estate",
+    alternateName: ["DNK Real Estate", "dnkre.com"],
+    keywords: keywords.join(", "),
+    description,
+    image: "https://www.dnkre.com/logo.webp",
+    inLanguage: {
+        "@type": "Language",
+        name: "English",
     },
-    schemaMarkup: {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "@id": "#website",
-        headline:
-            "Join Our Team at DNK Real Estate",
-        url: "https://dnkre.com/careers",
+    copyrightHolder: {
+        "@type": "Organization",
         name: "DNK Real Estate",
-        alternateName: ["DNK Real Estate", "dnkre.com"],
-        keywords:
-            keywords.join(", "),
-        description:
-            "At DNK Real Estate, we are committed to fostering a dynamic and inclusive workplace where talent thrives. Explore exciting career opportunities in the real estate sector, from sales and marketing to property management and administration. Join us and be part of a passionate team dedicated to excellence and innovation in Dubai's vibrant real estate market.",
-        image: "https://www.dnkre.com/logo.webp",
-        inLanguage: {
-            "@type": "Language",
-            name: ["Arabic", "English", "Hindi"],
+        logo: "https://www.dnkre.com/logo.webp",
+        url: "https://www.dnkre.com/",
+        contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+971555769195",
+            contactType: "Sales",
+            email: "info@dnkre.com",
+            areaServed: "United Arab Emirates",
         },
-        copyrightHolder: {
-            "@type": "Organization",
-            name: "DNK Real Estate",
-            logo: "https://www.dnkre.com/logo.webp",
-            url: "https://www.dnkre.com/",
-            contactPoint: {
-                "@type": "ContactPoint",
-                telephone: "+971555769195",
-                contactType: "Sales",
-                email: "info@dnkre.com",
-                areaServed: "United Arab Emirates",
-            },
-            address: {
-                "@type": "PostalAddress",
-                addressCountry: "AE",
-                streetAddress: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
-                addressLocality: "Al Barsha",
-                addressRegion: "Dubai",
-                postalCode: "26048",
-            },
+        address: {
+            "@type": "PostalAddress",
+            addressCountry: "AE",
+            streetAddress: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
+            addressLocality: "Al Barsha",
+            addressRegion: "Dubai",
+            postalCode: "26048",
         },
     },
 };
@@ -130,6 +118,10 @@ export default async function Careers() {
 }
     return (
         <>
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+        />
         <BannerCareer />
             <CareerPage />
             <PartnerSection partnerData={partnerData} />

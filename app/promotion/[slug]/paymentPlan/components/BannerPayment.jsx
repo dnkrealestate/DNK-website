@@ -15,7 +15,7 @@ export const BannerPayment = ({ promotionData }) => {
         <Image
           src={imageUrl}
           alt={promotionData?.altSubBanner || "Amenities Banner"}
-          quality={100}
+          quality={80}
           fill
           priority
           className="z-0"

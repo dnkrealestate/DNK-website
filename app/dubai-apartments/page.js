@@ -8,6 +8,10 @@ import DeveloperStn from './component/DeveloperStn';
 import CommunitieStn from './component/CommunitieStn';
 import BestSaleStn from './component/BestSaleStn';
 import TalkStn from './component/TalkStn';
+import { getProjectList } from '@/services/projectServices';
+import { getCreatedTime } from '@/utils/projectSort';
+
+const APARTMENT_TYPE_FIELDS = ["type", "type2", "type3", "type4", "type5", "type6"];
 
 const title = "Best Apartments - Dubai";
 const description = "Discover luxurious apartments in Dubai with stunning views, world-class amenities, and prime locations. Explore premium properties for sale and rent, tailored to your lifestyle in the heart of Dubai.";
@@ -53,7 +57,21 @@ const jsonLdSchema = {
   telephone: "+971555769195",
 };
 
-const ApartmentsDubai = () => {
+const ApartmentsDubai = async () => {
+  // Fetched here server-side, so the carousel's first 10 apartments are
+  // already in the HTML on first paint instead of showing a spinner while
+  // a client-side fetch runs after mount.
+  let initialProjects = [];
+  try {
+    const projects = await getProjectList();
+    initialProjects = (projects || [])
+      .filter((data) => APARTMENT_TYPE_FIELDS.some((typeKey) => data[typeKey] === "apartment"))
+      .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
+      .slice(0, 10);
+  } catch (error) {
+    console.error("Error fetching apartment list:", error);
+  }
+
   return (
     <>
       <script
@@ -64,7 +82,7 @@ const ApartmentsDubai = () => {
       <HeaderApt />
       <BannerApt />
       <FormApt />
-      <ListApartment />
+      <ListApartment initialProjects={initialProjects} />
       <WhyChoose />
       <DeveloperStn />
       <CommunitieStn />

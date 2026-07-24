@@ -1,36 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Head from "next/head";
-import { useParams } from "next/navigation";
 import FormRoadshow from "./FormRoadshow";
-import { userRoadshowServices } from "@/services/roadshowService";
 import BackgroundImg from "@/public/assets/banner-img/full-bg.webp";
 import dnkLogo from "@/public/assets/logo/dnklogo_1.webp";
 import Image from "next/image";
 import { MdLocationOn } from "react-icons/md";
 
-export default function ClientsideLinkPort() {
-  const params = useParams();
-  const slug = params?.slug;
-
-  const [RoadshowLink, setRoadshowLinkData] = useState(null);
-  const { getRoadshowLinkById } = userRoadshowServices();
-
-  useEffect(() => {
-    const fetchRoadshowLinkData = async () => {
-      try {
-        const response = await getRoadshowLinkById(slug);
-        if (response.success && response.data) {
-          setRoadshowLinkData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching roadshow link data:", error);
-      }
-    };
-
-    if (slug) fetchRoadshowLinkData();
-  }, [slug]);
+export default function ClientsideLinkPort({ initialRoadshowLink }) {
+  // Already fetched server-side (see page.js) — used directly so the first
+  // paint already has the real location details instead of a spinner.
+  const RoadshowLink = initialRoadshowLink;
 
   if (!RoadshowLink) {
     return (

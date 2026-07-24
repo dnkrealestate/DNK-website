@@ -118,7 +118,7 @@ export default function GallaySection({ projectId }) {
               alt={images[lightboxIndex].alt}
               className="max-w-[90vw] max-h-[85vh] object-contain"
               loading="lazy"
-              quality={100}
+              quality={80}
               width={1200}
               height={800}
               sizes="100vw"

@@ -1,92 +1,20 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-const folderId = "1K06A7kVpfY2sJK1wkZ6uAWuZN3jXliLn";
-const apiKey = "AIzaSyBYaSVRvTvLlwTBoxXL5Ubn3Zc2nulh32o";
-
-// Timeout wrapper around fetch
-const timeoutFetch = (url, options = {}, timeout = 10000) => {
-  return Promise.race([
-    fetch(url, options),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Request timed out")), timeout)
-    ),
-  ]);
-};
-
-const GoogleGallery = () => {
-  const [images, setImages] = useState([]);
+const GoogleGallery = ({ initialImages }) => {
+  // Fetched server-side in page.js (keeps the Google API key out of the
+  // client bundle entirely) and already present on first paint.
+  const images = initialImages || [];
   const [selectedImage, setSelectedImage] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const res = await timeoutFetch(
-          `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType+contains+'image/'&pageSize=20&key=${apiKey}`,
-          {},
-          10000 // 10 seconds timeout
-        );
-
-        if (!res.ok) throw new Error("Failed to fetch images");
-
-        const data = await res.json();
-
-        const imageLinks =
-          data.files?.map((file) => ({
-            id: file.id,
-            name: file.name,
-            url: `https://drive.google.com/uc?export=view&id=${file.id}`,
-          })) || [];
-
-        setImages(imageLinks);
-      } catch (err) {
-        console.error("Fetch error:", err);
-        if (err.message.includes("timed out")) {
-          setError("Request timed out. Please try again.");
-        } else {
-          setError("Something went wrong while fetching images.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchImages();
-  }, []);
 
   return (
     <>
-      {loading && (
-        <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-4 p-4">
-          <div className="">
-            <div className="relative w-full rounded-[10px] shadow bg-gray-800 animate-pulse">
-              <div className="h-[130px] md:h-[200px] bg-gray-600 rounded"></div>
-            </div>
-          </div>
-          <div className="">
-            <div className="relative w-full rounded-[10px] shadow bg-gray-800 animate-pulse">
-              <div className="h-[130px] md:h-[200px] bg-gray-600 rounded"></div>
-            </div>
-          </div>
-          <div className="">
-            <div className="relative w-full rounded-[10px] shadow bg-gray-800 animate-pulse">
-              <div className="h-[130px] md:h-[200px] bg-gray-600 rounded"></div>
-            </div>
-          </div>
-          <div className="md:block hidden">
-            <div className="relative w-full rounded-[10px] shadow bg-gray-800 animate-pulse">
-              <div className="h-[130px] md:h-[200px] bg-gray-600 rounded"></div>
-            </div>
-          </div>
-        </div>
+      {images.length === 0 && (
+        <p className="text-center text-red-500 mt-4">
+          Unable to load gallery images. Please try again later.
+        </p>
       )}
-      {error && <p className="text-center text-red-500 mt-4">{error}</p>}
 
       <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-4 p-4">
         {images.map((img) => (

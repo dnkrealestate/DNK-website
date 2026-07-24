@@ -36,11 +36,36 @@ export const metadata = {
     },
 };
 
-export default function YouTubePage() {
+async function fetchInitialVideos() {
+    try {
+        const API_KEY = process.env.YOUTUBE_API_KEY;
+        const PLAYLIST_ID = process.env.YOUTUBE_PLAYLIST_ID;
+        if (!API_KEY || !PLAYLIST_ID) return [];
+
+        const res = await fetch(
+            `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=30&playlistId=${PLAYLIST_ID}&key=${API_KEY}`,
+            { next: { revalidate: 60 } }
+        );
+        if (!res.ok) throw new Error("Failed to fetch from YouTube API");
+
+        const data = await res.json();
+        return (
+            data.items?.filter((item) => item.snippet?.resourceId?.videoId) || []
+        );
+    } catch (error) {
+        console.error("YouTube API Error:", error);
+        return [];
+    }
+}
+
+export default async function YouTubePage() {
+    // Fetched here (server-side) so the video list and first thumbnails are
+    // already in the HTML on first paint instead of a client-side spinner.
+    const initialVideos = await fetchInitialVideos();
     return (
         <div>
             <BannerPodcast />
-            <YouTubeFeed />
+            <YouTubeFeed initialVideos={initialVideos} />
         </div>
     );
 }

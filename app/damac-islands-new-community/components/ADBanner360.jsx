@@ -38,8 +38,8 @@ const ADBanner360 = () => {
         <Image
           src={bannerImg}
           alt="360° Tour Banner"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           quality={80}
           placeholder="blur"
         />

@@ -117,7 +117,7 @@ export const TeamDetail = ({ teamData }) => {
               className="w-[80%] m-auto"
               width={400}
               height={800}
-              quality={100}
+              quality={80}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
               priority={true}
               style={{

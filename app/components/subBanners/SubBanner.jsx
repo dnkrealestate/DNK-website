@@ -55,7 +55,7 @@ export default function SubBanner({ ad }) {
       <Image
         src={buyProject}
         alt={`Real Estate Market Dubai`}
-        quality={90}
+        quality={80}
         fill
         sizes="100vw"
         priority

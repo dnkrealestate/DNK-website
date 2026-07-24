@@ -20,22 +20,22 @@ const keywords = [
   "Personalized real estate services", "joining a real estate team"
 ];
 
+const description =
+  "Meet DNK Real Estate's expert Dubai property team — experienced agents ready to guide you through buying, selling, or investing with confidence.";
+
 export const metadata = {
-  metadataBase: new URL("https://dnkre.com/team"),
   title: {
     default: "Meet The Top Real Estate Agents in Dubai | Buy and Sale Property Dubai",
   },
-  description:
-    "Meet our expert real estate team dedicated to helping you buy, sell, or invest in properties. With years of Dubai market knowledge and personalized service, we ensure a smooth real estate experience. Contact us for professional guidance and start your property journey today.",
+  description,
   keywords: keywords.join(", "),
   alternates: {
-    canonical: "https://dnkre.com/team",
+    canonical: "https://www.dnkre.com/team",
   },
   openGraph: {
     title: "Meet The Top Real Estate Agents in Dubai | Buy and Sale Property Dubai",
-    description:
-      "Meet our expert real estate team dedicated to helping you buy, sell, or invest in properties. With years of Dubai market knowledge and personalized service, we ensure a smooth real estate experience. Contact us for professional guidance and start your property journey today.",
-    url: "https://dnkre.com/team",
+    description,
+    url: "https://www.dnkre.com/team",
     siteName: "Team DNK Real Estate",
     images: [
       {
@@ -51,59 +51,47 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Meet The Top Real Estate Agents in Dubai | Buy and Sale Property Dubai",
-    description:
-      "Meet our expert real estate team dedicated to helping you buy, sell, or invest in properties. With years of Dubai market knowledge and personalized service, we ensure a smooth real estate experience. Contact us for professional guidance and start your property journey today.",
+    description,
     images: ["https://www.dnkre.com/logo.webp"],
   },
   robots: "index, follow",
   author: "DNK Real Estate",
-  favicon: "https://www.dnkre.com/logo.ico",
-  appleTouchIcon: "https://www.dnkre.com/logo.webp",
-  openGraphMetaTags: {
-    url: "https://www.dnkre.com/team",
-    title: "Meet The Top Real Estate Agents in Dubai | Buy and Sale Property Dubai",
-    description:
-      "Meet our expert real estate team dedicated to helping you buy, sell, or invest in properties. With years of Dubai market knowledge and personalized service, we ensure a smooth real estate experience. Contact us for professional guidance and start your property journey today.",
-    image: "https://www.dnkre.com/logo.webp",
+};
+
+const jsonLdSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "#website",
+  headline: "Meet The Top Real Estate Agents in Dubai | Buy and Sale Property Dubai",
+  url: "https://www.dnkre.com/team",
+  name: "DNK Real Estate",
+  alternateName: ["DNK Real Estate", "dnkre.com"],
+  keywords: keywords.join(", "),
+  description,
+  image: "https://www.dnkre.com/logo.webp",
+  inLanguage: {
+    "@type": "Language",
+    name: "English",
   },
-  schemaMarkup: {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "@id": "#website",
-    headline:
-      "Meet The Top Real Estate Agents in Dubai | Buy and Sale Property Dubai",
-    url: "https://dnkre.com/team",
+  copyrightHolder: {
+    "@type": "Organization",
     name: "DNK Real Estate",
-    alternateName: ["DNK Real Estate", "dnkre.com"],
-    keywords:
-      keywords.join(", "),
-    description:
-      "Meet our expert real estate team dedicated to helping you buy, sell, or invest in properties. With years of Dubai market knowledge and personalized service, we ensure a smooth real estate experience. Contact us for professional guidance and start your property journey today.",
-    image: "https://www.dnkre.com/logo.webp",
-    inLanguage: {
-      "@type": "Language",
-      name: ["Arabic", "English", "Hindi"],
+    logo: "https://www.dnkre.com/logo.webp",
+    url: "https://www.dnkre.com/",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+971555769195",
+      contactType: "Sales",
+      email: "info@dnkre.com",
+      areaServed: "United Arab Emirates",
     },
-    copyrightHolder: {
-      "@type": "Organization",
-      name: "DNK Real Estate",
-      logo: "https://www.dnkre.com/logo.webp",
-      url: "https://www.dnkre.com/",
-      contactPoint: {
-        "@type": "ContactPoint",
-        telephone: "+971555769195",
-        contactType: "Sales",
-        email: "info@dnkre.com",
-        areaServed: "United Arab Emirates",
-      },
-      address: {
-        "@type": "PostalAddress",
-        addressCountry: "AE",
-        streetAddress: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
-        addressLocality: "Al Barsha",
-        addressRegion: "Dubai",
-        postalCode: "26048",
-      },
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "AE",
+      streetAddress: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
+      addressLocality: "Al Barsha",
+      addressRegion: "Dubai",
+      postalCode: "26048",
     },
   },
 };
@@ -157,6 +145,10 @@ export default async function Team() {
     .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+      />
       <AboutBanner teamData={teamData} />
       <TeamList teamData={teamData} />
       <GalleryComponent />

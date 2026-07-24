@@ -21,16 +21,16 @@ export default function NewsGrid({ newsList }) {
                               window.snaptr("track", "NEWS_CLICK");
                             }
                           }}>
-                    <div className="md:grid grid-cols-4 overflow-hidden flex  border border-[#ffff] rounded-md shadow bg-[#040406] cursor-pointer mb-4">
-                      <div className="relative">
+                    <div className="flex flex-col overflow-hidden border border-[#ffff] rounded-md shadow bg-[#040406] cursor-pointer mb-4">
+                      <div className="relative h-[160px] w-full">
                         {data.newsthumbnail ? (
                           <Image
-                            className="max-w-full h-auto w-full"
                             src={`${WWURL}${data.newsthumbnail}`}
                             alt={data.alt || "Dubai Real Estate News"}
                             fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
                             loading="lazy"
-                            quality={100}
+                            quality={80}
                             style={{
                               objectFit: "cover",
                               display: "block",
@@ -40,7 +40,7 @@ export default function NewsGrid({ newsList }) {
                           <div className="h-full w-full bg-gray-600 animate-pulse"></div>
                         )}
                       </div>
-                      <div className="px-3 py-1 col-span-3">
+                      <div className="px-3 py-2">
                         <h2 className="mb-0 text-[1rem] font-semibold tracking-tight text-white line-clamp-1">
                           {data.newstitle}
                         </h2>

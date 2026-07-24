@@ -25,22 +25,22 @@ const keywords = [
   "Google Map",
 ];
 
+const description =
+  "Contact DNK Real Estate's expert team for property inquiries, consultations, or to schedule an appointment in Dubai.";
+
 export const metadata = {
-  metadataBase: new URL("https://dnkre.com/contact"),
   title: {
     default: "Contact Our Expert Real Estate Team | Get in Touch for Property Assistance",
   },
-  description:
-    "Our professional team is available 24/7 to assist you. Whether you have questions, concerns, or suggestions, we’d love to hear from you. Feel free to reach out via email by completing the form on the right, or schedule an appointment to meet us in person at one of our listed contact points below. We're here to help just be sure to arrange a meeting in advance. All contact details are provided below.",
+  description,
   keywords: keywords.join(", "),
   alternates: {
-    canonical: "https://dnkre.com/contact",
+    canonical: "https://www.dnkre.com/contact",
   },
   openGraph: {
     title: "Contact Our Expert Real Estate Team | Get in Touch for Property Assistance",
-    description:
-      "Our professional team is available 24/7 to assist you. Whether you have questions, concerns, or suggestions, we’d love to hear from you. Feel free to reach out via email by completing the form on the right, or schedule an appointment to meet us in person at one of our listed contact points below. We're here to help just be sure to arrange a meeting in advance. All contact details are provided below.",
-    url: "https://dnkre.com/contact",
+    description,
+    url: "https://www.dnkre.com/contact",
     siteName: "DNK Real Estate",
     images: [
       {
@@ -56,59 +56,47 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Contact Our Expert Real Estate Team | Get in Touch for Property Assistance",
-    description:
-      "Our professional team is available 24/7 to assist you. Whether you have questions, concerns, or suggestions, we’d love to hear from you. Feel free to reach out via email by completing the form on the right, or schedule an appointment to meet us in person at one of our listed contact points below. We're here to help just be sure to arrange a meeting in advance. All contact details are provided below.",
+    description,
     images: ["https://www.dnkre.com/logo.webp"],
   },
   robots: "index, follow",
   author: "DNK Real Estate",
-  favicon: "https://www.dnkre.com/logo.ico",
-  appleTouchIcon: "https://www.dnkre.com/logo.webp",
-  openGraphMetaTags: {
-    url: "https://www.dnkre.com/contact",
-    title: "Contact Our Expert Real Estate Team | Get in Touch for Property Assistance",
-    description:
-      "Our professional team is available 24/7 to assist you. Whether you have questions, concerns, or suggestions, we’d love to hear from you. Feel free to reach out via email by completing the form on the right, or schedule an appointment to meet us in person at one of our listed contact points below. We're here to help just be sure to arrange a meeting in advance. All contact details are provided below.",
-    image: "https://www.dnkre.com/logo.webp",
+};
+
+const jsonLdSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "#website",
+  headline: "Contact Our Expert Real Estate Team | Get in Touch for Property Assistance",
+  url: "https://www.dnkre.com/contact",
+  name: "DNK Real Estate",
+  alternateName: ["DNK Real Estate", "dnkre.com"],
+  keywords: keywords.join(", "),
+  description,
+  image: "https://www.dnkre.com/logo.webp",
+  inLanguage: {
+    "@type": "Language",
+    name: "English",
   },
-  schemaMarkup: {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "@id": "#website",
-    headline:
-      "Contact Our Expert Real Estate Team | Get in Touch for Property Assistance",
-    url: "https://dnkre.com/contact",
+  copyrightHolder: {
+    "@type": "Organization",
     name: "DNK Real Estate",
-    alternateName: ["DNK Real Estate", "dnkre.com"],
-    keywords:
-      keywords.join(", "),
-    description:
-      "Our professional team is available 24/7 to assist you. Whether you have questions, concerns, or suggestions, we’d love to hear from you. Feel free to reach out via email by completing the form on the right, or schedule an appointment to meet us in person at one of our listed contact points below. We're here to help just be sure to arrange a meeting in advance. All contact details are provided below.",
-    image: "https://www.dnkre.com/logo.webp",
-    inLanguage: {
-      "@type": "Language",
-      name: ["Arabic", "English", "Hindi"],
+    logo: "https://www.dnkre.com/logo.webp",
+    url: "https://www.dnkre.com/",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+971555769195",
+      contactType: "Sales",
+      email: "info@dnkre.com",
+      areaServed: "United Arab Emirates",
     },
-    copyrightHolder: {
-      "@type": "Organization",
-      name: "DNK Real Estate",
-      logo: "https://www.dnkre.com/logo.webp",
-      url: "https://www.dnkre.com/",
-      contactPoint: {
-        "@type": "ContactPoint",
-        telephone: "+971555769195",
-        contactType: "Sales",
-        email: "info@dnkre.com",
-        areaServed: "United Arab Emirates",
-      },
-      address: {
-        "@type": "PostalAddress",
-        addressCountry: "AE",
-        streetAddress: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
-        addressLocality: "Al Barsha",
-        addressRegion: "Dubai",
-        postalCode: "26048",
-      },
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "AE",
+      streetAddress: "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
+      addressLocality: "Al Barsha",
+      addressRegion: "Dubai",
+      postalCode: "26048",
     },
   },
 };
@@ -118,6 +106,10 @@ export const metadata = {
 export default function page() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+      />
       <BannerContact />
       <Contact />
     </>

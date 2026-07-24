@@ -205,10 +205,58 @@ export async function getProjectList() {
         });
         const data = await res.json();
         return data.success ? data.data : [];
-        
+
     } catch (error) {
         console.error("Error fetching projects:", error);
         return { success: false, data: [] }; // Handle error gracefully
+    }
+}
+
+// Server-side paginated + filtered project list (used by the off-plan and
+// buy project listing pages' Mega Filter, "Load More" style) — a separate
+// function from getProjectList() above, which many other pages still rely on
+// to fetch the full project list at once. Passing `next` is what puts the
+// backend into paginated mode; without it, it falls back to the same
+// unfiltered full-list behavior as getProjectList(). Batch size is fixed at
+// 50 server-side — there's no separate limit to configure.
+// Response: { data, total, next, filterOptions }. `next` is what to pass
+// back as the `next` param to fetch the following batch, or null once
+// there's no more data. `filterOptions` is only populated on the first batch
+// (next 0 / omitted) — the backend skips recomputing it after that.
+export async function getPaginatedProjectList({
+    status,
+    next = 0,
+    search,
+    developer,
+    locations,
+    minPrice,
+    maxPrice,
+    unitTypes,
+    bedrooms,
+    handoverYears,
+} = {}) {
+    const params = new URLSearchParams();
+    if (status) params.set("status", status);
+    params.set("next", String(next));
+    if (search) params.set("search", search);
+    if (developer) params.set("developer", developer);
+    if (locations?.length) params.set("locations", locations.join(","));
+    if (minPrice != null) params.set("minPrice", String(minPrice));
+    if (maxPrice != null) params.set("maxPrice", String(maxPrice));
+    if (unitTypes?.length) params.set("unitTypes", unitTypes.join(","));
+    if (bedrooms?.length) params.set("bedrooms", bedrooms.join(","));
+    if (handoverYears?.length) params.set("handoverYears", handoverYears.join(","));
+
+    try {
+        const res = await fetch(`${URL}task/get-task-public?${params.toString()}`);
+        const data = await res.json();
+        if (!data.success) {
+            return { data: [], total: 0, next: null, filterOptions: null };
+        }
+        return data;
+    } catch (error) {
+        console.error("Error fetching paginated projects:", error);
+        return { data: [], total: 0, next: null, filterOptions: null };
     }
 }
 

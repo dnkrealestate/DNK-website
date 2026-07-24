@@ -24,7 +24,11 @@ const GPFloorPlanComponent = () => {
           style={{ backgroundImage: `url(${FloorCover1.src})` }}
         >
           <div className="relative w-[40%] h-auto">
-            <Image src={ImgText} alt="Approved Badge" layout="responsive" />
+            <Image
+              src={ImgText}
+              alt="Approved Badge"
+              style={{ width: "100%", height: "auto" }}
+            />
           </div>
         </div>
       </div>

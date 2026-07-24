@@ -10,41 +10,22 @@ import { WWURL } from "@/url/axios";
 import Image from "next/image";
 
 export default function NewsAll({ newsData }) {
-  const [newsList, setNewsList] = useState([]);
-  const [searchedList, setSearchedList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(30);
   const [filterType, setFilterType] = useState("All");
-  const { getNewsApi } = userNewsServices();
 
-  
   const generateSlug = (name) => name.replace(/\s+/g, "-").toLowerCase();
 
-  useEffect(() => {
-    const filteredList =
-      filterType === "All"
-        ? newsList
-        : newsList.filter((item) => item.type === filterType);
-    const sortedList = filteredList.sort(
-      (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
-    );
-    setSearchedList(sortedList);
-  }, [newsList, filterType]);
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = () => {
-    try {
-      const response = newsData;
-      setNewsList(response);
-      setSearchedList(response);
-    } catch (err) {
-      console.error("Failed to fatch news list", err);
-    }
-  };
+  // `newsData` is already server-fetched — derived directly at render time
+  // instead of mirrored into state via a post-mount effect, so the first
+  // paint already has real articles instead of a skeleton.
+  const newsList = newsData || [];
+  const searchedList = (
+    filterType === "All" ? newsList : newsList.filter((item) => item.type === filterType)
+  )
+    .slice()
+    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);

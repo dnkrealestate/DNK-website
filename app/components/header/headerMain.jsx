@@ -147,7 +147,8 @@ const HeaderMain = ({ logoData }) => {
                   alt="DNK Real Estate Logo, Dubai Real Estate"
                   className="h-full max-w-[170px]"
                   priority
-                  layout="fill"
+                  fill
+                  sizes="60px"
                   style={{
                     objectFit: "contain",
                   }}

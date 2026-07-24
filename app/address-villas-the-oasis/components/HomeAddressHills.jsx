@@ -94,42 +94,19 @@ const HomeAddressHills = () => {
                   "Suite No: 603, Sama Building, Al Barsha 1 - Al Barsha, Dubai, United Arab Emirates",
               },
               {
-                "@context": "http://schema.org",
+                // Per Google's BreadcrumbList spec, "item" must be a plain
+                // URL string with "name" on the ListItem itself — a nested
+                // object with no "@type" (as this used to be) is what Search
+                // Console flags as an invalid object type.
+                "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 itemListElement: [
-                  {
-                    "@type": "ListItem",
-                    position: 1,
-                    item: {
-                      "@id": "https://dnkre.com",
-                      name: "Home",
-                    },
-                  },
-                  {
-                    "@type": "ListItem",
-                    position: 2,
-                    item: {
-                      "@id": "https://dnkre.com/off-plan-project",
-                      name: "Properties",
-                    },
-                  },
-                  {
-                    "@type": "ListItem",
-                    position: 3,
-                    item: {
-                      "@id": "https://www.dnkre.com/news",
-                      name: "News",
-                    },
-                  },
-                  {
-                    "@type": "ListItem",
-                    position: 4,
-                    item: {
-                      "@id": "https://dnkre.com/contact",
-                      name: "Contact",
-                    },
-                  },
+                  { "@type": "ListItem", position: 1, name: "Home", item: "https://www.dnkre.com" },
+                  { "@type": "ListItem", position: 2, name: "Properties", item: "https://www.dnkre.com/off-plan-project" },
+                  { "@type": "ListItem", position: 3, name: "News", item: "https://www.dnkre.com/news" },
+                  { "@type": "ListItem", position: 4, name: "Contact", item: "https://www.dnkre.com/contact" },
                 ],
+                numberOfItems: 4,
               },
               {
                 "@context": "http://schema.org",

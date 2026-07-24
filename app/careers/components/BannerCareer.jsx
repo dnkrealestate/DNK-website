@@ -10,7 +10,7 @@ export const BannerCareer = () => {
         src={buyProject}
         alt="careers, dnk, dubai view, Real estate, off plan, ROI, investment"
         fill
-        quality={100}
+        quality={80}
         sizes="100vw"
         priority
         style={{

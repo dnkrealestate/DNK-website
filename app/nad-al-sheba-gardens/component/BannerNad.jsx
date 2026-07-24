@@ -29,7 +29,7 @@ const BannerNad = () => {
           alt="Nad Al Sheba Gardens Banner"
           sizes="100vw"
           quality={85}
-          objectFit="cover"
+          style={{ objectFit: "cover" }}
           className="rounded-xl banner bannerx w-full"
           priority
         />

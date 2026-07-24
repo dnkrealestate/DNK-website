@@ -23,27 +23,21 @@ export function buildOrganizationSchema() {
 }
 
 export function buildPromotionBreadcrumbSchema(promoUrlSlug) {
-  const base = `https://dnkre.com/promotion/${promoUrlSlug}`;
+  const base = `https://www.dnkre.com/promotion/${promoUrlSlug}`;
+  // Per Google's BreadcrumbList spec, "item" must be a plain URL string with
+  // "name" on the ListItem itself — nesting an object with an arbitrary/
+  // invalid "@type" (e.g. "PaymentPlan" isn't a real schema.org type) is what
+  // Search Console flags as an invalid object type. The first item also used
+  // to point back at this page's own URL while labeled "Home" — fixed to
+  // point at the real homepage.
   return {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, item: { "@id": base, name: "Home" } },
-      {
-        "@type": "ListItem",
-        position: 2,
-        item: { "@type": "AboutPage", name: "About", "@id": `${base}/about` },
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        item: { "@type": "ContactPage", name: "Contact", "@id": `${base}/contact` },
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        item: { "@type": "PaymentPlan", name: "Payment-Plan", "@id": `${base}/paymentPlan` },
-      },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.dnkre.com" },
+      { "@type": "ListItem", position: 2, name: "About", item: `${base}/about` },
+      { "@type": "ListItem", position: 3, name: "Contact", item: `${base}/contact` },
+      { "@type": "ListItem", position: 4, name: "Payment Plan", item: `${base}/paymentPlan` },
     ],
     numberOfItems: 4,
   };
