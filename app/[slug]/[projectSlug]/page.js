@@ -1,4 +1,4 @@
-import { getProjectList } from "@/services/projectServices";
+import { getProjectListSummary } from "@/services/projectServices";
 import { WWURL } from "@/url/axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,7 +22,7 @@ const capitalize = (str) =>
 
 // ✅ Static Params
 export async function generateStaticParams() {
-  const projects = await getProjectList();
+  const projects = await getProjectListSummary();
   return projects.map((project) => ({
     projectSlug: generateSlug(project.projectname),
   }));
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }) {
   const awaitedParams = await params;
   const { slug, projectSlug } = awaitedParams;
 
-  const projects = await getProjectList();
+  const projects = await getProjectListSummary();
 
   const matchedProject = projects.find(
     (proj) => generateSlug(proj.projectname) === projectSlug
@@ -95,7 +95,7 @@ export default async function Page({ params }) {
   let project = null;
 
   try {
-    const projects = await getProjectList();
+    const projects = await getProjectListSummary();
     project = projects.find(
       (proj) => generateSlug(proj.projectname) === projectSlug
     );

@@ -1,5 +1,5 @@
 import ProjectFunnel from "./components/ProjectFunnel";
-import { getProjectList } from "@/services/projectServices";
+import { getProjectListSummary } from "@/services/projectServices";
 
 
 export const metadata = {
@@ -18,7 +18,7 @@ export default async function Page({ params }) {
   // client-side fetch resolves the matching project.
   let initialProjectData = null;
   try {
-    const projects = await getProjectList();
+    const projects = await getProjectListSummary();
     initialProjectData =
       (projects || []).find(
         (p) =>

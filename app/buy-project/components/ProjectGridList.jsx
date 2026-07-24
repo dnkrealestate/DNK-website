@@ -11,6 +11,8 @@ import MegaFilterPanel, { EMPTY_FILTERS } from "@/app/components/projectFilters/
 
 const STATUS_VALUE = "buy";
 
+const generateSlug = (name) => name.replace(/\s+/g, "-").toLowerCase();
+
 export const ProjectGridList = ({
   partnerData,
   initialData,
@@ -140,9 +142,11 @@ export const ProjectGridList = ({
 
         <div className="grid sm:grid-cols-2  md:grid-cols-3">
           {!loading && data.length > 0 ? (
-            data.map((item) => (
+            data.map((item) => {
+              const slug = generateSlug(item.projectname);
+              return (
               <div className="p-4" key={item.projectname}>
-                <Link href={`/projects/${item.projectname}`}>
+                <Link href={`/projects/${slug}`}>
                   <div className="max-w-full overflow-hidden  border border-[#ffff] rounded-[10px] shadow bg-[#040406] cursor-pointer">
                     <div>
                       <div className="relative w-full h-[266px]">
@@ -215,7 +219,8 @@ export const ProjectGridList = ({
                   </div>
                 </Link>
               </div>
-            ))
+              );
+            })
           ) : loading ? (
             <div className="flex justify-center">
               <div className="bg-[#040406] text-center">

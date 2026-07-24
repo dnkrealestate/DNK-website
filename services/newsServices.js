@@ -60,6 +60,22 @@ export const getNews = async () => {
     }
 }
 
+// Same full news list, but with a field projection applied server-side
+// (`?fields=summary`) — for list/card views that only ever show the title,
+// thumbnail, and a preview snippet, and never the rest of the article body.
+export const getNewsSummary = async () => {
+    try {
+        const res = await fetch(`${URL}news/get-news?fields=summary`, {
+        });
+        const data = await res.json();
+        return data.success ? data.data : [];
+
+    } catch (error) {
+        console.error("Error fetching news summaries:", error);
+        return [];
+    }
+}
+
 
 export async function getNewsById({ newsurl }) {
     if (!newsurl) {

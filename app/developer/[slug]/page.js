@@ -1,5 +1,5 @@
 import { getPartner } from "@/services/partnerServices";
-import { getProjectList } from '@/services/projectServices';
+import { getProjectListSummary } from '@/services/projectServices';
 import DeveloperInfo from "./components/DeveloperInfo";
 import DeveloperProjectGridList from "./components/DeveloperProjectGridList";
 import { WWURL } from "@/url/axios";
@@ -114,7 +114,7 @@ export default async function DeveloperInfoPage({ params }) {
       developerData = matched;
     }
      const [projectsData, partner] = await Promise.all([
-                    getProjectList(),
+                    getProjectListSummary(),
                     getPartner(),
      ])
     projects = projectsData;

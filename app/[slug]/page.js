@@ -1,5 +1,5 @@
 import { getPartner } from "@/services/partnerServices";
-import { getProjectList } from "@/services/projectServices";
+import { getProjectListSummary } from "@/services/projectServices";
 import { WWURL } from "@/url/axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }) {
 
   const developerName = matchedDeveloper.partnername?.replace(/-/g, " ");
 
-  const projectsData = await getProjectList();
+  const projectsData = await getProjectListSummary();
 
   const developerProjects = projectsData.filter(
     (proj) =>
@@ -124,7 +124,7 @@ export default async function Page({ params }) {
     developerData = matchedDeveloper;
 
     // 3️⃣ Get all projects
-    const projectsData = await getProjectList();
+    const projectsData = await getProjectListSummary();
 
     // 4️⃣ Filter projects by developer name (case insensitive)
     projects = projectsData
