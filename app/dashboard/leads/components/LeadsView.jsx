@@ -465,7 +465,7 @@ export default function LeadsView() {
                   <span className="text-[#8791A1]">Budget: </span>
                   <span className="font-medium text-[#1A2233]">{chatDetail.budget || "—"}</span>
                 </div>
-              </div>
+              </div> 
             )}
 
             <div className="space-y-2 px-5 py-4">
