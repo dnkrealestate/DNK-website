@@ -18,7 +18,12 @@ function generateSlug(name) {
 export async function generateStaticParams() {
   const developers = await getPartner();
 
-  return developers.map((dev) => ({
+  // Only prebuild the first 20 at build time (matches developer/[slug]/page.js) —
+  // prebuilding all ~359 here, each requiring 2 full-catalog fetches, is what
+  // was blowing the 60s-per-page Vercel build timeout. The rest still render
+  // fine on first visit since `dynamicParams` isn't disabled — they're just
+  // generated on-demand instead of upfront.
+  return developers.slice(0, 20).map((dev) => ({
     slug: generateSlug(dev.partnername),
   }));
 }
@@ -47,7 +52,7 @@ export async function generateMetadata({ params }) {
     (proj) =>
       proj.developer?.toLowerCase() ===
       developerName.toLowerCase()
-  );
+  );  
 
   const latestProjectWithImage = developerProjects.find(
     (proj) => proj.coverimage && proj.coverimage !== ""
