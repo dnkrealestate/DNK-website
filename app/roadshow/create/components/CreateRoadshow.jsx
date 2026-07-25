@@ -7,7 +7,8 @@ import { userRoadshowServices } from "@/services/roadshowService";
 import Card from "@/app/dashboard/components/ui/Card";
 import PageHeader from "@/app/dashboard/components/ui/PageHeader";
 import Button from "@/app/dashboard/components/ui/Button";
-import { Input } from "@/app/dashboard/components/ui/Field";
+import { Input, Select } from "@/app/dashboard/components/ui/Field";
+import { TIMEZONE_OPTIONS } from "@/utils/timezones";
 
 const FIELDS = [
   { name: "name", label: "Roadshow Name" },
@@ -30,6 +31,7 @@ const CreateRoadshow = (props) => {
     date2: "",
     hotelName: "",
     place: "",
+    timezone: "",
   };
 
   const [addRoadshow, setAddRoadshow] = useState(initialState);
@@ -116,6 +118,20 @@ const CreateRoadshow = (props) => {
                 onChange={handleChange}
               />
             ))}
+
+            <Select
+              label="Venue Timezone"
+              name="timezone"
+              value={addRoadshow.timezone || ""}
+              onChange={handleChange}
+            >
+              <option value="">Select timezone</option>
+              {TIMEZONE_OPTIONS.map((tz) => (
+                <option key={tz.value} value={tz.value}>
+                  {tz.label} ({tz.abbr})
+                </option>
+              ))}
+            </Select>
           </div>
 
           <div className="mt-5 flex items-center gap-3">

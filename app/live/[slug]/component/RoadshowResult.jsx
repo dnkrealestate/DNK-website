@@ -7,6 +7,7 @@ import { userRoadshowServices } from "@/services/roadshowService";
 import RegisterData from "./RegisterData";
 import EventAttendData from "./EventAttendData";
 import AnnouncementPopup from "./AnnouncementPopup";
+import VenueClock from "./VenueClock";
 import BackgroundImg from "@/public/assets/banner-img/full-bg.webp";
 import Image from "next/image";
 
@@ -134,17 +135,27 @@ export default function RoadshowResult() {
 
         {/* Everything below fits within one screen — no page scrolling, ever */}
         <div className="relative z-10 flex h-full w-full flex-col bg-black bg-opacity-60 px-4 py-3 sm:px-6 sm:py-4">
-          <div className="mb-3 flex shrink-0 flex-col items-center gap-1.5 text-center">
-            <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/70">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#18A4A0] opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#18A4A0]" />
+          <div className="mb-3 grid shrink-0 grid-cols-1 items-center gap-3 sm:grid-cols-2">
+            {/* Left: Live badge + roadshow name */}
+            <div className="flex flex-col items-center gap-1.5 text-center sm:items-start sm:text-left">
+              <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/70">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#18A4A0] opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#18A4A0]" />
+                </span>
+                Live
               </span>
-              Live
-            </span>
-            <h3 className="text-white text-[1.25rem] font-semibold sm:text-[1.5rem]">
-              {`${roadshowLink.place} Roadshow Insights`}
-            </h3>
+              <h3 className="text-white text-[1.25rem] font-semibold sm:text-[1.5rem]">
+                {`${roadshowLink.place} Roadshow Insights`}
+              </h3>
+            </div>
+
+            {/* Right: venue clock (glass box) */}
+            {hasFilteredData && (
+              <div className="flex justify-center sm:justify-end">
+                <VenueClock timezone={roadshowLink.timezone} />
+              </div>
+            )}
           </div>
 
           {isLoading ? (
