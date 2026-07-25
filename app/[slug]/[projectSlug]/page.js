@@ -2,6 +2,7 @@ import { getProjectListSummary } from "@/services/projectServices";
 import { WWURL } from "@/url/axios";
 import Image from "next/image";
 import Link from "next/link";
+import { getCreatedTime } from "@/utils/projectSort";
 
 // ✅ Slug generator
 function generateSlug(name) {
@@ -23,7 +24,18 @@ const capitalize = (str) =>
 // ✅ Static Params
 export async function generateStaticParams() {
   const projects = await getProjectListSummary();
-  return projects.map((project) => ({
+
+  // Only prebuild the most recent 30 (same fix as projects/[slug]/page.js
+  // and [slug]/page.js) — this route has ~325+ projects, and prebuilding
+  // all of them at once is what blows the 60s-per-page Vercel build
+  // timeout even on the fast summary endpoint. The rest still render fine
+  // on first visit since `dynamicParams` isn't disabled here.
+  const recentProjects = projects
+    .slice()
+    .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
+    .slice(0, 30);
+
+  return recentProjects.map((project) => ({
     projectSlug: generateSlug(project.projectname),
   }));
 }

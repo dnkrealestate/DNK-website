@@ -1,7 +1,7 @@
-import { getProjectById } from '@/services/projectServices';
+import { getProjectById, getProjectListSummary } from '@/services/projectServices';
 import React from 'react';
 import { getTeamList } from '@/services/teamServices';
-import { URL, WWURL } from '@/url/axios';
+import { WWURL } from '@/url/axios';
 import ProjectDetailClient from './components/ProjectDetailClient';
 import { getCreatedTime } from '@/utils/projectSort';
 
@@ -10,12 +10,13 @@ function generateSlug(name) {
   return name.replace(/\s+/g, '-').toLowerCase();
 }
 
+// Only ever used to match a slug (and, for the "related projects" strip, to
+// filter/sort by status+createdAt) — the actual project's full content comes
+// from getProjectById() below, so this never needed the heavy fields the
+// unfiltered endpoint was sending. That extra weight, fetched fresh for
+// every one of ~325 pages, is what was blowing the Vercel build timeout.
 async function fetchProjects() {
-  const res = await fetch(`${URL}task/get-task-public`, {
-    next: { revalidate: 60 },
-  });
-  const data = await res.json();
-  return data.success ? data.data : [];
+  return getProjectListSummary();
 }
 
 // Get day number of the year (1–366)
@@ -49,10 +50,18 @@ export async function generateStaticParams() {
   const projects = await fetchProjects();
   if (!projects) return [];
 
-  return projects.map((project) => ({
+  // Only prebuild the most recent 30 at build time (same fix applied to
+  // [slug]/page.js) — prebuilding all ~325 here is what was blowing the
+  // 60s-per-page Vercel build timeout. The rest still render fine on first
+  // visit since `dynamicParams` isn't disabled — just generated on-demand.
+  const recentProjects = projects
+    .slice()
+    .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
+    .slice(0, 30);
+
+  return recentProjects.map((project) => ({
     slug: generateSlug(project?.projectname),
   }));
-  
 }
 
 // Metadata

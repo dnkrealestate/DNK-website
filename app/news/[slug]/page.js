@@ -1,5 +1,5 @@
 import React from 'react';
-import { getNews, getNewsById } from '@/services/newsServices';
+import { getNews, getNewsSummary, getNewsById } from '@/services/newsServices';
 import MainBannerNews from './components/MainBannerNews';
 import NewsMain from './components/NewsMain';
 import { WWURL } from '@/url/axios';
@@ -12,10 +12,19 @@ function generateSlug(name) {
 
 // ✅ Step 1: Generate static paths
 export async function generateStaticParams() {
-    const newsList = await getNews();
+    const newsList = await getNewsSummary();
     if (!newsList || !Array.isArray(newsList)) return [];
 
-    return newsList.map((news) => ({
+    // Only prebuild the 30 most recent — same fix applied to the project
+    // pages, which blew Vercel's 60s-per-page build timeout by prebuilding
+    // everything at once. News is a smaller collection so less likely to
+    // hit that ceiling, but no reason to risk it as it grows.
+    const recentNews = newsList
+        .slice()
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+        .slice(0, 30);
+
+    return recentNews.map((news) => ({
         slug: generateSlug(news.newsurl),
     }));
 }
@@ -24,7 +33,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
     params = await params;
     const { slug } = params;
-    const newsList = await getNews();
+    // Only newstitle/newspara1/newsthumbnail are used below — all covered
+    // by the summary projection, so no need for the full unfiltered fetch.
+    const newsList = await getNewsSummary();
 
     const matchedNews = newsList.find(
         (n) => generateSlug(n.newsurl) === slug
