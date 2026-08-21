@@ -24,7 +24,7 @@ export default function PJStickyBar() {
         <div className="bg-[#0A0C0E]/97 backdrop-blur-md border-t border-[#79644A]/20 px-3 py-2.5 flex items-center gap-2 shadow-[0_-4px_20px_rgba(0,0,0,0.4)]">
           <a
             href="tel:+971555769195"
-            className="flex-shrink-0 w-11 h-11 rounded-xl border border-white/15 flex items-center justify-center text-white/70"
+            className="flex-shrink-0 w-11 h-11 rounded-xl border border-[#25D366]/30 flex items-center justify-center text-[#25D366]"
             aria-label="Call us"
           >
             <FaPhoneAlt className="text-sm" />
