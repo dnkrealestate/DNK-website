@@ -8,7 +8,7 @@ import DeveloperStn from './component/DeveloperStn';
 import CommunitieStn from './component/CommunitieStn';
 import BestSaleStn from './component/BestSaleStn';
 import TalkStn from './component/TalkStn';
-import { getProjectListSummary } from '@/services/projectServices';
+import { getProjectList } from '@/services/projectServices';
 import { getCreatedTime } from '@/utils/projectSort';
 
 const APARTMENT_TYPE_FIELDS = ["type", "type2", "type3", "type4", "type5", "type6"];
@@ -63,7 +63,7 @@ const ApartmentsDubai = async () => {
   // a client-side fetch runs after mount.
   let initialProjects = [];
   try {
-    const projects = await getProjectListSummary();
+    const projects = await getProjectList();
     initialProjects = (projects || [])
       .filter((data) => APARTMENT_TYPE_FIELDS.some((typeKey) => data[typeKey] === "apartment"))
       .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))

@@ -145,7 +145,6 @@ export default async function page() {
               partnerData={partnerData}
               initialData={initialProjects.data}
               initialTotal={initialProjects.total}
-              initialNext={initialProjects.next}
               initialFilterOptions={initialProjects.filterOptions}
           />
           <TalkSection />

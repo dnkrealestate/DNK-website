@@ -180,8 +180,10 @@ const RegisterList = () => {
           "Full Name",
           "Email",
           "Mobile Number",
+          "Status",
           "Property Type",
           "Budget",
+          "Buying Timeline",
           "Sourced RM",
           "Attened RM",
           "Event Attended Time",
@@ -193,8 +195,10 @@ const RegisterList = () => {
         data.fullName,
         data.email,
         data.phone,
+        data.status,
         data.type,
         data.budget,
+        data.buyingTimeline,
         data.sourcedRm,
         data.attendedRm,
         new Date(data.updatedAt).toLocaleString(undefined, {
@@ -219,8 +223,10 @@ const RegisterList = () => {
           fullName,
           email,
           phone,
+          status,
           type,
           budget,
+          buyingTimeline,
           sourcedRm,
           attendedRm,
           updatedAt,
@@ -230,8 +236,10 @@ const RegisterList = () => {
           "Full Name": fullName,
           "Email ID": email,
           "Mobile Number": phone,
+          Status: status,
           "Property Type": type,
           Budget: budget,
+          "Buying Timeline": buyingTimeline,
           "Sourced RM": sourcedRm,
           "Attended RM": attendedRm,
           "Event Attended Time": new Date(updatedAt).toLocaleString(undefined, {
@@ -319,6 +327,7 @@ const RegisterList = () => {
                   <th className={th}>Status</th>
                   <th className={th}>Property Type</th>
                   <th className={th}>Budget</th>
+                  <th className={th}>Buying Timeline</th>
                   <th className={th}>Sourced RM</th>
                   <th className={th}>Attended RM</th>
                   <th className={th}>Attended Time</th>
@@ -337,6 +346,7 @@ const RegisterList = () => {
                     </td>
                     <td className={td}>{data.type}</td>
                     <td className={td}>{data.budget}</td>
+                    <td className={td}>{data.buyingTimeline}</td>
                     <td className={td}>
                       <div className="flex items-center gap-1.5">
                         <span>{data.sourcedRm}</span>

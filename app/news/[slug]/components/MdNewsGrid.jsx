@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { WWURL } from "@/url/axios";
+import Newsimgic from "@/public/assets/icons/image_demo.webp";
 
 const ReactPaginate = dynamic(() => import("react-paginate"), { ssr: false });
 
@@ -44,7 +45,9 @@ export default function MdNewsGrid({ newsList }) {
                     <div className="p-3">
                       <Image
                         src={
-                          data.newsthumbnail ? WWURL + data.newsthumbnail : ""
+                          data.newsthumbnail
+                            ? WWURL + data.newsthumbnail
+                            : Newsimgic
                         }
                         alt={data.alt || "News Thumbnail"}
                         width={400}

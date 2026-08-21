@@ -46,15 +46,16 @@ export default function ClientWrapper({ children, spclLogo,  developerSlugs = []
     const isIslands = pathname.startsWith("/damac-islands-new-community");
     const isPromotion = pathname.startsWith("/promotion");
     const isHudayriyat = pathname.startsWith("/hudayriyat-island");
+    const isPalmJebelAli = pathname.startsWith("/palmjebelali");
 
     return (
         <>
-            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isDeveloperPage && !isRoadshowLive && !isAttendance && <HeaderMain logoData={spclLogo} />}
+            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDeveloperPage && !isRoadshowLive && !isAttendance && <HeaderMain logoData={spclLogo} />}
             {children}
             <SpeedInsights />
             <Analytics />
-            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isDeveloperPage && !isRoadshowLive && !isAttendance && <FooterSection />}
-            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && <SplashScreen logoData={spclLogo} />}
+            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDeveloperPage && !isRoadshowLive && !isAttendance && <FooterSection />}
+            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && <SplashScreen logoData={spclLogo} />}
         </>
     );
 }

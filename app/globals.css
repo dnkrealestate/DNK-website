@@ -2,16 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* This site is always dark-themed (every page uses dark backgrounds) — text
+   color must not follow the visitor's OS light/dark setting, or a
+   light-mode system renders near-black text on our dark backgrounds. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 body {
@@ -1072,4 +1068,46 @@ table th {
 
 .ticker p:hover {
   animation-play-state: paused;
+}
+
+/* ===============================
+   Palm Jebel Ali — hero "video-like" motion
+   No real hero video exists for this page yet, so the moving-water/glow
+   feel is built with slow CSS animation instead of a static image, scoped
+   to these page-specific class names only.
+================================ */
+@keyframes pjWaterDrift {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 40px; }
+}
+
+@keyframes pjGlowPulse {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+@keyframes pjShimmerSweep {
+  0% { transform: translateX(-30%); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateX(30%); opacity: 0; }
+}
+
+.pj-water-texture {
+  animation: pjWaterDrift 6s linear infinite alternate;
+}
+
+.pj-glow-pulse {
+  animation: pjGlowPulse 8s ease-in-out infinite;
+}
+
+.pj-shimmer-sweep {
+  animation: pjShimmerSweep 10s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pj-water-texture,
+  .pj-glow-pulse,
+  .pj-shimmer-sweep {
+    animation: none;
+  }
 }

@@ -5,13 +5,16 @@ import Image from "next/image";
 import NewsGrid from "./NewsGrid";
 import MdNewsGrid from "./MdNewsGrid";
 import ContactForm from "@/app/components/contactForm/ContactForm";
+import Newsimgic from "@/public/assets/icons/image_demo.webp";
 
 export default function NewsMain({ newsId, newsList }) {
-  const mainNewsImg = newsId.newsthumbnail ? (
-    `${WWURL}${newsId.newsthumbnail}`
-  ) : (
-    <div className="h-full w-full bg-gray-600 rounded animate-pulse"></div>
-  );
+  // `next/image`'s `src` must always be a string (or static import) — never
+  // a JSX element like the old placeholder div here, which caused a real
+  // "requested resource isn't a valid image" error whenever a thumbnail was
+  // missing.
+  const mainNewsImg = newsId.newsthumbnail
+    ? `${WWURL}${newsId.newsthumbnail}`
+    : Newsimgic;
 
       const [isSpeaking, setIsSpeaking] = useState(false);
      const handleReadAll = (texts) => {

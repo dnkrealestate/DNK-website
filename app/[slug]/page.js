@@ -1,5 +1,5 @@
 import { getPartner } from "@/services/partnerServices";
-import { getProjectListSummary } from "@/services/projectServices";
+import { getProjectList } from "@/services/projectServices";
 import { WWURL } from "@/url/axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,12 +18,7 @@ function generateSlug(name) {
 export async function generateStaticParams() {
   const developers = await getPartner();
 
-  // Only prebuild the first 20 at build time (matches developer/[slug]/page.js) —
-  // prebuilding all ~359 here, each requiring 2 full-catalog fetches, is what
-  // was blowing the 60s-per-page Vercel build timeout. The rest still render
-  // fine on first visit since `dynamicParams` isn't disabled — they're just
-  // generated on-demand instead of upfront.
-  return developers.slice(0, 20).map((dev) => ({
+  return developers.map((dev) => ({
     slug: generateSlug(dev.partnername),
   }));
 }
@@ -46,7 +41,7 @@ export async function generateMetadata({ params }) {
 
   const developerName = matchedDeveloper.partnername?.replace(/-/g, " ");
 
-  const projectsData = await getProjectListSummary();
+  const projectsData = await getProjectList();
 
   const developerProjects = projectsData.filter(
     (proj) =>
@@ -129,7 +124,7 @@ export default async function Page({ params }) {
     developerData = matchedDeveloper;
 
     // 3️⃣ Get all projects
-    const projectsData = await getProjectListSummary();
+    const projectsData = await getProjectList();
 
     // 4️⃣ Filter projects by developer name (case insensitive)
     projects = projectsData

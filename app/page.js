@@ -1,9 +1,10 @@
 
 import BannerHome from "./components/BannerHome";
 import AboutSection from "./components/about/AboutSection";
+import { URL } from "@/url/axios";
 import ProjectList from "./components/projectList/ProjectList";
-import { getAd, getEvent, getHomeBanner, getProjectListSummary } from "@/services/projectServices";
-import { getNewsSummary } from "@/services/newsServices";
+import { getAd, getEvent, getHomeBanner } from "@/services/projectServices";
+import { getNews } from "@/services/newsServices";
 import NewsList from "./components/news/NewsList";
 import ServiceSection from "./components/serviceSection/ServiceSection";
 import { getTeamList } from "@/services/teamServices";
@@ -35,6 +36,13 @@ function getMonthlySeed() {
 }
 
 
+async function fetchProjects() {
+  const res = await fetch(`${URL}task/get-task-public`);
+  const data = await res.json();
+  return data.success ? data.data : [];
+}
+
+
 
 export default async function Home() {
   let projects = [];
@@ -52,11 +60,11 @@ export default async function Home() {
   try {
     // Fetch all data concurrently
     const [projectsData, banners, event, ad, news, team, review, partner] = await Promise.all([
-      getProjectListSummary(),
+      fetchProjects(),
       getHomeBanner(),
       getEvent(),
       getAd(),
-      getNewsSummary(),
+      getNews(),
       getTeamList(),
       getReview(),
       getPartner(),

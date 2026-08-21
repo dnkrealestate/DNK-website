@@ -1,5 +1,5 @@
 
-import { getNewsSummary } from "@/services/newsServices";
+import { getNews } from "@/services/newsServices";
 import NewsAll from "./components/NewsAll";
 import BannerNews from "./components/BannerNews";
 
@@ -42,7 +42,7 @@ export default async function News() {
     let newsData = [];
     try {
         const [news] = await Promise.all([
-            getNewsSummary(),
+            getNews(),
         ])
         if (news && Array.isArray(news)) {
             const sortedNews = news

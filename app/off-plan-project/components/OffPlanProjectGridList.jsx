@@ -2,6 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MdLocationPin } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import ReactPaginate from "react-paginate";
 import DemoImage from "@/public/assets/icons/image_demo.webp";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,22 +13,25 @@ import { getPaginatedProjectList } from "@/services/projectServices";
 import MegaFilterPanel, { EMPTY_FILTERS } from "@/app/components/projectFilters/MegaFilterPanel";
 
 const STATUS_VALUE = "off-plan";
+const ITEMS_PER_PAGE = 50;
 
 export default function OffPlanProjectGridList({
   partnerData,
   initialData,
   initialTotal,
-  initialNext,
   initialFilterOptions,
 }) {
   // Seeded from the server-fetched first batch (see page.js) so the first
   // paint already has real cards — no client fetch, no loading skeleton.
   const [data, setData] = useState(initialData || []);
   const [total, setTotal] = useState(initialTotal || 0);
-  const [next, setNext] = useState(initialNext ?? null);
   const [filterOptions, setFilterOptions] = useState(initialFilterOptions || null);
   const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
+
+  // Backend now returns everything matching in one response (no server-side
+  // batching) — pagination here is purely a client-side display slice over
+  // the already-fetched `data`, not another network round-trip.
+  const [currentPage, setCurrentPage] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -44,9 +49,9 @@ export default function OffPlanProjectGridList({
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Any filter/search/developer change starts a fresh "Load More" sequence
-  // from the top — replacing (not appending to) the current results. Skips
-  // the very first run: that data already arrived server-side via props.
+  // Any filter/search/developer change re-fetches the full matching set and
+  // resets back to page 1 of the client-side pagination. Skips the very
+  // first run: that data already arrived server-side via props.
   useEffect(() => {
     if (isFirstRun.current) {
       isFirstRun.current = false;
@@ -65,7 +70,7 @@ export default function OffPlanProjectGridList({
         if (cancelled) return;
         setData(res.data || []);
         setTotal(res.total || 0);
-        setNext(res.next ?? null);
+        setCurrentPage(0);
         if (res.filterOptions) setFilterOptions(res.filterOptions);
       })
       .finally(() => {
@@ -76,22 +81,8 @@ export default function OffPlanProjectGridList({
     };
   }, [debouncedSearchTerm, selectedDeveloper, megaFilters]);
 
-  const handleLoadMore = async () => {
-    if (next == null || loadingMore) return;
-    setLoadingMore(true);
-    try {
-      const res = await getPaginatedProjectList({
-        status: STATUS_VALUE,
-        next,
-        search: debouncedSearchTerm || undefined,
-        developer: selectedDeveloper || undefined,
-        ...megaFilters,
-      });
-      setData((prev) => [...prev, ...(res.data || [])]);
-      setNext(res.next ?? null);
-    } finally {
-      setLoadingMore(false);
-    }
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
   };
 
   // 🔥 GTM Project Click Event
@@ -111,6 +102,10 @@ export default function OffPlanProjectGridList({
       });
     }
   };
+
+  const offset = currentPage * ITEMS_PER_PAGE;
+  const currentItems = data.slice(offset, offset + ITEMS_PER_PAGE);
+  const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
 
   return (
     <div className="about-section w-full bg-[#040406] flex items-center justify-center">
@@ -161,8 +156,8 @@ export default function OffPlanProjectGridList({
         </p>
 
         <div className="grid sm:grid-cols-2  md:grid-cols-3">
-          {!loading && data.length > 0
-            ? data.map((item, index) => {
+          {!loading && currentItems.length > 0
+            ? currentItems.map((item, index) => {
                 const slug = generateSlug(item.projectname);
                 return (
                   <div className="p-4" key={item.projectname}>
@@ -268,17 +263,26 @@ export default function OffPlanProjectGridList({
               )}
         </div>
 
-        {/* Load More */}
-        {next != null && (
-          <div className="flex justify-center mt-5">
-            <button
-              type="button"
-              onClick={handleLoadMore}
-              disabled={loadingMore}
-              className="border border-[#FFC700] text-[#FFC700] px-8 py-2.5 rounded font-semibold text-sm hover:bg-[#FFC700] hover:text-black transition-colors disabled:opacity-50"
-            >
-              {loadingMore ? "Loading..." : "Load More"}
-            </button>
+        {/* Pagination */}
+        {pageCount > 1 && (
+          <div className="flex justify-center mt-5 pagination-block">
+            <ReactPaginate
+              className="flex text-[#fff]"
+              previousLabel={<IoIosArrowBack className="text-[1.5rem]" />}
+              nextLabel={<IoIosArrowForward className="text-[1.5rem]" />}
+              breakLabel={"..."}
+              breakClassName={"break-me"}
+              pageCount={pageCount}
+              forcePage={currentPage}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination"}
+              activeClassName={"active"}
+              previousClassName={"previous-button"}
+              nextClassName={"next-button"}
+              disabledClassName={"disabled"}
+            />
           </div>
         )}
       </div>

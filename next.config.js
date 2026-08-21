@@ -32,16 +32,6 @@ const nextConfig = {
     },
 
     webpack: (config, { dev, isServer }) => {
-        if (dev) {
-            // Disabling chunk splitting was applying in production too, forcing
-            // every page's bundle to carry its own copy of shared dependencies
-            // instead of sharing one common chunk (Lighthouse: "Duplicated
-            // JavaScript", "Reduce unused JavaScript"). Scoped to dev-only here,
-            // matching the symlinks workaround below, so production keeps
-            // webpack's default (and much smaller) chunk splitting.
-            config.optimization.splitChunks = false;
-        }
-
         if (dev && !isServer) {
             config.resolve.symlinks = false;
         }
