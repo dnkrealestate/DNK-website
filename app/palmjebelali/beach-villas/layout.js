@@ -1,3 +1,5 @@
+const OG_IMAGE = "/assets/other/palmjebelaliImg.webp";
+
 export const metadata = {
   title: "Palm Jebel Ali Beach Villas | Ultra-Luxury Waterfront Living, Dubai",
   description:
@@ -11,17 +13,35 @@ export const metadata = {
     url: "https://www.dnkre.com/palmjebelali/beach-villas",
     siteName: "DNK Real Estate",
     type: "website",
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1920,
+        height: 1068,
+        alt: "Aerial view of Palm Jebel Ali",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Palm Jebel Ali Beach Villas | Ultra-Luxury Waterfront Living",
     description:
       "5-6BR beachfront villas on Palm Jebel Ali from AED 30M. Private beach, bespoke architecture. Register your interest today.",
+    images: [OG_IMAGE],
   },
   alternates: {
     canonical: "https://www.dnkre.com/palmjebelali/beach-villas",
   },
-  robots: "index, follow",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 const jsonLdSchema = {
@@ -31,10 +51,16 @@ const jsonLdSchema = {
   description:
     "Ultra-luxury 5-6 bedroom beachfront villas on Palm Jebel Ali, Dubai. Private beach frontage, plot 7,300–8,800 sqft, BUA 7,600–8,600 sqft. Expression of Interest AED 1,000,000.",
   url: "https://www.dnkre.com/palmjebelali/beach-villas",
+  image: `https://www.dnkre.com${OG_IMAGE}`,
   brand: {
     "@type": "Organization",
     name: "Nakheel",
   },
+  additionalProperty: [
+    { "@type": "PropertyValue", name: "Bedrooms", value: "5–6 BR" },
+    { "@type": "PropertyValue", name: "Plot Size", value: "7,300–8,800 sqft" },
+    { "@type": "PropertyValue", name: "BUA", value: "7,600–8,600 sqft" },
+  ],
   offers: {
     "@type": "AggregateOffer",
     lowPrice: "30000000",
@@ -43,11 +69,32 @@ const jsonLdSchema = {
     availability: "https://schema.org/LimitedAvailability",
     url: "https://www.dnkre.com/palmjebelali/beach-villas",
     seller: {
-      "@type": "Organization",
+      "@type": "RealEstateAgent",
       name: "DNK Real Estate",
       url: "https://dnkre.com",
+      telephone: "+971555769195",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Suite No: 603, Sama Building, Al Barsha 1",
+        addressLocality: "Dubai",
+        addressCountry: "AE",
+      },
     },
   },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://www.dnkre.com" },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Palm Jebel Ali Beach Villas",
+      item: "https://www.dnkre.com/palmjebelali/beach-villas",
+    },
+  ],
 };
 
 export default function PalmJebelAliBeachVillasLayout({ children }) {
@@ -56,6 +103,10 @@ export default function PalmJebelAliBeachVillasLayout({ children }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       {children}
     </>
