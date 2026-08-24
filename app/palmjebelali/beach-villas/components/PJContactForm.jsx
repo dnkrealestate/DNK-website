@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { userUserServices } from "@/services/userServices";
 import Swal from "sweetalert2";
 import { track } from "@vercel/analytics";
+import { gtag_report_conversion } from "./gtagReportConversion";
 
 const WHATSAPP_TEXT =
   "Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas";
@@ -125,6 +126,14 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
       }
 
       await addLeadtoBitrix(fullName, email, phoneNumber, nationality, dateStr, timeStr);
+
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "conversion", {
+          send_to: "AW-16927541094/lNkkCP3B5qwaEOaO14c_",
+          value: 1.0,
+          currency: "AED",
+        });
+      }
 
       Swal.fire({
         title: `Thank you, ${fullName}!`,
@@ -263,6 +272,7 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
           href={`https://wa.me/+971555769195?text=${WHATSAPP_TEXT}`}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => gtag_report_conversion()}
           className="flex items-center gap-1 text-[#25D366] hover:text-[#1aad53] transition-colors text-xs font-semibold"
         >
           <FaWhatsapp className="text-sm" />

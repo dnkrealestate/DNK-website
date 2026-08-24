@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
 import PJPopupModel from "./PJPopupModel";
+import { gtag_report_conversion } from "./gtagReportConversion";
 
 export default function PJStickyBar() {
   const [visible, setVisible] = useState(false);
@@ -24,6 +25,7 @@ export default function PJStickyBar() {
         <div className="bg-[#0A0C0E]/97 backdrop-blur-md border-t border-[#79644A]/20 px-3 py-2.5 flex items-center gap-2 shadow-[0_-4px_20px_rgba(0,0,0,0.4)]">
           <a
             href="tel:+971555769195"
+            onClick={() => gtag_report_conversion()}
             className="flex-shrink-0 w-11 h-11 rounded-xl border border-[#25D366]/30 flex items-center justify-center text-[#25D366]"
             aria-label="Call us"
           >
@@ -33,13 +35,17 @@ export default function PJStickyBar() {
             href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => gtag_report_conversion()}
             className="flex-shrink-0 w-11 h-11 rounded-xl border border-[#25D366]/30 flex items-center justify-center text-[#25D366]"
             aria-label="WhatsApp us"
           >
             <FaWhatsapp className="text-lg" />
           </a>
           <button
-            onClick={() => setShowPopup(true)}
+            onClick={() => {
+              gtag_report_conversion();
+              setShowPopup(true);
+            }}
             className="flex-1 bg-gradient-to-r from-[#79644A] to-[#9C8564] text-white font-semibold py-3 rounded-xl text-sm tracking-wide"
           >
             Register Interest

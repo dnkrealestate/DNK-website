@@ -6,6 +6,7 @@ import Link from "next/link";
 import { IoMenu, IoClose } from "react-icons/io5";
 import { FaWhatsapp } from "react-icons/fa";
 import PJPopupModel from "./PJPopupModel";
+import { gtag_report_conversion } from "./gtagReportConversion";
 
 const NAV_LINKS = [
   { label: "Villas", id: "villas" },
@@ -81,13 +82,17 @@ export default function PJHeader() {
               href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => gtag_report_conversion()}
               className="flex items-center gap-1.5 text-[#25D366] text-sm font-medium hover:opacity-80 transition-opacity"
             >
               <FaWhatsapp className="text-lg" />
               <span className="hidden lg:inline">WhatsApp</span>
             </a>
             <button
-              onClick={() => setShowPopup(true)}
+              onClick={() => {
+                gtag_report_conversion();
+                setShowPopup(true);
+              }}
               className="bg-gradient-to-r from-[#79644A] to-[#9C8564] text-white text-sm font-semibold px-5 py-2 rounded-xl transition-all duration-200 hover:brightness-110"
             >
               Register Interest
@@ -127,12 +132,14 @@ export default function PJHeader() {
                 href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => gtag_report_conversion()}
                 className="flex-1 flex items-center justify-center gap-2 border border-[#25D366]/30 text-[#25D366] text-sm font-medium py-2.5 rounded-xl"
               >
                 <FaWhatsapp /> WhatsApp
               </a>
               <button
                 onClick={() => {
+                  gtag_report_conversion();
                   setShowPopup(true);
                   setMobileOpen(false);
                 }}

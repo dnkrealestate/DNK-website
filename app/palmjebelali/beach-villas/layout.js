@@ -1,3 +1,5 @@
+import Script from "next/script";
+
 const OG_IMAGE = "/assets/other/palmjebelaliImg.webp";
 
 export const metadata = {
@@ -108,6 +110,21 @@ export default function PalmJebelAliBeachVillasLayout({ children }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+
+      {/* Google Ads conversion tag — scoped to this campaign page */}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=AW-16927541094"
+        strategy="afterInteractive"
+      />
+      <Script id="pj-gtag-init" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-16927541094');
+        `}
+      </Script>
+
       {children}
     </>
   );

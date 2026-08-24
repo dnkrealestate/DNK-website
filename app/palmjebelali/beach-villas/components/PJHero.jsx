@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import PJContactForm from "./PJContactForm";
 import PJPopupModel from "./PJPopupModel";
+import { gtag_report_conversion } from "./gtagReportConversion";
 
 const STATS = [
   { value: "5 – 6 BR", label: "Beach Villas" },
@@ -102,7 +103,10 @@ export default function PJHero() {
 
         <div className="flex flex-col gap-3 mb-8">
           <button
-            onClick={() => setShowPopup(true)}
+            onClick={() => {
+              gtag_report_conversion();
+              setShowPopup(true);
+            }}
             className="bg-gradient-to-r from-[#79644A] to-[#9C8564] hover:brightness-110 text-white font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 text-sm tracking-wide shadow-lg shadow-[#79644A]/20"
           >
             Register Your Interest
@@ -111,6 +115,7 @@ export default function PJHero() {
             href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => gtag_report_conversion()}
             className="border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/10 font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 text-sm tracking-wide flex items-center justify-center gap-2"
           >
             <FaWhatsapp /> WhatsApp Us
@@ -181,7 +186,10 @@ export default function PJHero() {
 
               <div className="flex flex-row gap-3">
                 <button
-                  onClick={() => setShowPopup(true)}
+                  onClick={() => {
+                    gtag_report_conversion();
+                    setShowPopup(true);
+                  }}
                   className="bg-gradient-to-r from-[#79644A] to-[#9C8564] hover:brightness-110 text-white font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 text-sm tracking-wide shadow-lg shadow-[#79644A]/20"
                 >
                   Register Your Interest
@@ -190,6 +198,7 @@ export default function PJHero() {
                   href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => gtag_report_conversion()}
                   className="border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/10 font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 text-sm tracking-wide flex items-center justify-center gap-2"
                 >
                   <FaWhatsapp /> WhatsApp Us

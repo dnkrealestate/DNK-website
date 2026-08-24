@@ -7,6 +7,7 @@ import { PiRulerBold } from "react-icons/pi";
 import beachVillaImg from "@/public/assets/other/beach-villas.webp";
 import coralVillaImg from "@/public/assets/other/coral-villas.webp";
 import PJPopupModel from "./PJPopupModel";
+import { gtag_report_conversion } from "./gtagReportConversion";
 
 const VILLAS = [
   {
@@ -179,7 +180,10 @@ export default function PJVillaTypes() {
                   </p>
                 </div>
                 <button
-                  onClick={() => setPopupUnit(villa.name)}
+                  onClick={() => {
+                    gtag_report_conversion();
+                    setPopupUnit(villa.name);
+                  }}
                   className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
                     villa.featured
                       ? "bg-gradient-to-r from-[#79644A] to-[#9C8564] text-white hover:brightness-110"

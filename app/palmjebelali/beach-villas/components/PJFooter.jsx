@@ -11,6 +11,7 @@ import {
   FaEnvelope,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import { gtag_report_conversion } from "./gtagReportConversion";
 
 const SOCIALS = [
   { Icon: FaInstagram, href: "https://www.instagram.com/dnk_re/", label: "Instagram" },
@@ -106,6 +107,7 @@ export default function PJFooter() {
                 <FaPhone className="text-[#C4A57F] flex-shrink-0 text-sm" />
                 <a
                   href="tel:+971555769195"
+                  onClick={() => gtag_report_conversion()}
                   className="text-white/45 hover:text-[#C4A57F] text-sm transition-colors"
                 >
                   +971 555 769 195
@@ -117,6 +119,7 @@ export default function PJFooter() {
                   href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => gtag_report_conversion()}
                   className="text-white/45 hover:text-[#C4A57F] text-sm transition-colors"
                 >
                   WhatsApp Us
