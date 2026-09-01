@@ -43,7 +43,7 @@ const HIGHLIGHTS = [
     icon: MdBeachAccess,
     value: "AED 1M",
     label: "Expression of Interest",
-    desc: "Reserve priority allocation before public release",
+    desc: "~USD 272K · Reserve priority allocation before public release",
   },
 ];
 

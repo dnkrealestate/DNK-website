@@ -8,9 +8,9 @@ import { gtag_report_conversion } from "./gtagReportConversion";
 
 const STATS = [
   { value: "5 – 6 BR", label: "Beach Villas" },
-  { value: "AED 30M+", label: "Starting From" },
+  { value: "AED 30M+", label: "Starting From", sub: "~USD 8.2M+" },
   { value: "8,600 sqft", label: "Max BUA" },
-  { value: "AED 1M", label: "EOI" },
+  { value: "AED 1M", label: "EOI", sub: "~USD 272K" },
 ];
 
 function HeroVideoBg() {
@@ -97,6 +97,9 @@ export default function PJHero() {
               <p className="text-white/45 text-[0.7rem] mt-0.5 m-0">
                 {stat.label}
               </p>
+              {stat.sub && (
+                <p className="text-white/30 text-[0.62rem] m-0">{stat.sub}</p>
+              )}
             </div>
           ))}
         </div>
@@ -132,7 +135,7 @@ export default function PJHero() {
               Reserve Your Villa
             </h2>
             <p className="text-white/45 text-xs mt-1">
-              EOI from AED 1,000,000 · Limited beachfront plots
+              EOI from AED 1,000,000 (~USD 272K) · Limited beachfront plots
             </p>
           </div>
           <PJContactForm unitInterest="Beach Villas" />
@@ -180,6 +183,9 @@ export default function PJHero() {
                     <p className="text-white/45 text-xs mt-0.5 m-0">
                       {stat.label}
                     </p>
+                    {stat.sub && (
+                      <p className="text-white/30 text-[0.65rem] m-0">{stat.sub}</p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -217,7 +223,7 @@ export default function PJHero() {
                     Reserve Your Villa
                   </h2>
                   <p className="text-white/45 text-sm mt-1">
-                    EOI from AED 1,000,000 · Limited beachfront plots
+                    EOI from AED 1,000,000 (~USD 272K) · Limited beachfront plots
                   </p>
                 </div>
                 <PJContactForm unitInterest="Beach Villas" />

@@ -18,10 +18,12 @@ const VILLAS = [
     imageAlt: "Contemporary beachfront villa exterior at twilight — for illustration purposes only",
     bedrooms: "5 – 6 BR",
     price: "AED 30M – 33M",
+    priceUsd: "USD 8.2M – 9M",
     priceNote: "Approx.",
     plot: "7,300 – 8,800 sqft",
     bua: "7,600 – 8,600 sqft",
     eoi: "AED 1,000,000",
+    eoiUsd: "USD 272,000",
     points: [
       "Direct private beach frontage",
       "Uninterrupted Arabian Gulf views",
@@ -37,10 +39,12 @@ const VILLAS = [
     imageAlt: "Luxury villa exterior with private pool — for illustration purposes only",
     bedrooms: "6 – 7 BR",
     price: "AED 48M – 54M",
+    priceUsd: "USD 13.1M – 14.7M",
     priceNote: "Approx.",
     plot: "16,000 – 21,000 sqft",
     bua: "11,600 – 12,800 sqft",
     eoi: "AED 1,000,000",
+    eoiUsd: "USD 272,000",
     points: [
       "Among the largest plots on the island",
       "Expansive multi-level entertaining spaces",
@@ -123,7 +127,8 @@ export default function PJVillaTypes() {
                 <p className="text-[#79644A] text-3xl lg:text-[2.25rem] font-bold leading-none">
                   {villa.price}
                 </p>
-                <p className="text-black/30 text-xs mt-1">{villa.priceNote}</p>
+                <p className="text-black/35 text-xs mt-1">{villa.priceUsd}</p>
+                <p className="text-black/30 text-xs mt-0.5">{villa.priceNote}</p>
               </div>
 
               {/* Spec grid */}
@@ -178,6 +183,7 @@ export default function PJVillaTypes() {
                   <p className="text-[#14181B] font-bold text-lg m-0">
                     {villa.eoi}
                   </p>
+                  <p className="text-black/35 text-xs m-0">{villa.eoiUsd}</p>
                 </div>
                 <button
                   onClick={() => {

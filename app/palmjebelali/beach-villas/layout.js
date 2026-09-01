@@ -5,13 +5,13 @@ const OG_IMAGE = "/assets/other/palmjebelaliImg.webp";
 export const metadata = {
   title: "Palm Jebel Ali Beach Villas | Ultra-Luxury Waterfront Living, Dubai",
   description:
-    "Reserve a Beach Villa on Palm Jebel Ali — 5-6BR ultra-luxury beachfront residences from AED 30M. Private beach frontage, bespoke design, EOI AED 1M. Register your interest with DNK Real Estate.",
+    "Reserve a Beach Villa on Palm Jebel Ali — 5-6BR ultra-luxury beachfront residences from AED 30M (~USD 8.2M). Private beach frontage, bespoke design, EOI AED 1M (~USD 272K). Register your interest with DNK Real Estate.",
   keywords:
     "Palm Jebel Ali, Palm Jebel Ali Beach Villas, Palm Jebel Ali Coral Villas, Nakheel Palm Jebel Ali, ultra luxury villas Dubai, beachfront villas Dubai, Palm Jebel Ali EOI, Dubai luxury real estate, private beach villa Dubai",
   openGraph: {
     title: "Palm Jebel Ali Beach Villas | Ultra-Luxury Waterfront Living",
     description:
-      "5-6BR beachfront villas on Palm Jebel Ali from AED 30M. Private beach, bespoke architecture. Register your interest today.",
+      "5-6BR beachfront villas on Palm Jebel Ali from AED 30M (~USD 8.2M). Private beach, bespoke architecture. Register your interest today.",
     url: "https://www.dnkre.com/palmjebelali/beach-villas",
     siteName: "DNK Real Estate",
     type: "website",
@@ -28,7 +28,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Palm Jebel Ali Beach Villas | Ultra-Luxury Waterfront Living",
     description:
-      "5-6BR beachfront villas on Palm Jebel Ali from AED 30M. Private beach, bespoke architecture. Register your interest today.",
+      "5-6BR beachfront villas on Palm Jebel Ali from AED 30M (~USD 8.2M). Private beach, bespoke architecture. Register your interest today.",
     images: [OG_IMAGE],
   },
   alternates: {
@@ -51,7 +51,7 @@ const jsonLdSchema = {
   "@type": "Product",
   name: "Palm Jebel Ali Beach Villas",
   description:
-    "Ultra-luxury 5-6 bedroom beachfront villas on Palm Jebel Ali, Dubai. Private beach frontage, plot 7,300–8,800 sqft, BUA 7,600–8,600 sqft. Expression of Interest AED 1,000,000.",
+    "Ultra-luxury 5-6 bedroom beachfront villas on Palm Jebel Ali, Dubai. Private beach frontage, plot 7,300–8,800 sqft, BUA 7,600–8,600 sqft. Expression of Interest AED 1,000,000 (~USD 272,000).",
   url: "https://www.dnkre.com/palmjebelali/beach-villas",
   image: `https://www.dnkre.com${OG_IMAGE}`,
   brand: {

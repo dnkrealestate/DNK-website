@@ -5,7 +5,7 @@ const STEPS = [
   {
     icon: MdEditDocument,
     label: "Register Your EOI",
-    desc: "Submit an Expression of Interest of AED 1,000,000 to join the priority allocation list.",
+    desc: "Submit an Expression of Interest of AED 1,000,000 (~USD 272,000) to join the priority allocation list.",
     highlight: true,
   },
   {
@@ -138,7 +138,8 @@ export default function PJEOIProcess() {
         <div className="bg-[#79644A]/[0.06] border border-[#79644A]/20 rounded-2xl p-6 text-center">
           <p className="text-[#14181B] font-semibold text-lg mb-1">
             Expression of Interest:{" "}
-            <span className="text-[#79644A]">AED 1,000,000</span>
+            <span className="text-[#79644A]">AED 1,000,000</span>{" "}
+            <span className="text-black/40 text-sm font-normal">(~USD 272,000)</span>
           </p>
           <p className="text-black/50 text-sm m-0">
             Applicable toward your final villa purchase &nbsp;·&nbsp;

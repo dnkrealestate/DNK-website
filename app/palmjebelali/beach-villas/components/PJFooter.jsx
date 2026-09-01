@@ -151,8 +151,8 @@ export default function PJFooter() {
                   ["Developer", "Nakheel"],
                   ["Location", "Dubai, UAE"],
                   ["Bedrooms", "5 – 6 BR"],
-                  ["Starting Price", "AED 30M"],
-                  ["EOI", "AED 1M"],
+                  ["Starting Price", "AED 30M (~USD 8.2M)"],
+                  ["EOI", "AED 1M (~USD 272K)"],
                 ].map(([key, val]) => (
                   <tr key={key} className="border border-white/15">
                     <td className="text-white/45 py-2 px-3 border border-white/15">
