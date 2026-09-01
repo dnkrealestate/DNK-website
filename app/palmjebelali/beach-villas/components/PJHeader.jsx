@@ -36,6 +36,12 @@ export default function PJHeader() {
 
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    // pushState updates the URL bar (so links become shareable/bookmarkable)
+    // without triggering the browser's native jump-to-anchor — that stays
+    // fully driven by the smooth scrollIntoView above.
+    if (typeof window !== "undefined" && window.history?.pushState) {
+      window.history.pushState(null, "", `#${id}`);
+    }
     setMobileOpen(false);
   };
 

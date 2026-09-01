@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Cormorant_Garamond } from "next/font/google";
 import PJHeader from "./PJHeader";
 import PJHero from "./PJHero";
@@ -25,6 +26,19 @@ const displayFont = Cormorant_Garamond({
 });
 
 export default function PJHomePage() {
+  // A shared link like /palmjebelali/beach-villas#contact should land on
+  // that section, not just the top of the page. Deferred one tick so the
+  // video/image-heavy sections above have laid out first — jumping too
+  // early would land short since their final height isn't known yet.
+  useEffect(() => {
+    const hash = window.location.hash?.slice(1);
+    if (!hash) return;
+    const timer = setTimeout(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className={`${displayFont.variable} bg-white`}>
       <PJHeader />

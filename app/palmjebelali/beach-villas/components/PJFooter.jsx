@@ -67,12 +67,15 @@ export default function PJFooter() {
               {NAV_LABELS.map((label, i) => (
                 <li key={label}>
                   <a
-                    href="#"
+                    href={`#${NAV_IDS[i]}`}
                     onClick={(e) => {
                       e.preventDefault();
                       document
                         .getElementById(NAV_IDS[i])
                         ?.scrollIntoView({ behavior: "smooth" });
+                      if (typeof window !== "undefined" && window.history?.pushState) {
+                        window.history.pushState(null, "", `#${NAV_IDS[i]}`);
+                      }
                     }}
                     className="text-white/45 hover:text-[#C4A57F] text-sm transition-colors"
                   >
