@@ -1,5 +1,6 @@
 'use client' // Error boundaries must be Client Components
 
+
 export default function GlobalError({ error, reset }) {
   return (
     // global-error must include html and body tags
