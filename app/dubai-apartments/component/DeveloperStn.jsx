@@ -38,6 +38,7 @@ export const DeveloperStn = () => {
               src={image02}
               alt="Developer"
               fill
+              sizes="(max-width: 768px) 100vw, 500px"
               style={{ objectFit: "cover", objectPosition: "center" }}
               className="rounded-xl z-0"
             />

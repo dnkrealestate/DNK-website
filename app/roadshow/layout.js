@@ -81,7 +81,7 @@ export default function LayoutRoadshow({ children }) {
           className="relative h-10 w-[110px] cursor-pointer"
           onClick={() => router.push("/roadshow")}
         >
-          <Image src={dnkLogo} alt="DNK Logo" fill style={{ objectFit: "contain" }} />
+          <Image src={dnkLogo} alt="DNK Logo" fill sizes="110px" style={{ objectFit: "contain" }} />
         </div>
         <button
           onClick={() => setMobileOpen(false)}

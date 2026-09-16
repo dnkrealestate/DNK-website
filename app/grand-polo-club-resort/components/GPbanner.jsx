@@ -11,6 +11,7 @@ const GPbanner = () => {
           src={projectCover}
           alt="Grand Polo Club Cover"
           fill
+          sizes="100vw"
           priority
           className="object-cover"
         />

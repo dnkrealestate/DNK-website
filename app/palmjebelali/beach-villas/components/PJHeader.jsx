@@ -63,6 +63,7 @@ export default function PJHeader() {
                 src="/assets/other/palmjebelali-titile01.webp"
                 alt="Palm Jebel Ali"
                 fill
+                sizes="130px"
                 className="object-contain object-left"
                 priority
               />

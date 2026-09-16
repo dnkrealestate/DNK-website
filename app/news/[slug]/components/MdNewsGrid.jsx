@@ -6,6 +6,7 @@ import Link from "next/link";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { WWURL } from "@/url/axios";
 import Newsimgic from "@/public/assets/icons/image_demo.webp";
+import { stripHtml } from "@/utils/stripHtml";
 
 const ReactPaginate = dynamic(() => import("react-paginate"), { ssr: false });
 
@@ -60,10 +61,9 @@ export default function MdNewsGrid({ newsList }) {
                         <h2 className="mb-2 text-[0.9rem] md:text-2xl font-semibold tracking-normal text-white line-clamp-2 pt-2">
                           {data.newstitle}
                         </h2>
-                        <div
-                          dangerouslySetInnerHTML={{ __html: data?.newspara1 }}
-                          className="ph m-0 font-normal text-gray-400 line-clamp-4"
-                        ></div>
+                        <div className="ph m-0 font-normal text-gray-400 line-clamp-4">
+                          {stripHtml(data?.newspara1)}
+                        </div>
                       </div>
                       <div className="flex gap-1">
                         <p className="m-0 font-normal text-gray-400 pt-3">

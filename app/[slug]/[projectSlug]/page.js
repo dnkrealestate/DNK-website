@@ -156,6 +156,7 @@ export default async function Page({ params }) {
             alt={project?.projectname}
             fill
             priority
+            sizes="100vw"
             className="object-cover opacity-15 blur-loop"
           />
           <div className="bg-[#000000cc] w-full h-full absolute left-0 top-0 z-1"></div>

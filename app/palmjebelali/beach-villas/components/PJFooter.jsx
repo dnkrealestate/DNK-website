@@ -35,6 +35,7 @@ export default function PJFooter() {
                 src="/assets/other/palmjebelali-titile01.webp"
                 alt="Palm Jebel Ali"
                 fill
+                sizes="230px"
                 className="object-contain object-left"
               />
             </div>

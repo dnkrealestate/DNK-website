@@ -300,6 +300,7 @@ export default function BlockEditor({ blocks, setBlocks }) {
                           src={block.imagePreview || URL + block.existingImage}
                           alt="Block preview"
                           fill
+                          sizes="(max-width: 320px) 100vw, 320px"
                           style={{ objectFit: "cover" }}
                         />
                         <button

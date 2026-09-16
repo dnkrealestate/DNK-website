@@ -39,6 +39,7 @@ export default function PJDeveloper() {
               src="/assets/other/nakeel_logo.webp"
               alt="Nakheel"
               fill
+              sizes="(max-width: 640px) 180px, 220px"
               className="object-contain object-left"
             />
           </div>

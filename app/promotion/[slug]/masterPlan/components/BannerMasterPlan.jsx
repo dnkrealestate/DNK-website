@@ -17,6 +17,7 @@ export const BannerMasterPlan = ({ promotionData }) => {
           alt={promotionData?.altSubBanner || "Amenities Banner"}
           quality={80}
           fill
+          sizes="100vw"
           priority
           className="z-0"
           style={{ objectFit: "cover" }}

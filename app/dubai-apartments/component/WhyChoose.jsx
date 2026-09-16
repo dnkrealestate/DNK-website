@@ -19,6 +19,7 @@ export const WhyChoose = () => {
               src={image01M}
               alt="Mobile Banner"
               fill
+              sizes="100vw"
               style={{ objectFit: "cover", objectPosition: "bottom" }}
               priority
             />
@@ -64,6 +65,7 @@ export const WhyChoose = () => {
                 src={image01}
                 alt="Desktop Banner"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
                 style={{ objectFit: "cover", objectPosition: "left" }}
                 priority
               />

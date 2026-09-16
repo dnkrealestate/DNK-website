@@ -30,6 +30,7 @@ export default function  DeveloperList ({ partnerData }) {
                               src={getPartenerUrl(item.image)}
                               alt={item.partnername.replace(/\s+/g, " ")}
                               fill
+                              sizes="80px"
                               quality={80}
                               style={{
                                 objectFit: "contain",

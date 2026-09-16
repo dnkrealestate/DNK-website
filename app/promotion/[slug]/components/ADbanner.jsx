@@ -78,6 +78,7 @@ export const ADbanner = ({promotionData}) => {
           alt="dubai view, Real estate, off plan, ROI, investment"
           quality={80}
           fill
+          sizes="100vw"
           priority
           style={{ objectFit: "cover" }}
         />

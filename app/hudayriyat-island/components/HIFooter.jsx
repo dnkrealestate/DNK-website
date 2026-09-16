@@ -35,6 +35,7 @@ export default function HIFooter() {
                 src="/assets/logo/dnklogo_1.webp"
                 alt="DNK Real Estate"
                 fill
+                sizes="110px"
                 className="object-contain"
               />
             </div>

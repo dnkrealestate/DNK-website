@@ -8,6 +8,7 @@ import { WWURL } from "@/url/axios";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
+import { stripHtml } from "@/utils/stripHtml";
 
 export default function NewsList({ mainNews, SliderNews }) {
   // Only the Swiper carousel below needs to wait for mount (avoids its SSR
@@ -70,12 +71,9 @@ export default function NewsList({ mainNews, SliderNews }) {
                       {mainNews.newstitle}
                     </h3>
 
-                    <p
-                      className="text-gray-400 line-clamp-4"
-                      dangerouslySetInnerHTML={{
-                        __html: mainNews?.newspara1,
-                      }}
-                    />
+                    <p className="text-gray-400 line-clamp-4">
+                      {stripHtml(mainNews?.newspara1)}
+                    </p>
                   </div>
 
                   <div className="flex gap-1 pt-3 text-gray-400">
@@ -117,6 +115,7 @@ export default function NewsList({ mainNews, SliderNews }) {
                               }
                               alt={data.alt || "News"}
                               fill
+                              sizes="70px"
                               className="object-cover rounded-sm"
                             />
                           </div>

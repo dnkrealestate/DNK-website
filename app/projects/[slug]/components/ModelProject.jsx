@@ -33,6 +33,7 @@ export default function ModelProject({ onClose, onFormSubmit, projectId }) {
                 quality={80}
                 fill
                 priority
+                sizes="(max-width: 768px) 100vw, 50vw"
                 style={{
                   objectFit: "cover",
                 }}

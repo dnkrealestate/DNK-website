@@ -196,6 +196,7 @@ const FooterNad = ({promotionData}) => {
                   src={bgImg}
                   alt={promotionData?.altThemeImage || "footer background"}
                   fill
+                  sizes="100vw"
                   className="relative"
                   style={{
                     objectFit: "cover",

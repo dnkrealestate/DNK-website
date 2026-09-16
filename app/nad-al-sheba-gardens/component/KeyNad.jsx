@@ -22,6 +22,7 @@ const KeyNad = () => {
               src={image01M}
               alt="Nad Al Sheba Mobile"
               fill
+              sizes="100vw"
               style={{ objectFit: "cover", objectPosition: "bottom" }}
               priority
             />
@@ -68,6 +69,7 @@ const KeyNad = () => {
                 src={image01}
                 alt="Nad Al Sheba"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
                 style={{ objectFit: "cover", objectPosition: "left" }}
                 priority
               />

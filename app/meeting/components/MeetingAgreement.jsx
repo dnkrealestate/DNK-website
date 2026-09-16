@@ -63,6 +63,7 @@ const MeetingAgreement = forwardRef(({ data }, ref) => {
               src={SealImage}
               alt="Company Seal"
               fill
+              sizes="128px"
               className="object-contain"
             />
           </div>

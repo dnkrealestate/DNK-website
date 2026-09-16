@@ -125,7 +125,7 @@ export default function DashboardLayout({ children }) {
     <>
       <div className="flex items-center justify-between px-5 py-5">
         <div className="relative h-10 w-[110px]">
-          <Image src={dnkLogo} alt="DNK Logo" fill style={{ objectFit: "contain" }} />
+          <Image src={dnkLogo} alt="DNK Logo" fill sizes="110px" style={{ objectFit: "contain" }} />
         </div>
         <button
           onClick={() => setMobileOpen(false)}

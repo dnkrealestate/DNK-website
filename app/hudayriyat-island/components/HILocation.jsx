@@ -72,6 +72,7 @@ export default function HILocation() {
                       src={mapImg}
                       alt="Hudayriyat Island"
                       fill
+                      sizes="(max-width: 1024px) 100vw, 480px"
                       className="object-cover object-center"
                       priority
                     />

@@ -46,6 +46,7 @@ export default function PJFormPage() {
               src="/assets/other/palmjebelali-titile01.webp"
               alt="Palm Jebel Ali"
               fill
+              sizes="145px"
               className="object-contain"
               priority
             />

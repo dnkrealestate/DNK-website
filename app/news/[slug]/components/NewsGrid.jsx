@@ -4,6 +4,7 @@ import { WWURL } from "@/url/axios";
 import Image from "next/image";
 import Link from "next/link";
 import { MdDateRange } from "react-icons/md";
+import { stripHtml } from "@/utils/stripHtml";
 
 export default function NewsGrid({ newsList }) {
   const generateSlug = (name) =>
@@ -45,12 +46,9 @@ export default function NewsGrid({ newsList }) {
                           {data.newstitle}
                         </h2>
                         {data.newspara1 ? (
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: data?.newspara1,
-                            }}
-                            className="ph m-0 font-normal text-gray-400 line-clamp-3 !text-[0.8rem]"
-                          ></div>
+                          <div className="ph m-0 font-normal text-gray-400 line-clamp-3 !text-[0.8rem]">
+                            {stripHtml(data.newspara1)}
+                          </div>
                         ) : null}
                         {data?.published && (
                           <div className="flex items-center">

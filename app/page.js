@@ -16,6 +16,7 @@ import ReviewSection from "./components/reviewSection/ReviewSection";
 import { getCreatedTime } from "@/utils/projectSort";
 import PartnerSection from "./components/partner/PartnerSection";
 import TalkSection from "./components/talkSection/TalkSection";
+import LazyRender from "./components/LazyRender";
 
 
 /* ✅ ISR: regenerate once per month */
@@ -129,10 +130,16 @@ export default async function Home() {
       <AboutSection banner={bannerData}/>
       <NewsList mainNews={mainNews} SliderNews={SliderNews} />
       <ServiceSection />
-      <TeamSection teamData={teamData} />
+      <LazyRender>
+        <TeamSection teamData={teamData} />
+      </LazyRender>
       <OurProcess />
-      <ReviewSection reviewData={sortReview} />
-      <PartnerSection partnerData={partnerData} />
+      <LazyRender>
+        <ReviewSection reviewData={sortReview} />
+      </LazyRender>
+      <LazyRender>
+        <PartnerSection partnerData={partnerData} />
+      </LazyRender>
       <TalkSection />
     </>
   );

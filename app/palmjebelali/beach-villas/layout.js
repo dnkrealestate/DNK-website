@@ -111,16 +111,16 @@ export default function PalmJebelAliBeachVillasLayout({ children }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      {/* Google Ads conversion tag — scoped to this campaign page */}
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=AW-16927541094"
-        strategy="afterInteractive"
-      />
+      {/* Google Ads conversion tag — scoped to this campaign page.
+          Reuses the gtag.js library the root layout already loads for GA4
+          instead of loading a second ~500KB copy of the same script: gtag's
+          dataLayer queue is order-independent, so pushing this config call
+          works whether the root layout's script has finished loading yet or
+          not — same tracking, half the JS. */}
       <Script id="pj-gtag-init" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
           gtag('config', 'AW-16927541094');
         `}
       </Script>

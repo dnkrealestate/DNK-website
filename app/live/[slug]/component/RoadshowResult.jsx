@@ -126,6 +126,7 @@ export default function RoadshowResult() {
             alt="Roadshow Background"
             fill
             priority
+            sizes="100vw"
             className="object-cover"
           />
         </div>

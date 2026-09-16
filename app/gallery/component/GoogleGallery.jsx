@@ -49,6 +49,7 @@ const GoogleGallery = ({ initialImages }) => {
               src={selectedImage.url}
               alt={selectedImage.name}
               fill
+              sizes="(max-width: 1024px) 100vw, 1024px"
               style={{ objectFit: "contain" }}
             />
             <button

@@ -37,6 +37,7 @@ export default function ClientsideLinkPort({ initialRoadshowLink }) {
             alt="Roadshow Background"
             fill
             priority
+            sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/85" />
@@ -47,7 +48,7 @@ export default function ClientsideLinkPort({ initialRoadshowLink }) {
           <div className="w-full max-w-[640px]">
             <div className="mb-6 flex flex-col items-center text-center">
               <div className="relative h-12 w-[130px]">
-                <Image src={dnkLogo} alt="DNK Logo" fill style={{ objectFit: "contain" }} />
+                <Image src={dnkLogo} alt="DNK Logo" fill sizes="130px" style={{ objectFit: "contain" }} />
               </div>
               <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-white/70 backdrop-blur-sm">
                 <MdLocationOn className="text-[#CE8745]" />

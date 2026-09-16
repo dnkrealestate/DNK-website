@@ -95,6 +95,7 @@ const TalkFooterNad = () => {
           src={bgImg}
           alt="Footer background"
           fill
+          sizes="100vw"
           style={{
             objectFit: "cover",
             objectPosition: "60%",

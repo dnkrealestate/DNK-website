@@ -8,6 +8,7 @@ import { userNewsServices } from "@/services/newsServices";
 import Link from "next/link";
 import { WWURL } from "@/url/axios";
 import Image from "next/image";
+import { stripHtml } from "@/utils/stripHtml";
 
 export default function NewsAll({ newsData }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -115,12 +116,9 @@ export default function NewsAll({ newsData }) {
                                 <h2 className="mb-2 text-[0.9rem] md:text-2xl font-semibold tracking-normal text-white line-clamp-2 pt-2">
                                   {data.newstitle}
                                 </h2>
-                                <p
-                                  dangerouslySetInnerHTML={{
-                                    __html: data?.newspara1,
-                                  }}
-                                  className="m-0 font-normal text-gray-400 line-clamp-4"
-                                ></p>
+                                <p className="m-0 font-normal text-gray-400 line-clamp-4">
+                                  {stripHtml(data?.newspara1)}
+                                </p>
                               </div>
 
                               <div className="flex gap-1">

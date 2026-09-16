@@ -160,6 +160,7 @@ export const ProjectGridList = ({
                             item.altthumbnail || "Dubai Apartment, villa"
                           }`}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
                           loading="lazy"
                           quality={80}
                           style={{

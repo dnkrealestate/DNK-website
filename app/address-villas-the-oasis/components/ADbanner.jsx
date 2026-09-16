@@ -12,6 +12,7 @@ export const ADbanner = () => {
         src={projectCover}
         alt="Project Cover"
         fill
+        sizes="100vw"
         priority
         className="object-cover object-center z-0"
       />

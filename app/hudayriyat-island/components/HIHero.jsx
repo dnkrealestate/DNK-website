@@ -24,6 +24,7 @@ export default function HIHero() {
         src={bannerImg}
         alt="Hudayriyat Island"
         fill
+        sizes="100vw"
         className="object-cover object-center"
         priority
       />
