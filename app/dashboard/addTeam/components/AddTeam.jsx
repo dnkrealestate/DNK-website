@@ -7,7 +7,7 @@ import TeamViewList from "./TeamViewList";
 import userProfile from "@/public/assets/icons/userprofile.webp";
 import userProfileCover from "@/public/assets/icons/userprofilecover.webp";
 import { userTeamServices } from "@/services/teamServices";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 
 export default function AddTeam({ mode = "create", user_id = null }) {
   const initialState = {
@@ -49,8 +49,8 @@ export default function AddTeam({ mode = "create", user_id = null }) {
       const teamData = response.data;
       setCreateTeam(teamData);
       setImageUrl({
-        image: teamData.image ? URL + teamData.image : null,
-        sliderimg: teamData.sliderimg ? URL + teamData.sliderimg : null,
+        image: teamData.image ? WWURL + teamData.image : null,
+        sliderimg: teamData.sliderimg ? WWURL + teamData.sliderimg : null,
       });
     } catch (err) {
       console.error("Failed to fetch team details:", err);
@@ -124,7 +124,7 @@ export default function AddTeam({ mode = "create", user_id = null }) {
                   imageUrl.image
                     ? imageUrl.image
                     : createTeam.image
-                    ? URL + createTeam.image
+                    ? WWURL + createTeam.image
                     : userProfile
                 }
                 alt="user"
@@ -147,7 +147,7 @@ export default function AddTeam({ mode = "create", user_id = null }) {
                   imageUrl.sliderimg
                     ? imageUrl.sliderimg
                     : createTeam.sliderimg
-                    ? URL + createTeam.sliderimg
+                    ? WWURL + createTeam.sliderimg
                     : userProfileCover
                 }
                 alt="slider"

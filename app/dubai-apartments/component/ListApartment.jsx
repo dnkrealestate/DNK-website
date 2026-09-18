@@ -12,7 +12,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 import DemoImage from "@/public/assets/icons/image_demo.webp";
 import useSliderLazyLoad from "@/app/hooks/useSliderLazyLoad";
 import PopupClick from "./PopupClick";
@@ -29,7 +29,7 @@ const ListApartment = ({ initialProjects }) => {
   const handleCardClick = (data) => {
     if (!isFormSubmitted) {
       const thumbnailUrl = data?.thumbnail
-        ? URL + encodeURIComponent(data.thumbnail)
+        ? WWURL + encodeURIComponent(data.thumbnail)
         : DemoImage;
       setSelectedProject({ ...data, imageUrl: thumbnailUrl });
       setIsPopupVisible(true);
@@ -48,7 +48,7 @@ const ListApartment = ({ initialProjects }) => {
   };
 
   const thumbnailUrls = searchedList.map((data) =>
-    data?.thumbnail ? URL + encodeURIComponent(data.thumbnail) : DemoImage
+    data?.thumbnail ? WWURL + encodeURIComponent(data.thumbnail) : DemoImage
   );
 
   const [imageUrls, loadImages] = useSliderLazyLoad(thumbnailUrls, 3);

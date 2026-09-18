@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import logoDefult from "@/public/assets/logo/dnklogo_1.webp";
 import { useProjectServices } from "@/services/projectServices";
 import Swal from "sweetalert2";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 import Image from "next/image";
 
 const AddLogo = () => {
@@ -111,7 +111,7 @@ const AddLogo = () => {
                 typeof imageUrl === "string"
                   ? imageUrl
                   : logo.image
-                  ? URL + logo.image
+                  ? WWURL + logo.image
                   : logoDefult
               }
               alt="Site Logo"

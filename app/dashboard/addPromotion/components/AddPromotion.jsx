@@ -1,6 +1,6 @@
 "use client";
 import React, { Suspense, useEffect, useState } from 'react'
-import {  URL as BASE_URL } from "@/url/axios";
+import {  WWURL as BASE_URL } from "@/url/axios";
 import cvrImage from "/public/assets/icons/coverimage.webp";
 import Swal from 'sweetalert2';
 import { promotionServices } from '@/services/promotionServices';

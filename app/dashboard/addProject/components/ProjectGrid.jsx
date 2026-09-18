@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MdSearch, MdAdd, MdApartment } from "react-icons/md";
 import { useProjectServices } from "@/services/projectServices";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 import PageHeader from "../../components/ui/PageHeader";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
@@ -142,7 +142,7 @@ export default function ProjectGrid() {
                       </Badge>
 
                       <Image
-                        src={URL + project.thumbnail}
+                        src={WWURL + project.thumbnail}
                         alt={project.altthumbnail || project.projectname}
                         fill
                         style={{ objectFit: "cover" }}

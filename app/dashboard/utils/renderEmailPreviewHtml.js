@@ -1,4 +1,4 @@
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 
 const escapeHtml = (str) =>
   String(str || "")
@@ -67,7 +67,7 @@ export function renderEmailPreviewHtml(blocks) {
         return wrapLink(block.link, content);
       }
       case "image": {
-        const src = block.imagePreview || (block.existingImage ? URL + block.existingImage : "");
+        const src = block.imagePreview || (block.existingImage ? WWURL + block.existingImage : "");
         if (!src) return "";
         const img = `<img src="${src}" style="max-width:100%;border-radius:8px;display:block;" />`;
         return block.link

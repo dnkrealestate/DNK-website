@@ -20,7 +20,7 @@ import {
   MdFormatListNumbered,
 } from "react-icons/md";
 import { Input, Textarea } from "@/app/dashboard/components/ui/Field";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 
 const BLOCK_TYPES = [
   { type: "heading", label: "Heading", icon: MdTitle },
@@ -297,7 +297,7 @@ export default function BlockEditor({ blocks, setBlocks }) {
                     {block.imagePreview || block.existingImage ? (
                       <div className="relative mb-2 h-32 w-full max-w-xs overflow-hidden rounded-lg border border-[#D7DCE3]">
                         <Image
-                          src={block.imagePreview || URL + block.existingImage}
+                          src={block.imagePreview || WWURL + block.existingImage}
                           alt="Block preview"
                           fill
                           sizes="(max-width: 320px) 100vw, 320px"

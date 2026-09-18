@@ -5,7 +5,7 @@ import Image from "next/image";
 import eventDefult from "@/public/assets/icons/adposter.webp";
 import { useProjectServices } from "@/services/projectServices";
 import Swal from "sweetalert2";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 
 const AddSpclDay = () => {
   const [event, setEvent] = useState({ image: null });
@@ -30,7 +30,7 @@ const AddSpclDay = () => {
           const eventId = eventData[0]._id;
           setEvent({ image: eventImage });
           setEventId(eventId);
-          setImageUrl(window.URL + eventImage);
+          setImageUrl(WWURL + eventImage);
         }
       }
     } catch (err) {

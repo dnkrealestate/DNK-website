@@ -9,7 +9,7 @@ import logoIcon from "/public/assets/icons/addlogo.webp";
 import cvrImage from "/public/assets/icons/coverimage.webp";
 import { useProjectServices } from "@/services/projectServices";
 import { userPartnerServices } from "@/services/partnerServices";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
 import RichTextEditor from "../../components/ui/RichTextEditor";
@@ -340,7 +340,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
         return;
       }
       const project = response.data;
-      // Existing image fields already resolve via `URL + createProject.<field>` in the
+      // Existing image fields already resolve via `WWURL + createProject.<field>` in the
       // markup below, so imageUrls only needs to hold freshly-selected local blob previews.
       setCreateProject({ ...project, id: project._id });
       setImageUrls({
@@ -432,7 +432,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
                 src={
                   imageUrls.thumbnail ||
                   (createProject.thumbnail
-                    ? URL + createProject.thumbnail
+                    ? WWURL + createProject.thumbnail
                     : projectImage)
                 }
                 alt="user-icon"
@@ -468,7 +468,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
                 src={
                   imageUrls.projectlogo ||
                   (createProject.projectlogo
-                    ? URL + createProject.projectlogo
+                    ? WWURL + createProject.projectlogo
                     : logoIcon)
                 }
                 alt="user-icon"
@@ -548,7 +548,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
               width={200}
               height={70}
               className="bg-[#000]"
-              src={URL + encodeURIComponent(selectedDeveloperImage)}
+              src={WWURL + encodeURIComponent(selectedDeveloperImage)}
               alt="Selected Developer"
             />
           </div>
@@ -557,7 +557,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
             className="bg-[#000]"
             width={200}
             height={70}
-            src={URL + createProject.developerlogo}
+            src={WWURL + createProject.developerlogo}
             alt="Developer"
           />
         ) : (
@@ -796,7 +796,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
                 src={
                   imageUrls?.coverimage ||
                   (createProject.coverimage
-                    ? URL + createProject.coverimage
+                    ? WWURL + createProject.coverimage
                     : cvrImage)
                 }
                 alt="cover image"
@@ -833,7 +833,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
                 src={
                   imageUrls?.mobilecoverimage ||
                   (createProject.mobilecoverimage
-                    ? URL + createProject.mobilecoverimage
+                    ? WWURL + createProject.mobilecoverimage
                     : projectImage)
                 }
                 alt="mobile cover image"
@@ -881,7 +881,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
                     src={
                       imageUrls.gallary1 ||
                       (createProject.gallary1
-                        ? URL + createProject.gallary1
+                        ? WWURL + createProject.gallary1
                         : projectImage)
                     }
                     style={{
@@ -924,7 +924,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
                     src={
                       imageUrls.gallary2 ||
                       (createProject.gallary2
-                        ? URL + createProject.gallary2
+                        ? WWURL + createProject.gallary2
                         : projectImage)
                     }
                     style={{
@@ -967,7 +967,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
                     src={
                       imageUrls.gallary3 ||
                       (createProject.gallary3
-                        ? URL + createProject.gallary3
+                        ? WWURL + createProject.gallary3
                         : projectImage)
                     }
                     style={{
@@ -1026,7 +1026,7 @@ export default function AddProject({ mode = "create", user_id = null }) {
                         className="object-cover object-center"
                         src={
                           slot.previewUrl ||
-                          (slot.existingName ? URL + slot.existingName : projectImage)
+                          (slot.existingName ? WWURL + slot.existingName : projectImage)
                         }
                         alt="additional gallery image"
                       />

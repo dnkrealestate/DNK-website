@@ -5,7 +5,7 @@ import addLogo from "@/public/assets/icons/addlogo.webp";
 import { userPartnerServices } from "@/services/partnerServices";
 import Swal from "sweetalert2";
 import ViewPartner from "./ViewPartner";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 
 const AddPartner = (props) => {
   const initialState = {
@@ -34,7 +34,7 @@ const AddPartner = (props) => {
 
       setAddPartner(partnerData); 
       setImageUrl({
-        image: partnerData.imageUrl ? URL + partnerData.imageUrl : null,
+        image: partnerData.imageUrl ? WWURL + partnerData.imageUrl : null,
       });
     } catch (err) {
       console.error("Failed to fetch partner details:", err);

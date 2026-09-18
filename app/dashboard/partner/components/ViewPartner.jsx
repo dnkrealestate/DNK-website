@@ -6,7 +6,7 @@ import { userPartnerServices } from "@/services/partnerServices";
 import { MdDelete, MdModeEditOutline } from "react-icons/md";
 import addLogo from "@/public/assets/icons/addlogo.webp";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
 
@@ -55,7 +55,7 @@ const getData = async () => {
     });
 
      // Update image preview in AddPartner
-     props.setImageUrl?.({ image: data.image ? URL + data.image : null });
+     props.setImageUrl?.({ image: data.image ? WWURL + data.image : null });
   };
 
   const handleDelete = async (id) => {
@@ -111,7 +111,7 @@ const getData = async () => {
                     width={200}
                     height={70}
                     className="bg-black object-contain h-[70px]"
-                    src={data.image ? URL + data.image : addLogo.src}
+                    src={data.image ? WWURL + data.image : addLogo.src}
                     alt="partner-logo"
                   />
                 </td>

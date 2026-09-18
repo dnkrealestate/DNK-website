@@ -3,7 +3,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import newsImage from "@/public/assets/icons/image_demo.webp";
-import { URL } from "@/url/axios";
+import { WWURL } from "@/url/axios";
 import { userNewsServices } from "@/services/newsServices";
 import Swal from "sweetalert2";
 import ViewNewsList from "./ViewNewsList";
@@ -171,7 +171,7 @@ const AddNews = ({mode, user_id}) => {
               src={
                 imageUrls.newsthumbnail ||
                 (createNews.newsthumbnail
-                  ? `${URL}${createNews.newsthumbnail}`
+                  ? `${WWURL}${createNews.newsthumbnail}`
                   : newsImage.src)
               }
               alt="news-thumbnail"
