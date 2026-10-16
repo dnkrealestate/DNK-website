@@ -59,7 +59,7 @@ export const ADbanner = () => {
     <div className="relative w-full h-[300px] md:h-[500px] lg:h-[700px] overflow-hidden">
       {/* Background Video */}
       <video
-        src="https://www.api.dnkre.com/image/damacislands2.mp4"
+        src="https://dnkserver.com/image/damacislands2.mp4"
         autoPlay
         loop
         muted

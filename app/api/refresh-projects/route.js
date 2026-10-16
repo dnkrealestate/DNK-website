@@ -1,6 +1,6 @@
 export async function GET() {
     try {
-        const res = await fetch("https://api.dnkre.com/sync-projects", {
+        const res = await fetch("https://dnkserver.com/sync-projects", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

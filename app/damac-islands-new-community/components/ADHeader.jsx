@@ -57,7 +57,7 @@ const ADHeader = () => {
             <Link href="/damac-islands-new-community">
               <div className="w-[135px] md:w-[150px] h-[60px] flex items-center">
                 <Image
-                  src="https://api.dnkre.com/e42c7012-8478-4b82-9735-b2b3c05123e8damac.svg"
+                  src="https://dnkserver.com/e42c7012-8478-4b82-9735-b2b3c05123e8damac.svg"
                   alt="DNK Logo"
                   width={150}
                   height={60}

@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-    const origin = "https://api.dnkre.com";
+    const origin = "https://dnkserver.com";
     const url = `${origin}/robots.txt`;
 
     try {

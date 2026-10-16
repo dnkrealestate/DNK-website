@@ -8,6 +8,13 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
+                hostname: 'dnkserver.com',
+                pathname: '/**',
+            },
+            {
+                // Kept for legacy image URLs already hardcoded in old DB
+                // content (e.g. news articles) that still point here.
+                protocol: 'https',
                 hostname: 'api.dnkre.com',
                 pathname: '/**',
             },

@@ -9,7 +9,7 @@ import axios from "axios";
 // export { WWURL };
 
 const URL =
-    process.env.NEXT_PUBLIC_API_URL || "https://api.dnkre.com/";
+    process.env.NEXT_PUBLIC_API_URL || "https://dnkserver.com/";
 
 export { URL };
     

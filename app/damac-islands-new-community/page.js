@@ -4,8 +4,8 @@ import HomeAddressHills from './components/HomeAddressHills'
 const title = "Damac Island Phase 2 | Dubailand";
 const description = "Discover luxury waterfront townhouses and villas at Damac Islands 2 in Dubailand, Dubai. Starting from AED 2.3M, enjoy private beaches, lagoons, and resort-style living with flexible 1% monthly payment plans. Completion June 2029.";
 const canonicalUrl = "https://dnkre.com/damac-islands-new-community";
-const ogImage = "https://api.dnkre.com/image/islands2ad.webp";
-const iconUrl = "https://api.dnkre.com/e42c7012-8478-4b82-9735-b2b3c05123e8damac.svg";
+const ogImage = "https://dnkserver.com/image/islands2ad.webp";
+const iconUrl = "https://dnkserver.com/e42c7012-8478-4b82-9735-b2b3c05123e8damac.svg";
 
 export const metadata = {
   title,

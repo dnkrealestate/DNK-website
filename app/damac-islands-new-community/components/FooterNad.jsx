@@ -196,7 +196,7 @@ const FooterNad = () => {
         <div className="footerSection container max-w-[1240px]  px-3 py-8">
           <div className="w-[90px] md:w-[200px] m-auto ">
             <Image
-              src="https://api.dnkre.com/e42c7012-8478-4b82-9735-b2b3c05123e8damac.svg"
+              src="https://dnkserver.com/e42c7012-8478-4b82-9735-b2b3c05123e8damac.svg"
               alt="logo"
               width={200}
               height={100}

@@ -1,6 +1,6 @@
 export async function GET() {
     try {
-        const res = await fetch("https://api.dnkre.com/clear-temp", {
+        const res = await fetch("https://dnkserver.com/clear-temp", {
             method: "DELETE",
             headers: {
                 "x-api-key": process.env.WWW_PUBLIC_API_URL
