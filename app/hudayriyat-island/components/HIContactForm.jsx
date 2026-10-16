@@ -95,6 +95,7 @@ export default function HIContactForm({ onFormSubmit }) {
           event: "contact_form_submitted",
           form_name: "Hudayriyat Island Lead Form",
           user_name: fullName,
+          user_email: email,
           user_city: city,
         });
       }

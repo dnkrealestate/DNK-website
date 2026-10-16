@@ -128,6 +128,7 @@ Timeline: ${answers.question_4 || ""}
         form_name: "Funnel Contact Form",
         page_path: pathname,
         user_name: fullName,
+        user_email: email,
         user_data: note,
       });
     }

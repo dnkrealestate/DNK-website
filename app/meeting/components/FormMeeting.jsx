@@ -184,6 +184,17 @@ export default function FormMeeting() {
     setShowAgreement(true);
 
     if (response?.success) {
+      // ✅ Send event to Google Tag Manager
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "contact_form_submitted",
+          form_name: "Meeting Scheduling Form",
+          user_name: addRegister.fullName,
+          user_email: addRegister.email,
+        });
+      }
+
       Swal.fire({
         icon: "success",
         title: "Meeting Scheduled",

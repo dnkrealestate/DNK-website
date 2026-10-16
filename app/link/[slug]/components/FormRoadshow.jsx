@@ -156,6 +156,7 @@ const FormRoadshow = () => {
             event: "roadshow_form_submit",
             event_location: slug,
             user_name: addRegister.fullName,
+            user_email: addRegister.email,
             attend_date: addRegister.attendDate,
             attend_time: addRegister.attendTime,
             sourced_rm: addRegister.sourcedRm,

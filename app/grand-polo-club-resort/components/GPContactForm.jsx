@@ -95,6 +95,17 @@ const GPContactForm = ({ onFormSubmit }) => {
         city,
       });
 
+      // ✅ Send event to Google Tag Manager
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "contact_form_submitted",
+          form_name: "Grand Polo Contact Form",
+          user_name: fullName,
+          user_email: email,
+        });
+      }
+
       Swal.fire({
         title: "Thank you",
         html: "<p>Our expert will contact you shortly</p>",

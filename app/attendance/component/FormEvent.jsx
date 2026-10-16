@@ -276,6 +276,17 @@ const FormEvent = () => {
       });
 
       if (response.success) {
+        // ✅ Send event to Google Tag Manager
+        if (typeof window !== "undefined") {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: "contact_form_submitted",
+            form_name: "Event Attendance Form",
+            user_name: addRegister.fullName,
+            user_email: addRegister.email,
+          });
+        }
+
         Swal.fire("Success", "Thank you for getting in touch!", "success");
         handleReset();
       } else {

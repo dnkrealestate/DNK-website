@@ -136,6 +136,18 @@ export const CareerPage = () => {
       }
 
       const response = await careerMail(formData);
+
+      // ✅ Send event to Google Tag Manager
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "contact_form_submitted",
+          form_name: "Careers Form",
+          user_name: fullName,
+          user_email: email,
+        });
+      }
+
       Swal.fire({
         title: "Thank You For Your Application.",
         html: "<p>Our HR will get back to you shortly</p>",

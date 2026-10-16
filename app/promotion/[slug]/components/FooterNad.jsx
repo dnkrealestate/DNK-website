@@ -126,6 +126,16 @@ const FooterNad = ({promotionData}) => {
             phoneNumber,
           });
     
+          // ✅ Send event to Google Tag Manager
+          if (typeof window !== "undefined") {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              event: "contact_form_submitted",
+              form_name: "Promotion Call Back Footer Form",
+              user_name: fullName,
+            });
+          }
+
           Swal.fire({
             title: `Thank you <br>${fullName}`,
             html: "<p>Our expert will contact you shortly</p>",

@@ -142,6 +142,7 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
         form_name: "Main Contact Form",
         page_path: pathname,
         user_name: fullName,
+        user_email: email,
         user_city: city,
       });
     }

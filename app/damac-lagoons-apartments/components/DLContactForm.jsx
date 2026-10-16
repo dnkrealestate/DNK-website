@@ -93,6 +93,7 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
           event: "contact_form_submitted",
           form_name: "Damac Lagoons Lead Form",
           user_name: fullName,
+          user_email: email,
         });
       }
 

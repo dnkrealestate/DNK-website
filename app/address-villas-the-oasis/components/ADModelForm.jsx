@@ -84,6 +84,17 @@ export const ADModelForm = ({ onFormSubmit }) => {
     try {
       await contactData({ fullName, email, phoneNumber, city });
 
+      // ✅ Send event to Google Tag Manager
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "contact_form_submitted",
+          form_name: "Address Villas Model Popup Form",
+          user_name: fullName,
+          user_email: email,
+        });
+      }
+
       Swal.fire({
         title: "Thank you",
         html: "<p>Our expert will contact you shortly</p>",

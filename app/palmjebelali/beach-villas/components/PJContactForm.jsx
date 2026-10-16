@@ -130,6 +130,7 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
           form_name: "Palm Jebel Ali Lead Form",
           unit_interest: unitInterest,
           user_name: fullName,
+          user_email: email,
           user_nationality: nationality,
           meeting_date: dateStr,
           meeting_time: timeStr,
