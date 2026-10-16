@@ -9,6 +9,7 @@ import CreatableSelect from "react-select/creatable";
 import { MdPersonSearch } from "react-icons/md";
 import { userRoadshowServices } from "@/services/roadshowService";
 import { findBestNameMatch } from "@/utils/matchRmName";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 const BUYING_TIMELINE_OPTIONS = [
   { label: "Immediate", value: "Immediate" },
@@ -52,6 +53,11 @@ function FieldLabel({ children }) {
 function FieldError({ children }) {
   if (!children) return null;
   return <p className="mt-1 text-xs text-red-400">{children}</p>;
+}
+
+function FieldSuccess({ children }) {
+  if (!children) return null;
+  return <p className="mt-1 text-xs text-green-400">{children}</p>;
 }
 
 function SectionHeading({ children }) {
@@ -155,11 +161,6 @@ const FormEvent = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const validatePhoneNumber = (phoneNumber) => {
-    const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-    return phoneNumberPattern.test(phoneNumber);
-  };
-
   const validateForm = () => {
     let formErrors = {};
     if (!addRegister.fullName) formErrors.fullName = "Full Name is required.";
@@ -170,7 +171,11 @@ const FormEvent = () => {
       if (!emailPattern.test(addRegister.email))
         formErrors.email = "Invalid email.";
     }
-    if (!addRegister.phone) formErrors.phone = "Phone Number is required.";
+    if (!addRegister.phone) {
+      formErrors.phone = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(addRegister.phone)) {
+      formErrors.phone = "Please enter a valid phone number.";
+    }
     if (!addRegister.status) formErrors.status = "Property status is required.";
     if (!addRegister.type) formErrors.type = "Property type is required.";
     if (!addRegister.budget) formErrors.budget = "Budget is required.";
@@ -230,7 +235,7 @@ const FormEvent = () => {
 
   const handleChangePhone = (value) => {
     setAddRegister((prev) => ({ ...prev, phone: value }));
-    setValid(validatePhoneNumber(value));
+    setValid(isValidPhoneNumber(value));
   };
 
   const handleReset = () => {
@@ -335,7 +340,7 @@ const FormEvent = () => {
             <FieldLabel>Email</FieldLabel>
             <input
               placeholder="Email*"
-              type="text"
+              type="email"
               name="email"
               className={inputClass}
               value={addRegister.email || ""}
@@ -347,6 +352,7 @@ const FormEvent = () => {
           <div className="phoneInput phoneInputBordered">
             <FieldLabel>Mobile Number</FieldLabel>
             <PhoneInput
+              enableSearch
               placeholder="Mobile Number*"
               type="text"
               name="phone"
@@ -358,8 +364,15 @@ const FormEvent = () => {
               inputProps={{ required: true }}
               containerClass="w-full"
             />
-            <FieldError>{errors.phone}</FieldError>
-            {!valid && <FieldError>Invalid phone number.</FieldError>}
+            {errors.phone ? (
+              <FieldError>{errors.phone}</FieldError>
+            ) : addRegister.phone ? (
+              valid ? (
+                <FieldSuccess>Looks good</FieldSuccess>
+              ) : (
+                <FieldError>{getPhoneValidationMessage(addRegister.phone)}</FieldError>
+              )
+            ) : null}
           </div>
         </div>
 

@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import MeetingAgreement from "./MeetingAgreement";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 /* ================= UAE TIMEZONE HELPERS ================= */
 const UAE_TZ = "Asia/Dubai";
@@ -68,7 +69,11 @@ export default function FormMeeting() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addRegister.email)) {
       formErrors.email = "Invalid email.";
     }
-    if (!addRegister.phone) formErrors.phone = "Phone Number is required.";
+    if (!addRegister.phone) {
+      formErrors.phone = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(addRegister.phone)) {
+      formErrors.phone = "Please enter a valid phone number.";
+    }
     if (!addRegister.attendDate)
       formErrors.attendDate = "Event attend date is required.";
     if (!addRegister.attendTime)
@@ -115,12 +120,7 @@ export default function FormMeeting() {
 
   const handleChangePhone = (value) => {
     setAddRegister((prev) => ({ ...prev, phone: value }));
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const pattern = /^\+?[1-9]\d{1,14}$/;
-    return pattern.test(phoneNumber);
+    setValid(isValidPhoneNumber(value));
   };
 
   /* ================= PDF GENERATION ================= */
@@ -296,6 +296,7 @@ export default function FormMeeting() {
           <div className="mx-2 mb-4 phoneInput">
             <label className="text-white">Phone</label>
             <PhoneInput
+              enableSearch
               placeholder="Mobile Number*"
               type="text"
               name="phone"
@@ -307,12 +308,15 @@ export default function FormMeeting() {
               inputProps={{ name: "phone", required: true }}
               className="w-full bg-transparent border border-[#ffffff] p-[5px] pl-0 rounded text-[#ffffff]"
             />
-            {errors.phone && (
+            {errors.phone ? (
               <p className="text-red-500 text-sm">{errors.phone}</p>
-            )}
-            {!valid && (
-              <p className="text-red-500 text-sm">Invalid phone number.</p>
-            )}
+            ) : addRegister.phone ? (
+              valid ? (
+                <p className="text-green-500 text-sm">Looks good</p>
+              ) : (
+                <p className="text-red-500 text-sm">{getPhoneValidationMessage(addRegister.phone)}</p>
+              )
+            ) : null}
           </div>
 
           {/* Sourced RM */}

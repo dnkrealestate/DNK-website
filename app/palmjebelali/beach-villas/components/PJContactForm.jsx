@@ -10,6 +10,7 @@ import { userUserServices } from "@/services/userServices";
 import Swal from "sweetalert2";
 import { track } from "@vercel/analytics";
 import { gtag_report_conversion } from "./gtagReportConversion";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 const WHATSAPP_TEXT =
   "Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas";
@@ -38,6 +39,7 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
   const [email, setEmail] = useState("");
   const [meetingDate, setMeetingDate] = useState(null);
   const [meetingTime, setMeetingTime] = useState(null);
+  const [valid, setValid] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const { contactData } = userUserServices();
@@ -50,12 +52,21 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       formErrors.email = "Invalid email format.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!nationality) formErrors.nationality = "Nationality is required.";
     if (!meetingDate) formErrors.meetingDate = "Please select a date.";
     if (!meetingTime) formErrors.meetingTime = "Please select a time.";
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
+  };
+
+  const handleChangePhone = (value) => {
+    setPhoneNumber(value);
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtoBitrix = async (name, email, phone, city, dateStr, timeStr) => {
@@ -189,17 +200,24 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
 
       <div className="phoneInput">
         <PhoneInput
+          enableSearch
           placeholder="Mobile Number *"
           country="ae"
           value={phoneNumber}
-          onChange={(value) => setPhoneNumber(value)}
+          onChange={handleChangePhone}
           enableAreaCodeStretch
           inputProps={{ required: true }}
           className="w-full bg-transparent border border-white/15 p-[5px] pl-0 rounded-xl text-white"
         />
-        {errors.phoneNumber && (
+        {errors.phoneNumber ? (
           <p className="text-red-400 text-xs mt-1">{errors.phoneNumber}</p>
-        )}
+        ) : phoneNumber ? (
+          valid ? (
+            <p className="text-green-400 text-xs mt-1">Looks good</p>
+          ) : (
+            <p className="text-red-400 text-xs mt-1">{getPhoneValidationMessage(phoneNumber)}</p>
+          )
+        ) : null}
       </div>
 
       <div>

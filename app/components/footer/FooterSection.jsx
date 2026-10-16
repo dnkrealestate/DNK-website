@@ -22,6 +22,7 @@ import { usePathname } from "next/navigation";
 import { track } from "@vercel/analytics";
 import ChatBot from "../ChatBot";
 import { trackLeadClick } from "@/services/leadServices";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 export default function FooterSection() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -50,7 +51,11 @@ export default function FooterSection() {
    const validateForm = () => {
      let formErrors = {};
      if (!fullName) formErrors.fullName = "Full Name is required.";
-     if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+     if (!phoneNumber) {
+       formErrors.phoneNumber = "Phone Number is required.";
+     } else if (!isValidPhoneNumber(phoneNumber)) {
+       formErrors.phoneNumber = "Please enter a valid phone number.";
+     }
 
      setErrors(formErrors);
      return Object.keys(formErrors).length === 0;
@@ -72,11 +77,7 @@ export default function FooterSection() {
 
    const handleChange = (value) => {
      setPhoneNumber(value);
-     setValid(validatePhoneNumber(value));
-   };
-   const validatePhoneNumber = (phoneNumber) => {
-     const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-     return phoneNumberPattern.test(phoneNumber);
+     setValid(isValidPhoneNumber(value));
    };
   
     const addLeadtobitrix = async (name, phone) => {
@@ -593,12 +594,8 @@ export default function FooterSection() {
                   />
 
                   <div className="phoneInput ">
-                    {errors.phoneNumber && (
-                      <p className="error text-[0.9rem] m-0 text-[#FF0202]">
-                        {errors.phoneNumber}
-                      </p>
-                    )}
                     <PhoneInput
+                      enableSearch
                       placeholder="Mobile Number*"
                       type="text"
                       country={"ae"}
@@ -610,6 +607,17 @@ export default function FooterSection() {
                       }}
                       className="w-full bg-transparent border border-[#000] p-[1px] pl-0 mb-6 rounded text-[#000] text-[0.9rem]"
                     />
+                    {errors.phoneNumber ? (
+                      <p className="error text-[0.9rem] m-0 text-[#FF0202]">
+                        {errors.phoneNumber}
+                      </p>
+                    ) : phoneNumber ? (
+                      valid ? (
+                        <p className="text-[0.9rem] m-0 text-[#1DBF3F]">Looks good</p>
+                      ) : (
+                        <p className="text-[0.9rem] m-0 text-[#FF0202]">{getPhoneValidationMessage(phoneNumber)}</p>
+                      )
+                    ) : null}
                   </div>
                   <button
                     className="w-full bg-[#CE8745] text-[#fff] py-2 rounded hover:bg-[#ffb066] transition"

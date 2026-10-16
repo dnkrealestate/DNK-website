@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices"; 
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 export const FormNad = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -30,7 +31,11 @@ export const FormNad = () => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
 
     setErrors(formErrors);
@@ -39,12 +44,7 @@ export const FormNad = () => {
 
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (number) => {
-    const pattern = /^\+?[1-9]\d{1,14}$/;
-    return pattern.test(number);
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, city) => {
@@ -169,7 +169,7 @@ export const FormNad = () => {
 
                   <input
                     placeholder="Email Address*"
-                    type="text"
+                    type="email"
                     className="w-full bg-transparent border border-[#000] p-[10px] rounded mt-[25px] text-[#000]"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -180,6 +180,7 @@ export const FormNad = () => {
 
                  <div className=" phoneInput">
                              <PhoneInput
+                               enableSearch
                                placeholder="Mobile Number*"
                                type="text"
                                country={"ae"}
@@ -191,11 +192,17 @@ export const FormNad = () => {
                                }}
                                className="w-full bg-transparent border border-[#000] p-[5px] pl-0 mt-[25px] rounded text-[#000]"
                              />
-                             {errors.phoneNumber && (
+                             {errors.phoneNumber ? (
                                <p className="error text-[0.9rem] m-0 text-[#FF0202]">
                                  {errors.phoneNumber}
                                </p>
-                             )}
+                             ) : phoneNumber ? (
+                               valid ? (
+                                 <p className="text-[0.9rem] m-0 text-[#1DBF3F]">Looks good</p>
+                               ) : (
+                                 <p className="text-[0.9rem] m-0 text-[#FF0202]">{getPhoneValidationMessage(phoneNumber)}</p>
+                               )
+                             ) : null}
                            </div>
 
                   <input

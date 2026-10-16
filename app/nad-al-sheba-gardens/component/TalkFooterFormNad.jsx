@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices"; 
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 export const TalkFooterFormNad = ({ onFormSubmit }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -32,7 +33,11 @@ export const TalkFooterFormNad = ({ onFormSubmit }) => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
 
     setErrors(formErrors);
@@ -41,12 +46,7 @@ export const TalkFooterFormNad = ({ onFormSubmit }) => {
 
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-    return phoneNumberPattern.test(phoneNumber);
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, city) => {
@@ -140,7 +140,7 @@ export const TalkFooterFormNad = ({ onFormSubmit }) => {
 
           <input
             placeholder="Email Address*"
-            type="text"
+            type="email"
             className="w-full bg-transparent border border-[#ffffff] p-[10px] rounded mt-[25px] text-[#ffffff]"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -153,6 +153,7 @@ export const TalkFooterFormNad = ({ onFormSubmit }) => {
 
           <div className="phoneInput ">
             <PhoneInput
+              enableSearch
               placeholder="Mobile Number*"
               country={"ae"}
               value={phoneNumber}
@@ -161,11 +162,17 @@ export const TalkFooterFormNad = ({ onFormSubmit }) => {
               inputProps={{ required: true }}
               className="w-full bg-transparent border border-[#ffffff] pl-0 p-[5px] mt-[25px] rounded text-[#ffffff]"
             />
-            {errors.phoneNumber && (
+            {errors.phoneNumber ? (
               <p className="error text-[0.9rem] m-0 text-[#FF0202]">
                 {errors.phoneNumber}
               </p>
-            )}
+            ) : phoneNumber ? (
+              valid ? (
+                <p className="text-[0.9rem] m-0 text-[#1DBF3F]">Looks good</p>
+              ) : (
+                <p className="text-[0.9rem] m-0 text-[#FF0202]">{getPhoneValidationMessage(phoneNumber)}</p>
+              )
+            ) : null}
           </div>
 
           <input

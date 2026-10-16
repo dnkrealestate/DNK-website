@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -32,7 +33,11 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
 
     setErrors(formErrors);
@@ -41,12 +46,7 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
 
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const phonePattern = /^\+?[1-9]\d{1,14}$/;
-    return phonePattern.test(phoneNumber);
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, city) => {
@@ -155,7 +155,7 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
 
                   <input
                     placeholder="Email Address*"
-                    type="text"
+                    type="email"
                     className="w-full bg-transparent border border-white p-2.5 mt-6 rounded text-white"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -166,6 +166,7 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
 
                   <div className="phoneInput mt-6">
                     <PhoneInput
+                      enableSearch
                       placeholder="Mobile Number*"
                       country={"ae"}
                       value={phoneNumber}
@@ -175,12 +176,15 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
                       containerClass="w-full"
                       className="w-full bg-transparent border border-white rounded text-white"
                     />
-                    {errors.phoneNumber && (
+                    {errors.phoneNumber ? (
                       <p className="text-[#FF0202]">{errors.phoneNumber}</p>
-                    )}
-                    {!valid && (
-                      <p className="text-[#FF0202]">Invalid phone number.</p>
-                    )}
+                    ) : phoneNumber ? (
+                      valid ? (
+                        <p className="text-[#1DBF3F]">Looks good</p>
+                      ) : (
+                        <p className="text-[#FF0202]">{getPhoneValidationMessage(phoneNumber)}</p>
+                      )
+                    ) : null}
                   </div>
 
                   <input

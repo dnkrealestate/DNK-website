@@ -9,6 +9,7 @@ import { MdLock } from "react-icons/md";
 import { userRoadshowServices } from "@/services/roadshowService";
 import "react-phone-input-2/lib/style.css";
 import { track } from "@vercel/analytics";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 const FormRoadshow = () => {
   const params = useParams();
@@ -99,7 +100,11 @@ const FormRoadshow = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addRegister.email)) {
       formErrors.email = "Invalid email.";
     }
-    if (!addRegister.phone) formErrors.phone = "Phone Number is required.";
+    if (!addRegister.phone) {
+      formErrors.phone = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(addRegister.phone)) {
+      formErrors.phone = "Please enter a valid phone number.";
+    }
     if (!addRegister.attendDate)
       formErrors.attendDate = "Event attend date is required.";
     if (!addRegister.attendTime)
@@ -118,12 +123,7 @@ const FormRoadshow = () => {
 
   const handleChangePhone = (value) => {
     setAddRegister((prev) => ({ ...prev, phone: value }));
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const pattern = /^\+?[1-9]\d{1,14}$/;
-    return pattern.test(phoneNumber);
+    setValid(isValidPhoneNumber(value));
   };
 
   const handleSubmit = async (e) => {
@@ -196,6 +196,7 @@ const FormRoadshow = () => {
     "w-full rounded-xl border border-white/15 bg-white/5 p-3 text-white placeholder:text-white/40 transition-colors focus:border-[#CE8745] focus:outline-none focus:ring-1 focus:ring-[#CE8745]";
   const labelClass = "mb-1.5 block text-sm font-medium text-white/80";
   const errorClass = "mt-1 text-xs text-red-400";
+  const successClass = "mt-1 text-xs text-green-400";
 
   const selectStyles = {
     control: (base, state) => ({
@@ -254,6 +255,7 @@ const FormRoadshow = () => {
         <div className="phoneInput phoneInputBordered">
           <label className={labelClass}>Phone</label>
           <PhoneInput
+            enableSearch
             placeholder="Mobile Number"
             type="text"
             name="phone"
@@ -265,8 +267,15 @@ const FormRoadshow = () => {
             inputProps={{ name: "phone", required: true }}
             containerClass="w-full"
           />
-          {errors.phone && <p className={errorClass}>{errors.phone}</p>}
-          {!valid && <p className={errorClass}>Invalid phone number.</p>}
+          {errors.phone ? (
+            <p className={errorClass}>{errors.phone}</p>
+          ) : addRegister.phone ? (
+            valid ? (
+              <p className={successClass}>Looks good</p>
+            ) : (
+              <p className={errorClass}>{getPhoneValidationMessage(addRegister.phone)}</p>
+            )
+          ) : null}
         </div>
 
         {/* Attend Date */}

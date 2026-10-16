@@ -7,6 +7,7 @@ import "react-phone-input-2/lib/style.css";
 import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices";
 import { track } from "@vercel/analytics";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 const ADTalkFooterForm = ({ onFormSubmit, promotionData }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -27,21 +28,20 @@ const ADTalkFooterForm = ({ onFormSubmit, promotionData }) => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
 
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
 
-  const validatePhoneNumber = (number) => {
-    const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-    return phoneNumberPattern.test(number);
-  };
-
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, city) => {
@@ -130,7 +130,7 @@ const ADTalkFooterForm = ({ onFormSubmit, promotionData }) => {
 
           <input
             placeholder="Email Address*"
-            type="text"
+            type="email"
             className="w-full bg-transparent border border-white p-[10px] rounded mt-[25px] text-white"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -141,6 +141,7 @@ const ADTalkFooterForm = ({ onFormSubmit, promotionData }) => {
 
           <div className="mt-[25px]">
             <PhoneInput
+              enableSearch
               placeholder="Mobile Number*"
               country={"ae"}
               value={phoneNumber}
@@ -151,9 +152,15 @@ const ADTalkFooterForm = ({ onFormSubmit, promotionData }) => {
               buttonClass="!bg-transparent"
               containerClass="!text-white"
             />
-            {errors.phoneNumber && (
+            {errors.phoneNumber ? (
               <p className="text-sm text-[#FF0202]">{errors.phoneNumber}</p>
-            )}
+            ) : phoneNumber ? (
+              valid ? (
+                <p className="text-sm text-[#1DBF3F]">Looks good</p>
+              ) : (
+                <p className="text-sm text-[#FF0202]">{getPhoneValidationMessage(phoneNumber)}</p>
+              )
+            ) : null}
           </div>
 
           <input

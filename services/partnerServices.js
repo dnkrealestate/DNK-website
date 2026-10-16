@@ -49,7 +49,7 @@ export const getPartner = async () => {
 
     } catch (error) {
         console.error("Error fetching partner", error);
-        return { success: false, data: [] };
+        return [];
     }
 }
 

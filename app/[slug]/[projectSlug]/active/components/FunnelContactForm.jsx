@@ -8,11 +8,13 @@ import Swal from "sweetalert2";
 import { usePathname } from "next/navigation";
 import { track } from "@vercel/analytics";
 import { userUserServices } from "@/services/userServices";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 export default function FunnelContactForm({ answers = {}, projectData = null, onFormSubmit = () => {} }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [valid, setValid] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const { contactData } = userUserServices();
@@ -35,13 +37,18 @@ export default function FunnelContactForm({ answers = {}, projectData = null, on
     if (!fullName) formErrors.fullName = "Full Name is required.";
     if (!email) formErrors.email = "Email is required.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) formErrors.email = "Invalid email.";
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
 
   const handleChange = (value) => {
     setPhoneNumber(value);
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, note) => {
@@ -158,6 +165,7 @@ Timeline: ${answers.question_4 || ""}
       <input
         type="email"
         placeholder="Email Address*"
+        type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="w-full bg-transparent border border-[#ffffff] p-3 rounded text-white"
@@ -166,14 +174,22 @@ Timeline: ${answers.question_4 || ""}
 
       <div className="!border !border-[#ffffff] rounded">
       <PhoneInput
-        country="ae"
+        enableSearch        country="ae"
         placeholder="Mobile Number*"
         value={phoneNumber}
         onChange={handleChange}
         inputClass="w-full !bg-transparent !border-transparent  p-3  text-white"
       />
       </div>
-      {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
+      {errors.phoneNumber ? (
+        <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+      ) : phoneNumber ? (
+        valid ? (
+          <p className="text-green-500 text-sm">Looks good</p>
+        ) : (
+          <p className="text-red-500 text-sm">{getPhoneValidationMessage(phoneNumber)}</p>
+        )
+      ) : null}
 
       <button
         type="submit"

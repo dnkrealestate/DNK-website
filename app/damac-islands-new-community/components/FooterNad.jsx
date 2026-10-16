@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import logo from "@/public/assets/pojects/NadAlSheba/meraas-logo.webp";
 import bgImg from "@/public/assets/pojects/NadAlSheba/footer-bg.webp";
 import { userUserServices } from "@/services/userServices";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 const FooterNad = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -35,8 +36,12 @@ const FooterNad = () => {
      const validateForm = () => {
        let formErrors = {};
        if (!fullName) formErrors.fullName = "Full Name is required.";
-       if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
-  
+       if (!phoneNumber) {
+         formErrors.phoneNumber = "Phone Number is required.";
+       } else if (!isValidPhoneNumber(phoneNumber)) {
+         formErrors.phoneNumber = "Please enter a valid phone number.";
+       }
+
        setErrors(formErrors);
        return Object.keys(formErrors).length === 0;
      };
@@ -57,11 +62,7 @@ const FooterNad = () => {
   
      const handleChange = (value) => {
        setPhoneNumber(value);
-       setValid(validatePhoneNumber(value));
-     };
-     const validatePhoneNumber = (phoneNumber) => {
-       const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-       return phoneNumberPattern.test(phoneNumber);
+       setValid(isValidPhoneNumber(value));
      };
     
       const addLeadtobitrix = async (name, phone) => {
@@ -280,12 +281,8 @@ const FooterNad = () => {
               />
 
               <div className="phoneInput ">
-                {errors.phoneNumber && (
-                  <p className="error text-[0.9rem] m-0 text-[#FF0202]">
-                    {errors.phoneNumber}
-                  </p>
-                )}
                 <PhoneInput
+                  enableSearch
                   placeholder="Mobile Number*"
                   type="text"
                   country={"ae"}
@@ -297,6 +294,17 @@ const FooterNad = () => {
                   }}
                   className="w-full bg-transparent border border-[#000] p-[1px] pl-0 mb-6 rounded text-[#000] text-[0.9rem]"
                 />
+                {errors.phoneNumber ? (
+                  <p className="error text-[0.9rem] m-0 text-[#FF0202]">
+                    {errors.phoneNumber}
+                  </p>
+                ) : phoneNumber ? (
+                  valid ? (
+                    <p className="text-[0.9rem] m-0 text-[#1DBF3F]">Looks good</p>
+                  ) : (
+                    <p className="text-[0.9rem] m-0 text-[#FF0202]">{getPhoneValidationMessage(phoneNumber)}</p>
+                  )
+                ) : null}
               </div>
               <button
                 className="w-full bg-[#0D84C8] text-[#fff] py-2 rounded hover:bg-[#0D84C8] transition"

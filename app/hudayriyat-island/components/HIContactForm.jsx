@@ -7,9 +7,11 @@ import "react-phone-input-2/lib/style.css";
 import { userUserServices } from "@/services/userServices";
 import Swal from "sweetalert2";
 import { track } from "@vercel/analytics";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 export default function HIContactForm({ onFormSubmit }) {
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [valid, setValid] = useState(true);
   const [fullName, setFullName] = useState("");
   const [city, setCity] = useState("");
   const [email, setEmail] = useState("");
@@ -25,10 +27,19 @@ export default function HIContactForm({ onFormSubmit }) {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       formErrors.email = "Invalid email format.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
+  };
+
+  const handleChangePhone = (value) => {
+    setPhoneNumber(value);
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtoBitrix = async (name, email, phone, city) => {
@@ -142,17 +153,24 @@ export default function HIContactForm({ onFormSubmit }) {
 
       <div className="phoneInput">
         <PhoneInput
+          enableSearch
           placeholder="Mobile Number *"
           country="ae"
           value={phoneNumber}
-          onChange={(value) => setPhoneNumber(value)}
+          onChange={handleChangePhone}
           enableAreaCodeStretch
           inputProps={{ required: true }}
           className="w-full bg-transparent border border-white/20 p-[5px] pl-0 rounded-xl text-white"
         />
-        {errors.phoneNumber && (
+        {errors.phoneNumber ? (
           <p className="text-red-400 text-xs mt-1">{errors.phoneNumber}</p>
-        )}
+        ) : phoneNumber ? (
+          valid ? (
+            <p className="text-green-400 text-xs mt-1">Looks good</p>
+          ) : (
+            <p className="text-red-400 text-xs mt-1">{getPhoneValidationMessage(phoneNumber)}</p>
+          )
+        ) : null}
       </div>
 
       <div>

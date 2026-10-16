@@ -6,6 +6,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 export const ADModelForm = ({ onFormSubmit }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -26,21 +27,20 @@ export const ADModelForm = ({ onFormSubmit }) => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
 
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
 
-  const validatePhoneNumber = (number) => {
-    const pattern = /^\+?[1-9]\d{1,14}$/;
-    return pattern.test(number);
-  };
-
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, city) => {
@@ -131,6 +131,7 @@ export const ADModelForm = ({ onFormSubmit }) => {
 
         <div className="mt-6">
           <PhoneInput
+            enableSearch
             placeholder="Mobile Number*"
             country={"ae"}
             value={phoneNumber}
@@ -148,12 +149,15 @@ export const ADModelForm = ({ onFormSubmit }) => {
               borderColor: "#fff",
             }}
           />
-          {errors.phoneNumber && (
+          {errors.phoneNumber ? (
             <p className="text-sm text-red-500">{errors.phoneNumber}</p>
-          )}
-          {!valid && (
-            <p className="text-sm text-red-500">Invalid phone number</p>
-          )}
+          ) : phoneNumber ? (
+            valid ? (
+              <p className="text-sm text-green-500">Looks good</p>
+            ) : (
+              <p className="text-sm text-red-500">{getPhoneValidationMessage(phoneNumber)}</p>
+            )
+          ) : null}
         </div>
 
         <input

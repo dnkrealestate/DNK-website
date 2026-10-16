@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 export const GPModelForm = ({ onFormSubmit }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -31,7 +32,11 @@ export const GPModelForm = ({ onFormSubmit }) => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
@@ -39,12 +44,7 @@ export const GPModelForm = ({ onFormSubmit }) => {
 
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const pattern = /^\+?[1-9]\d{1,14}$/;
-    return pattern.test(phoneNumber);
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, city) => {
@@ -137,6 +137,7 @@ export const GPModelForm = ({ onFormSubmit }) => {
 
         <div className="mt-[25px] phoneInput">
           <PhoneInput
+            enableSearch
             placeholder="Mobile Number*"
             country="ae"
             value={phoneNumber}
@@ -144,12 +145,15 @@ export const GPModelForm = ({ onFormSubmit }) => {
             inputProps={{ required: true }}
             className="!text-[#fff] bg-transparent border border-white rounded w-full"
           />
-          {errors.phoneNumber && (
+          {errors.phoneNumber ? (
             <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>
-          )}
-          {!valid && (
-            <p className="text-sm text-red-500 mt-1">Invalid phone number.</p>
-          )}
+          ) : phoneNumber ? (
+            valid ? (
+              <p className="text-sm text-green-500 mt-1">Looks good</p>
+            ) : (
+              <p className="text-sm text-red-500 mt-1">{getPhoneValidationMessage(phoneNumber)}</p>
+            )
+          ) : null}
         </div>
 
         <input

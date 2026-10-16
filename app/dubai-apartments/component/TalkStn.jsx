@@ -6,6 +6,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 import Assist from "@/public/assets/dubaiApaetment/icon01.webp";
 import Consultation from "@/public/assets/dubaiApaetment/icon02.webp";
@@ -31,7 +32,11 @@ export const TalkStn = () => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
 
     setErrors(formErrors);
@@ -40,12 +45,7 @@ export const TalkStn = () => {
 
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-    return phoneNumberPattern.test(phoneNumber);
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, city) => {
@@ -170,7 +170,7 @@ export const TalkStn = () => {
 
               <input
                 placeholder="Email Address*"
-                type="text"
+                type="email"
                 className="w-full bg-transparent border border-white p-2.5 rounded mt-6 text-white"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -181,6 +181,7 @@ export const TalkStn = () => {
 
               <div className="phoneInput mt-6">
                 <PhoneInput
+                  enableSearch
                   placeholder="Mobile Number*"
                   country="ae"
                   value={phoneNumber}
@@ -189,12 +190,15 @@ export const TalkStn = () => {
                   inputProps={{ required: true }}
                   className="text-black"
                 />
-                {errors.phoneNumber && (
+                {errors.phoneNumber ? (
                   <p className="text-sm text-red-500">{errors.phoneNumber}</p>
-                )}
-                {!valid && (
-                  <p className="text-sm text-red-500">Invalid phone number.</p>
-                )}
+                ) : phoneNumber ? (
+                  valid ? (
+                    <p className="text-sm text-green-500">Looks good</p>
+                  ) : (
+                    <p className="text-sm text-red-500">{getPhoneValidationMessage(phoneNumber)}</p>
+                  )
+                ) : null}
               </div>
 
               <input

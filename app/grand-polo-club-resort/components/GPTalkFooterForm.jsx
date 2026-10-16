@@ -8,6 +8,7 @@ import { userUserServices } from "@/services/userServices";
 import Swal from "sweetalert2";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 const GPTalkFooterForm = ({ onFormSubmit }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -32,21 +33,20 @@ const GPTalkFooterForm = ({ onFormSubmit }) => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
 
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
 
-  const validatePhoneNumber = (phone) => {
-    const pattern = /^\+?[1-9]\d{1,14}$/;
-    return pattern.test(phone);
-  };
-
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
+    setValid(isValidPhoneNumber(value));
   };
 
   const addLeadtobitrix = async (name, email, phone, city) => {
@@ -127,7 +127,7 @@ const GPTalkFooterForm = ({ onFormSubmit }) => {
 
         <input
           placeholder="Email Address*"
-          type="text"
+          type="email"
           className="w-full bg-transparent border border-white p-[10px] rounded mt-[25px] text-white"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -136,6 +136,7 @@ const GPTalkFooterForm = ({ onFormSubmit }) => {
 
         <div className="phoneInput">
           <PhoneInput
+            enableSearch
             placeholder="Mobile Number*"
             country="ae"
             className="w-full bg-transparent border border-[#fff] p-[5px] pl-0 mt-[25px] rounded text-[#fff]"
@@ -147,14 +148,17 @@ const GPTalkFooterForm = ({ onFormSubmit }) => {
             }}
             containerClass="mt-[25px]"
           />
-          {errors.phoneNumber && (
+          {errors.phoneNumber ? (
             <p className="text-[0.9rem] text-[#FF0202]">{errors.phoneNumber}</p>
-          )}
-          {!valid && (
-            <p className="text-[0.9rem] text-[#FF0202]">
-              Invalid phone number.
-            </p>
-          )}
+          ) : phoneNumber ? (
+            valid ? (
+              <p className="text-[0.9rem] text-[#1DBF3F]">Looks good</p>
+            ) : (
+              <p className="text-[0.9rem] text-[#FF0202]">
+                {getPhoneValidationMessage(phoneNumber)}
+              </p>
+            )
+          ) : null}
         </div>
 
         <input

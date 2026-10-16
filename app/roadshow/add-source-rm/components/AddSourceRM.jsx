@@ -127,6 +127,7 @@ const AddSourceRM = (props) => {
               name="email"
               type="email"
               placeholder="Email"
+              type="email"
               value={addSourceRM.email || ""}
               onChange={handleChange}
             />

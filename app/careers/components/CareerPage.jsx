@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import "react-phone-input-2/lib/style.css";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
+import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 export const CareerPage = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -30,7 +31,11 @@ export const CareerPage = () => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) formErrors.email = "Invalid email.";
     }
-    if (!phoneNumber) formErrors.phoneNumber = "Phone Number is required.";
+    if (!phoneNumber) {
+      formErrors.phoneNumber = "Phone Number is required.";
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      formErrors.phoneNumber = "Please enter a valid phone number.";
+    }
     if (!city) formErrors.city = "City is required.";
     if (!cv) formErrors.cv = "CV is required.";
 
@@ -44,12 +49,7 @@ export const CareerPage = () => {
 
   const handleChange = (value) => {
     setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-    return phoneNumberPattern.test(phoneNumber);
+    setValid(isValidPhoneNumber(value));
   };
 
   const handleFileInput = (e) => {
@@ -217,7 +217,7 @@ export const CareerPage = () => {
                       <div className="mb-[25px]">
                         <input
                           placeholder="Email Address*"
-                          type="text"
+                          type="email"
                           className="w-full bg-transparent border border-[#ffffff] p-[10px] rounded  text-[#ffffff]"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -232,6 +232,7 @@ export const CareerPage = () => {
                       <div className="mb-[25px] phoneInput">
                         {showPhoneInput ? (
                           <PhoneInput
+                            enableSearch
                             placeholder="Mobile Number*"
                             type="text"
                             country={"ae"}
@@ -246,11 +247,17 @@ export const CareerPage = () => {
                         ) : (
                           <div className="h-[40px] bg-transparent border border-[#ffffff] rounded animate-pulse"></div> // optional skeleton
                         )}
-                        {errors.phoneNumber && (
+                        {errors.phoneNumber ? (
                           <p className="error text-[0.9rem] m-0 text-[#FF0202]">
                             {errors.phoneNumber}
                           </p>
-                        )}
+                        ) : phoneNumber ? (
+                          valid ? (
+                            <p className="text-[0.9rem] m-0 text-[#1DBF3F]">Looks good</p>
+                          ) : (
+                            <p className="text-[0.9rem] m-0 text-[#FF0202]">{getPhoneValidationMessage(phoneNumber)}</p>
+                          )
+                        ) : null}
                       </div>
                       <div className="mb-[25px]">
                         <input

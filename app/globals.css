@@ -552,6 +552,23 @@ p {
   color: #000000;
 }
 
+/* react-phone-input-2's country-search dropdown (.react-tel-input is the
+   library's own always-present root class, unlike the site's .phoneInput
+   wrapper which not every form uses) has a solid white background but
+   leaves .search-box with no text color of its own — it inherits the white
+   text these dark forms set on the field, making typed search text
+   invisible against the white dropdown. Force readable dark text/placeholder
+   regardless of which form it's used in. */
+.react-tel-input .country-list .search-box {
+  color: #000000 !important;
+}
+.react-tel-input .country-list .search-box::placeholder {
+  color: #6b7280;
+}
+.react-tel-input .country-list .country-name {
+  color: #000000;
+}
+
 /* Bordered variant used on the roadshow /link and /attendance forms — the
    base .phoneInput rule above strips the input's border/background with
    !important (relied on by ~20 other contact forms), so this needs its own
