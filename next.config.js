@@ -43,6 +43,19 @@ const nextConfig = {
         ],
     },
 
+    async redirects() {
+        return [
+            {
+                // Page renamed from /damac-islands-new-community to
+                // /damac-islands — preserve SEO equity and any existing
+                // links/ad campaigns pointing at the old URL.
+                source: '/damac-islands-new-community',
+                destination: '/damac-islands',
+                permanent: true,
+            },
+        ];
+    },
+
     webpack: (config, { dev, isServer }) => {
         if (dev && !isServer) {
             config.resolve.symlinks = false;

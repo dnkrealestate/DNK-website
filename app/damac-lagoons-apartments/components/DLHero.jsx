@@ -42,7 +42,7 @@ function HeroVideoBg() {
         }}
       />
       <div className="absolute left-0 right-0 top-[62%] h-px bg-gradient-to-r from-transparent via-[#B68A2E]/30 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-black/75" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
     </>
   );
 }

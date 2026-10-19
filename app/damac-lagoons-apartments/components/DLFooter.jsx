@@ -111,15 +111,9 @@ export default function DLFooter() {
           </div>
         </div>
 
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/30 text-xs text-center sm:text-left">
+        <div className="pt-6 flex items-center justify-center">
+          <p className="text-white/30 text-xs text-center">
             © {year} DNK Real Estate. All rights reserved.
-          </p>
-          <p className="text-white/30 text-xs text-center sm:text-right max-w-[520px]">
-            This page is an independent marketing listing by DNK Real
-            Estate for Lagoon Views at Damac Lagoons. Images and project
-            details are indicative and sourced from the developer; prices
-            and availability are subject to change.
           </p>
         </div>
       </div>
