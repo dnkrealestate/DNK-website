@@ -10,7 +10,7 @@ import { track } from "@vercel/analytics";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
 
 const WHATSAPP_TEXT =
-  "Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Lagoon%20Views%20Apartments";
+  "Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views";
 
 export default function DLContactForm({ onFormSubmit, compact = false }) {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -52,7 +52,7 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             fields: {
-              TITLE: "Damac Lagoons - Lagoon Views Website Lead",
+              TITLE: "Damac Lagoons - Sorrento Lagoon Views Website Lead",
               NAME: name,
               PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
               EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
@@ -101,7 +101,7 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
 
       Swal.fire({
         title: `Thank you, ${fullName}!`,
-        html: "<p>A DNK Real Estate advisor will contact you shortly about Lagoon Views at Damac Lagoons.</p>",
+        html: "<p>A DNK Real Estate advisor will contact you shortly about Sorrento Lagoon Views at Damac Lagoons.</p>",
         icon: "success",
         confirmButtonColor: "#B68A2E",
       });

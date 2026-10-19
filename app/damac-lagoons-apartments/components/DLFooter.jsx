@@ -35,9 +35,9 @@ export default function DLFooter() {
               className="h-10 w-auto mb-5"
             />
             <p className="text-white/50 text-sm leading-relaxed max-w-[320px] mb-5">
-              DNK Real Estate is your trusted partner for Lagoon Views and
-              Damac Lagoons — guiding you from enquiry to handover with
-              transparent, expert advice.
+              DNK Real Estate is your trusted partner for Sorrento Lagoon
+              Views at Damac Lagoons — guiding you from enquiry to handover
+              with transparent, expert advice.
             </p>
             <div className="flex items-center gap-3">
               {SOCIALS.map((s) => (
@@ -99,7 +99,7 @@ export default function DLFooter() {
               <li className="flex items-center gap-3">
                 <FaWhatsapp className="text-[#25D366] flex-shrink-0" />
                 <a
-                  href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Lagoon%20Views%20Apartments"
+                  href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/50 hover:text-white text-sm transition-colors"

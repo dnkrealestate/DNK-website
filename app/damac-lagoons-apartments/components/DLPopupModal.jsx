@@ -34,7 +34,7 @@ export default function DLPopupModal({ onClose }) {
             Get Latest Price &amp; Floor Plans
           </h3>
           <p className="text-[#B68A2E] text-sm font-semibold">
-            Damac Lagoons · Lagoon Views
+            Damac Lagoons · Sorrento Lagoon Views
           </p>
           <p className="text-white/45 text-sm mt-2">
             Share your details and our advisor will send pricing, floor

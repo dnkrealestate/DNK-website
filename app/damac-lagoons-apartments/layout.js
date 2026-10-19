@@ -1,15 +1,15 @@
 const OG_IMAGE = "/assets/damac-lagoons/hero-poster.webp";
 
 export const metadata = {
-  title: "Damac Lagoons Apartments | Lagoon Views 1 & 2 BR, Dubailand",
+  title: "Sorrento Lagoon Views | Damac Lagoons Apartments, Dubailand",
   description:
-    "Lagoon Views at Damac Lagoons — 1 & 2 bedroom Mediterranean-inspired apartments in Dubailand, Dubai. Starting from AED 1.353M, handover Q4 2027. Register your interest with DNK Real Estate.",
+    "Sorrento Lagoon Views at Damac Lagoons — Studio & 1 Bedroom Mediterranean-inspired apartments in Dubailand, Dubai. Starting from AED 680K, 50/50 payment plan, 4% DLD fee waiver. Register your interest with DNK Real Estate.",
   keywords:
-    "Damac Lagoons, Damac Lagoons apartments, Lagoon Views Damac, Damac Lagoons Dubailand, 1 bedroom apartment Dubai, 2 bedroom apartment Dubai, off-plan apartments Dubai, Damac Properties, Dubai lagoon community",
+    "Damac Lagoons, Sorrento Lagoon Views, Damac Lagoons apartments, Damac Lagoons Dubailand, studio apartment Dubai, 1 bedroom apartment Dubai, off-plan apartments Dubai, Damac Properties, Dubai lagoon community",
   openGraph: {
-    title: "Damac Lagoons Apartments | Lagoon Views 1 & 2 BR, Dubailand",
+    title: "Sorrento Lagoon Views | Damac Lagoons Apartments, Dubailand",
     description:
-      "1 & 2 bedroom Mediterranean-inspired apartments at Damac Lagoons from AED 1.353M. Handover Q4 2027. Register your interest today.",
+      "Studio & 1 Bedroom Mediterranean-inspired apartments at Damac Lagoons from AED 680K. 50/50 payment plan, 4% DLD fee waiver. Register your interest today.",
     url: "https://www.dnkre.com/damac-lagoons-apartments",
     siteName: "DNK Real Estate",
     type: "website",
@@ -18,15 +18,15 @@ export const metadata = {
         url: OG_IMAGE,
         width: 1920,
         height: 1080,
-        alt: "Lagoon Views apartments at Damac Lagoons, Dubai",
+        alt: "Sorrento Lagoon Views apartments at Damac Lagoons, Dubai",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Damac Lagoons Apartments | Lagoon Views 1 & 2 BR, Dubailand",
+    title: "Sorrento Lagoon Views | Damac Lagoons Apartments, Dubailand",
     description:
-      "1 & 2 bedroom Mediterranean-inspired apartments at Damac Lagoons from AED 1.353M. Handover Q4 2027. Register your interest today.",
+      "Studio & 1 Bedroom Mediterranean-inspired apartments at Damac Lagoons from AED 680K. 50/50 payment plan, 4% DLD fee waiver. Register your interest today.",
     images: [OG_IMAGE],
   },
   alternates: {
@@ -47,9 +47,9 @@ export const metadata = {
 const jsonLdSchema = {
   "@context": "https://schema.org",
   "@type": "Product",
-  name: "Damac Lagoons Apartments - Lagoon Views",
+  name: "Sorrento Lagoon Views - Damac Lagoons",
   description:
-    "1 & 2 bedroom Mediterranean-inspired apartments at Lagoon Views, Damac Lagoons, Dubailand. Sizes up to 1,418 sqft (1BR) and 1,797 sqft (2BR). Handover Q4 2027.",
+    "Studio & 1 Bedroom Mediterranean-inspired apartments at Sorrento Lagoon Views, Damac Lagoons, Dubailand. Starting from AED 680K with a 50/50 payment plan and 4% DLD fee waiver.",
   url: "https://www.dnkre.com/damac-lagoons-apartments",
   image: `https://www.dnkre.com${OG_IMAGE}`,
   brand: {
@@ -57,15 +57,13 @@ const jsonLdSchema = {
     name: "Damac Properties",
   },
   additionalProperty: [
-    { "@type": "PropertyValue", name: "Unit Types", value: "1 & 2 Bedroom Apartments" },
-    { "@type": "PropertyValue", name: "1BR Size", value: "Up to 1,418 sqft" },
-    { "@type": "PropertyValue", name: "2BR Size", value: "Up to 1,797 sqft" },
-    { "@type": "PropertyValue", name: "Handover", value: "Q4 2027" },
+    { "@type": "PropertyValue", name: "Unit Types", value: "Studio & 1 Bedroom Apartments" },
+    { "@type": "PropertyValue", name: "Payment Plan", value: "50/50" },
+    { "@type": "PropertyValue", name: "DLD Fee Waiver", value: "4%" },
   ],
   offers: {
-    "@type": "AggregateOffer",
-    lowPrice: "1353000",
-    highPrice: "1801000",
+    "@type": "Offer",
+    price: "680000",
     priceCurrency: "AED",
     availability: "https://schema.org/InStock",
     url: "https://www.dnkre.com/damac-lagoons-apartments",

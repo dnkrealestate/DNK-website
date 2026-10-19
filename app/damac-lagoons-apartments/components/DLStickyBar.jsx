@@ -4,7 +4,7 @@ import React from "react";
 import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
 
 const WHATSAPP_TEXT =
-  "Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Lagoon%20Views%20Apartments";
+  "Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views";
 
 export default function DLStickyBar({ onEnquire }) {
   return (

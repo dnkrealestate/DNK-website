@@ -5,24 +5,20 @@ import { IoChevronDown } from "react-icons/io5";
 
 const FAQS = [
   {
-    q: "What unit types are available at Lagoon Views, Damac Lagoons?",
-    a: "Lagoon Views offers 1 and 2 bedroom apartments. 1 bedroom units start from AED 1.353M with sizes up to 1,418 sq.ft, and 2 bedroom units start from AED 1.801M with sizes up to 1,797 sq.ft.",
+    q: "What unit types are available at Sorrento Lagoon Views?",
+    a: "Sorrento Lagoon Views offers Studio and 1 Bedroom luxury apartments, starting from AED 680K.",
   },
   {
-    q: "When is the expected handover date?",
-    a: "Lagoon Views is expected to be handed over in Q4 2027, based on the developer's published completion date.",
+    q: "What payment plan is available?",
+    a: "Sorrento Lagoon Views is offered on a 50/50 payment plan, with instalments from around AED 1,700 per month, plus a 4% DLD fee waiver. Contact our advisors for the full, current payment schedule.",
   },
   {
     q: "Where exactly is Damac Lagoons located?",
     a: "Damac Lagoons is located in Dubailand, Dubai, directly adjacent to the established Damac Hills community, with convenient access to Al Qudra Road and the wider Dubailand road network.",
   },
   {
-    q: "What amenities are included at Lagoon Views?",
+    q: "What amenities are included at Damac Lagoons?",
     a: "The community features a wave pool, private beach, floating amphitheatre, floating bridge, Boho lounge and a waterfront clubhouse, among other resort-style amenities.",
-  },
-  {
-    q: "Is a payment plan available?",
-    a: "Damac typically offers structured payment plans for off-plan purchases. Contact our advisors for the exact payment plan and down payment currently on offer for Lagoon Views.",
   },
   {
     q: "How do I book a unit or get the latest pricing?",

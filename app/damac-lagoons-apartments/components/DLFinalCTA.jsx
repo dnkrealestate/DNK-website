@@ -20,7 +20,7 @@ export default function DLFinalCTA() {
             </h2>
             <p className="text-white/50 text-sm">
               Speak to a DNK Real Estate advisor today for the latest
-              pricing, floor plans and payment plan on Lagoon Views.
+              pricing, floor plans and payment plan on Sorrento Lagoon Views.
             </p>
           </div>
           <DLContactForm />

@@ -4,10 +4,10 @@ import Image from "next/image";
 const FACTS = [
   { label: "Developer", value: "Damac Properties" },
   { label: "Community", value: "Damac Lagoons, Dubailand" },
-  { label: "Unit Types", value: "1 & 2 Bedroom Apartments" },
-  { label: "Size Range", value: "Up to 1,418 – 1,797 sq.ft" },
-  { label: "Starting Price", value: "AED 1.353M" },
-  { label: "Handover", value: "Q4 2027" },
+  { label: "Phase", value: "Sorrento" },
+  { label: "Unit Types", value: "Studio & 1 Bedroom" },
+  { label: "Starting Price", value: "AED 680K" },
+  { label: "Payment Plan", value: "50/50" },
 ];
 
 export default function DLAbout() {
@@ -30,18 +30,18 @@ export default function DLAbout() {
               About The Project
             </p>
             <h2 className="text-[#151A19] text-3xl lg:text-4xl font-semibold mb-6 leading-tight">
-              A Mediterranean Lagoon,
+              A New Chapter In
               <br />
-              Brought To Dubailand
+              Mediterranean Living
             </h2>
             <p className="text-[#5B6460] leading-relaxed mb-4">
-              Nestled away in Damac Lagoons, with its top-tier amenities, is
-              Lagoon Views — a collection of apartments that bring you
-              elevated luxury inspired by the Mediterranean. Overlooking the
-              lagoon and surrounded by lush greenery and stunning water
-              features, find a lifestyle wrapped in serenity, with sleek,
-              white curved exteriors and sweeping balconies that offer
-              sublime views and a seamless indoor-outdoor living experience.
+              Sorrento Lagoon Views is the newest phase within Damac
+              Lagoons, with its top-tier amenities — a collection of Studio
+              and 1 Bedroom luxury apartments that bring you elevated
+              living inspired by the Mediterranean. Overlooking the lagoon
+              and surrounded by lush greenery and stunning water features,
+              find a lifestyle wrapped in serenity, with sleek curved
+              exteriors and private balconies that offer sublime views.
             </p>
             <p className="text-[#5B6460] leading-relaxed mb-8">
               Close to the charm of Damac Hills, yet hidden away from the

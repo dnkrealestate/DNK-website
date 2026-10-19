@@ -6,10 +6,10 @@ import DLContactForm from "./DLContactForm";
 import DLPopupModal from "./DLPopupModal";
 
 const STATS = [
-  { value: "1 & 2 BR", label: "Apartments" },
-  { value: "AED 1.353M", label: "Starting From", sub: "1 Bedroom" },
-  { value: "1,797 sqft", label: "Max Area", sub: "2 Bedroom" },
-  { value: "Q4 2027", label: "Handover" },
+  { value: "Studio & 1 BR", label: "Luxury Apartments" },
+  { value: "AED 680K", label: "Starting From" },
+  { value: "50/50", label: "Payment Plan" },
+  { value: "4% DLD", label: "Fee Waiver" },
 ];
 
 function HeroVideoBg() {
@@ -57,14 +57,14 @@ export default function DLHero() {
         <HeroVideoBg />
         <div className="relative z-10 w-full px-4 text-center">
           <p className="text-[#14B8A6] text-[0.65rem] font-semibold tracking-[0.25em] uppercase mb-3">
-            Damac Lagoons · Mediterranean-Inspired Living
+            Damac Lagoons · A New Chapter In Mediterranean Living
           </p>
           <h1 className="leading-[0.95] font-semibold">
             <span className="block text-4xl sm:text-5xl text-white tracking-tight">
-              Lagoon Views
+              Sorrento
             </span>
             <span className="block text-xl sm:text-2xl text-[#B68A2E] tracking-tight mt-1 italic">
-              1 &amp; 2 Bedroom Apartments
+              Lagoon Views
             </span>
           </h1>
         </div>
@@ -76,9 +76,9 @@ export default function DLHero() {
 
       <div className="lg:hidden bg-[#070A0C] px-4 pt-8 pb-10">
         <p className="text-white/55 text-sm leading-relaxed mb-6 text-center">
-          Elevated luxury inspired by the Mediterranean — overlooking the
-          lagoon, surrounded by lush greenery and sweeping water features,
-          with sleek curved exteriors and private balconies.
+          Studio and 1 Bedroom luxury apartments overlooking the lagoon —
+          sleek curved exteriors, sweeping water features and private
+          balconies, with a flexible 50/50 payment plan.
         </p>
 
         <div className="grid grid-cols-2 gap-2.5 mb-6">
@@ -108,7 +108,7 @@ export default function DLHero() {
             Get Latest Price &amp; Floor Plans
           </button>
           <a
-            href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Lagoon%20Views%20Apartments"
+            href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views"
             target="_blank"
             rel="noopener noreferrer"
             className="border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/10 font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 text-sm tracking-wide flex items-center justify-center gap-2"
@@ -124,7 +124,7 @@ export default function DLHero() {
               Enquire Now
             </h2>
             <p className="text-white/45 text-xs mt-1">
-              1 BR from AED 1.353M · 2 BR from AED 1.801M
+              Sorrento Lagoon Views · Starting from AED 680K
             </p>
           </div>
           <DLContactForm compact />
@@ -139,23 +139,22 @@ export default function DLHero() {
           <div className="flex flex-row items-center gap-16">
             <div className="flex-1 text-left">
               <p className="text-[#14B8A6] text-sm font-semibold tracking-[0.3em] uppercase mb-4">
-                Damac Lagoons · Mediterranean-Inspired Living
+                Damac Lagoons · A New Chapter In Mediterranean Living
               </p>
 
               <h1 className="leading-[0.95] mb-5 font-semibold">
                 <span className="block text-[5.5rem] text-white tracking-tight">
-                  Lagoon Views
+                  Sorrento
                 </span>
                 <span className="block text-5xl text-[#B68A2E] tracking-tight mt-1 italic">
-                  1 &amp; 2 Bedroom Apartments
+                  Lagoon Views
                 </span>
               </h1>
 
               <p className="text-white/55 text-lg mb-8 max-w-[520px] leading-relaxed">
-                Elevated luxury inspired by the Mediterranean — overlooking
-                the lagoon, surrounded by lush greenery and sweeping water
-                features, with sleek curved exteriors and private balconies
-                that offer sublime views.
+                Studio and 1 Bedroom luxury apartments overlooking the
+                lagoon — sleek curved exteriors, sweeping water features
+                and private balconies, with a flexible 50/50 payment plan.
               </p>
 
               <div className="flex flex-wrap gap-3 mb-10">
@@ -185,7 +184,7 @@ export default function DLHero() {
                   Get Latest Price &amp; Floor Plans
                 </button>
                 <a
-                  href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Lagoon%20Views%20Apartments"
+                  href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/10 font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 text-sm tracking-wide flex items-center justify-center gap-2"
@@ -203,7 +202,7 @@ export default function DLHero() {
                     Enquire Now
                   </h2>
                   <p className="text-white/45 text-sm mt-1">
-                    1 BR from AED 1.353M · 2 BR from AED 1.801M
+                    Sorrento Lagoon Views · Starting from AED 680K
                   </p>
                 </div>
                 <DLContactForm />
