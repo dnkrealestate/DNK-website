@@ -27,6 +27,9 @@ export default function DLHeader() {
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", `#${id}`);
+    }
     setMenuOpen(false);
   };
 
