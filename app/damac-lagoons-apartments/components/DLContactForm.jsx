@@ -12,10 +12,16 @@ import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validateP
 const WHATSAPP_TEXT =
   "Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views";
 
-export default function DLContactForm({ onFormSubmit, compact = false }) {
+const UNIT_OPTIONS = [
+  { value: "Studio", label: "Studio" },
+  { value: "1 Bedroom", label: "1 Bedroom" },
+];
+
+export default function DLContactForm({ onFormSubmit, compact = false, heading = "Register My Interest" }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [unitType, setUnitType] = useState("Both");
   const [valid, setValid] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -43,7 +49,7 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
     setValid(isValidPhoneNumber(value));
   };
 
-  const addLeadToBitrix = async (name, email, phone) => {
+  const addLeadToBitrix = async (name, email, phone, unit) => {
     try {
       await fetch(
         "https://crm.dnkre.com/rest/1/tu18jyuvffebb7mc/crm.lead.add.json",
@@ -56,6 +62,8 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
               NAME: name,
               PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
               EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+              ADDRESS_CITY: unit,
+              COMMENTS: `Preferred unit type: ${unit}`,
             },
           }),
         }
@@ -74,10 +82,15 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
       name: fullName,
       phone: phoneNumber,
       email,
+      unitType,
     });
 
+    // Fired independently of our own backend call below, so a Bitrix24 lead
+    // is still created even if contactData() fails.
+    addLeadToBitrix(fullName, email, phoneNumber, unitType);
+
     try {
-      await contactData({ fullName, email, phoneNumber, city: "" });
+      await contactData({ fullName, email, phoneNumber, city: unitType });
 
       if (typeof window !== "undefined" && window.snaptr) {
         window.snaptr("track", "SIGN_UP", {
@@ -94,22 +107,22 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
           form_name: "Damac Lagoons Lead Form",
           user_name: fullName,
           user_email: email,
+          unit_type: unitType,
         });
       }
 
-      await addLeadToBitrix(fullName, email, phoneNumber);
-
       Swal.fire({
         title: `Thank you, ${fullName}!`,
-        html: "<p>A DNK Real Estate advisor will contact you shortly about Sorrento Lagoon Views at Damac Lagoons.</p>",
+        html: "<p>A DNK Real Estate advisor will contact you shortly about Sorrento Lagoon Views at Damac Lagoons. This is an enquiry, not a payment or a reservation.</p>",
         icon: "success",
-        confirmButtonColor: "#B68A2E",
+        confirmButtonColor: "#1C6B82",
       });
 
-      onFormSubmit?.({ fullName, email, phoneNumber });
+      onFormSubmit?.({ fullName, email, phoneNumber, unitType });
       setFullName("");
       setEmail("");
       setPhoneNumber("");
+      setUnitType("Both");
       setErrors({});
     } catch (err) {
       Swal.fire("Error", "Check your internet connection", "error");
@@ -119,13 +132,14 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
   };
 
   const inputCls =
-    "w-full bg-white/5 border border-white/15 p-3 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:border-[#B68A2E] transition-colors text-sm";
+    "w-full bg-white/5 border border-white/15 p-3 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:border-[#3D8FA6] transition-colors text-sm";
 
   return (
     <form onSubmit={handleSubmit} className={compact ? "space-y-3" : "space-y-4"}>
       <div>
+        <label className="text-white/60 text-xs font-medium mb-1.5 block">Full Name</label>
         <input
-          placeholder="Full Name *"
+          placeholder="Full name *"
           type="text"
           className={inputCls}
           value={fullName}
@@ -137,8 +151,65 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
       </div>
 
       <div>
+        <label className="text-white/60 text-xs font-medium mb-1.5 block">WhatsApp Number</label>
+        <div className="phoneInput">
+          <PhoneInput
+            enableSearch
+            placeholder="Mobile Number *"
+            country="ae"
+            value={phoneNumber}
+            onChange={handleChangePhone}
+            enableAreaCodeStretch
+            inputProps={{ required: true }}
+            className="w-full bg-transparent border border-white/15 p-[5px] pl-0 rounded-xl text-white"
+          />
+          {errors.phoneNumber ? (
+            <p className="text-red-400 text-xs mt-1">{errors.phoneNumber}</p>
+          ) : phoneNumber ? (
+            valid ? (
+              <p className="text-green-400 text-xs mt-1">Looks good</p>
+            ) : (
+              <p className="text-red-400 text-xs mt-1">{getPhoneValidationMessage(phoneNumber)}</p>
+            )
+          ) : null}
+        </div>
+      </div>
+
+      <div>
+        <label className="text-white/60 text-xs font-medium mb-1.5 block">Preferred Property Type</label>
+        <div className="grid grid-cols-2 gap-2">
+          {UNIT_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setUnitType(opt.value)}
+              className={`rounded-xl border px-3 py-2.5 text-left transition-colors ${
+                unitType === opt.value
+                  ? "border-[#3D8FA6] bg-[#3D8FA6]/15"
+                  : "border-white/15 bg-white/5 hover:border-white/30"
+              }`}
+            >
+              <span className="block text-white text-sm font-semibold">{opt.label}</span>
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => setUnitType("Both")}
+          className={`w-full mt-2 rounded-xl border px-3 py-2.5 text-left transition-colors ${
+            unitType === "Both"
+              ? "border-[#3D8FA6] bg-[#3D8FA6]/15"
+              : "border-white/15 bg-white/5 hover:border-white/30"
+          }`}
+        >
+          <span className="block text-white text-sm font-semibold">Both — Studio &amp; 1 Bedroom</span>
+        </button>
+      </div>
+
+      <div>
+        <label className="text-white/60 text-xs font-medium mb-1.5 block">Email</label>
         <input
-          placeholder="Email Address *"
+          placeholder="Email address"
           type="email"
           className={inputCls}
           value={email}
@@ -149,39 +220,24 @@ export default function DLContactForm({ onFormSubmit, compact = false }) {
         )}
       </div>
 
-      <div className="phoneInput">
-        <PhoneInput
-          enableSearch
-          placeholder="Mobile Number *"
-          country="ae"
-          value={phoneNumber}
-          onChange={handleChangePhone}
-          enableAreaCodeStretch
-          inputProps={{ required: true }}
-          className="w-full bg-transparent border border-white/15 p-[5px] pl-0 rounded-xl text-white"
-        />
-        {errors.phoneNumber ? (
-          <p className="text-red-400 text-xs mt-1">{errors.phoneNumber}</p>
-        ) : phoneNumber ? (
-          valid ? (
-            <p className="text-green-400 text-xs mt-1">Looks good</p>
-          ) : (
-            <p className="text-red-400 text-xs mt-1">{getPhoneValidationMessage(phoneNumber)}</p>
-          )
-        ) : null}
-      </div>
-
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-gradient-to-r from-[#B68A2E] to-[#D4AF6A] hover:from-[#D4AF6A] hover:to-[#B68A2E] text-black font-semibold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center text-sm tracking-wide"
+        className="w-full bg-[#1C6B82] hover:bg-[#17596C] text-white font-semibold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center text-sm tracking-wide"
       >
         {loading ? (
-          <div className="w-5 h-5 border-2 border-black/40 border-t-transparent rounded-full animate-spin" />
+          <div className="w-5 h-5 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
         ) : (
-          "Get Latest Price & Floor Plans"
+          heading
         )}
       </button>
+
+      {/* <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-white/45 text-[0.7rem]">
+        <p>✓ No obligation to purchase</p>
+        <p>✓ Direct advisor assistance</p>
+        <p>✓ Launch updates</p>
+        <p>✓ Official details when released</p>
+      </div> */}
 
       <div className="flex items-center justify-center gap-2 pt-1">
         <span className="text-white/40 text-xs">Or reach us via</span>

@@ -5,16 +5,44 @@ import { IoChevronDown } from "react-icons/io5";
 
 const FAQS = [
   {
-    q: "What unit types are available at Sorrento Lagoon Views?",
-    a: "Sorrento Lagoon Views offers Studio and 1 Bedroom luxury apartments, starting from AED 680K.",
+    q: "What is Sorrento at Damac Lagoons?",
+    a: "Sorrento Lagoon Views is a new collection of Studio and 1-Bedroom apartments within Damac Lagoons, Dubailand — \"a new chapter in Mediterranean living.\"",
   },
   {
-    q: "What payment plan is available?",
-    a: "Sorrento Lagoon Views is offered on a 50/50 payment plan, with instalments from around AED 1,700 per month, plus a 4% DLD fee waiver. Contact our advisors for the full, current payment schedule.",
+    q: "Where is Sorrento located in Dubai?",
+    a: "Sorrento is located within Damac Lagoons in Dubailand, Dubai, close to the established Damac Hills community, with Downtown Dubai and Palm Jumeirah within approximately half an hour.",
   },
   {
-    q: "Where exactly is Damac Lagoons located?",
-    a: "Damac Lagoons is located in Dubailand, Dubai, directly adjacent to the established Damac Hills community, with convenient access to Al Qudra Road and the wider Dubailand road network.",
+    q: "Who is developing Sorrento?",
+    a: "Sorrento is developed by Damac Properties, one of Dubai's best-known developers of branded communities including Damac Hills, Damac Hills 2 and Damac Lagoons.",
+  },
+  {
+    q: "What apartments are available at Sorrento?",
+    a: "Sorrento offers Studio and 1-Bedroom luxury apartments.",
+  },
+  {
+    q: "What is the starting price of Sorrento at Damac Lagoons?",
+    a: "Prices start from AED 680,000*, subject to Damac's official confirmation.",
+  },
+  {
+    q: "When is the Sorrento launch expected?",
+    a: "Sorrento is a newly launched phase with EOI (Expression of Interest) currently open. Contact our advisors for the latest launch and availability updates.",
+  },
+  {
+    q: "What is the Sorrento payment plan?",
+    a: "The advertised structure is a 50/50 payment plan*, with a 4% DLD fee waiver. The exact instalment schedule is confirmed in Damac's official plan; contact our advisors for the full breakdown.",
+  },
+  {
+    q: "What does an Expression of Interest (EOI) mean?",
+    a: "An EOI is a non-binding registration of interest that lets Damac and our advisors know you'd like to be considered for a unit and kept updated — it is not a payment or a reservation.",
+  },
+  {
+    q: "Does registering guarantee an apartment?",
+    a: "No. EOI submission does not guarantee unit allocation. Payment instructions, refundability and allocation priority are subject to Damac's official terms.",
+  },
+  {
+    q: "Can foreign investors buy property at Sorrento?",
+    a: "Damac Lagoons sits in a freehold area of Dubai, open to foreign ownership. Confirm the latest eligibility and process details with our advisors.",
   },
   {
     q: "What amenities are included at Damac Lagoons?",
@@ -22,7 +50,7 @@ const FAQS = [
   },
   {
     q: "How do I book a unit or get the latest pricing?",
-    a: "Fill in the enquiry form on this page or WhatsApp/call DNK Real Estate directly — one of our advisors will send you the latest pricing, floor plans and availability.",
+    a: "Fill in the registration form on this page or WhatsApp/call DNK Real Estate directly — one of our advisors will send you the latest pricing, floor plans and availability.",
   },
 ];
 
@@ -32,33 +60,30 @@ export default function DLFAQ() {
   return (
     <section className="bg-white py-16 lg:py-24 px-4" id="faq">
       <div className="max-w-[800px] mx-auto">
-        <div className="text-center mb-12">
-          <p className="text-[#0F766E] text-sm font-semibold tracking-[0.3em] uppercase mb-3">
-            FAQ
-          </p>
-          <h2 className="text-[#151A19] text-3xl lg:text-4xl font-semibold">
-            Frequently Asked Questions
-          </h2>
-        </div>
+        <p className="text-[#1C6B82] text-xs font-bold tracking-[0.2em] uppercase mb-2 flex items-center gap-2 justify-center">
+          <span>13</span>
+          <span className="w-8 h-px bg-[#1C6B82]" />
+          <span>FAQ</span>
+        </p>
+        <h2 className="text-[#151A19] text-3xl lg:text-4xl font-extrabold text-center mb-10">
+          Sorrento at Damac Lagoons: Your Questions Answered
+        </h2>
 
-        <div className="space-y-3">
+        <div className="divide-y divide-[#E5E0D5] border-t border-b border-[#E5E0D5]">
           {FAQS.map((item, i) => {
             const isOpen = openIndex === i;
             return (
-              <div
-                key={item.q}
-                className="border border-[#EBE8E2] rounded-2xl overflow-hidden"
-              >
+              <div key={item.q}>
                 <button
                   onClick={() => setOpenIndex(isOpen ? -1 : i)}
-                  className="w-full flex items-center justify-between gap-4 p-5 text-left"
+                  className="w-full flex items-center justify-between gap-4 py-5 text-left"
                   aria-expanded={isOpen}
                 >
                   <span className="text-[#151A19] font-medium text-sm lg:text-base">
                     {item.q}
                   </span>
                   <IoChevronDown
-                    className={`text-[#B68A2E] flex-shrink-0 transition-transform duration-300 ${
+                    className={`text-[#1C6B82] flex-shrink-0 transition-transform duration-300 ${
                       isOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -69,7 +94,7 @@ export default function DLFAQ() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="text-[#5B6460] text-sm leading-relaxed px-5 pb-5">
+                    <p className="text-[#5B6460] text-sm leading-relaxed pb-5">
                       {item.a}
                     </p>
                   </div>

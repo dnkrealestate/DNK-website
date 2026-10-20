@@ -1,52 +1,44 @@
 import React from "react";
-import { FaWater, FaChartLine, FaShieldAlt, FaHandHoldingUsd } from "react-icons/fa";
 
 const REASONS = [
   {
-    icon: FaWater,
-    title: "Resort-Style Living, Every Day",
-    text: "A Mediterranean-inspired lagoon community with private beaches, wave pools and lush landscaping — not just an apartment, a lifestyle.",
+    num: "01",
+    title: "Developed by Damac Properties",
+    text: "A recognised property developer with an established Dubai portfolio and the developer of the wider Damac Lagoons community.",
   },
   {
-    icon: FaChartLine,
-    title: "Growing Dubailand District",
-    text: "Part of one of Dubai's largest master-planned districts, with ongoing infrastructure and community development around Damac Lagoons.",
+    num: "02",
+    title: "Mediterranean-Inspired Living",
+    text: "Curved white facades, sweeping balconies and landscaping inspired by a coastal lifestyle.",
   },
   {
-    icon: FaHandHoldingUsd,
-    title: "Flexible Payment Options",
-    text: "Damac typically structures off-plan payment plans across the construction period — ask our advisors for the exact plan currently on offer.",
-  },
-  {
-    icon: FaShieldAlt,
-    title: "Trusted Developer",
-    text: "Backed by Damac Properties, with an established track record delivering master-planned residential communities across the UAE.",
+    num: "03",
+    title: "Lagoon Community",
+    text: "Access to the broader Damac Lagoons waterfront lifestyle: lagoons, beaches and community amenities.",
   },
 ];
 
 export default function DLWhyInvest() {
   return (
-    <section className="bg-[#F7F5F1] py-16 lg:py-24 px-4">
+    <section className="bg-[#F5F1E8] pb-16 lg:pb-24 px-4">
       <div className="max-w-[1200px] mx-auto">
-        <div className="text-center mb-12">
-          <p className="text-[#0F766E] text-sm font-semibold tracking-[0.3em] uppercase mb-3">
-            Why Lagoon Views
-          </p>
-          <h2 className="text-[#151A19] text-3xl lg:text-4xl font-semibold">
-            Reasons To Make This Your Next Move
-          </h2>
-        </div>
+        <p className="text-[#1C6B82] text-xs font-bold tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
+          <span>05</span>
+          <span className="w-8 h-px bg-[#1C6B82]" />
+          <span>Highlights</span>
+        </p>
+        <h2 className="text-[#151A19] text-3xl lg:text-4xl font-extrabold mb-10 max-w-[600px]">
+          Why Sorrento at Damac Lagoons Is Worth a Closer Look
+        </h2>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid md:grid-cols-3 gap-5 mb-12">
           {REASONS.map((reason) => (
             <div
-              key={reason.title}
-              className="bg-white rounded-2xl border border-[#EBE8E2] p-6 hover:border-[#B68A2E]/40 hover:shadow-lg transition-all duration-300"
+              key={reason.num}
+              className="bg-white rounded-2xl border border-[#E5E0D5] p-6"
             >
-              <div className="w-11 h-11 rounded-xl bg-[#B68A2E]/10 flex items-center justify-center text-[#B68A2E] mb-4">
-                <reason.icon className="text-lg" />
-              </div>
-              <h3 className="text-[#151A19] font-semibold mb-2">
+              <p className="text-[#1C6B82] text-xs font-bold mb-3">{reason.num}</p>
+              <h3 className="text-[#151A19] text-lg font-bold mb-2 leading-snug">
                 {reason.title}
               </h3>
               <p className="text-[#5B6460] text-sm leading-relaxed">
@@ -54,6 +46,35 @@ export default function DLWhyInvest() {
               </p>
             </div>
           ))}
+        </div>
+
+        <div className="bg-[#EBE5D8] rounded-3xl p-8 lg:p-10">
+          <h3 className="text-[#151A19] text-2xl font-extrabold mb-6">
+            Live in it, or invest in it
+          </h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <p className="text-[#1C6B82] text-xs font-bold tracking-[0.15em] uppercase mb-2">
+                For Homeowners
+              </p>
+              <p className="text-[#5B6460] text-sm leading-relaxed">
+                A manageable studio or 1-bedroom home in a resort-style
+                setting, with lagoons, beaches and landscaped walks in the
+                community around you, next to Damac Hills.
+              </p>
+            </div>
+            <div>
+              <p className="text-[#1C6B82] text-xs font-bold tracking-[0.15em] uppercase mb-2">
+                For Investors to Evaluate
+              </p>
+              <p className="text-[#5B6460] text-sm leading-relaxed">
+                Compact unit types, an advertised 50/50* plan and an entry
+                price from AED 680K*. Compare the official figures, service
+                charges and fees before deciding — we do not promise
+                returns or capital growth.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>

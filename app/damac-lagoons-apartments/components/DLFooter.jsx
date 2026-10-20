@@ -4,8 +4,8 @@ import Link from "next/link";
 import { FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedinIn, FaYoutube, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 const QUICK_LINKS = [
-  { name: "About", id: "about" },
-  { name: "Unit Types", id: "units" },
+  { name: "Apartments", id: "units" },
+  { name: "Payment Plan", id: "payment-plan" },
   { name: "Amenities", id: "amenities" },
   { name: "Gallery", id: "gallery" },
   { name: "Location", id: "location" },
@@ -28,11 +28,18 @@ export default function DLFooter() {
         <div className="grid md:grid-cols-[1.2fr_1fr_1fr] gap-10 pb-10 border-b border-white/10">
           <div>
             <Image
+              src="/assets/damac-lagoons/logo-sorrento-full-white.webp"
+              alt="Sorrento Lagoon Views"
+              width={140}
+              height={110}
+              className="h-20 w-auto mb-6"
+            />
+            <Image
               src="/assets/logo/dnklogo_1.webp"
               alt="DNK Real Estate"
               width={120}
               height={44}
-              className="h-10 w-auto mb-5"
+              className="h-8 w-auto mb-5 opacity-80"
             />
             <p className="text-white/50 text-sm leading-relaxed max-w-[320px] mb-5">
               DNK Real Estate is your trusted partner for Sorrento Lagoon
@@ -47,7 +54,7 @@ export default function DLFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="w-9 h-9 rounded-full bg-white/5 hover:bg-[#B68A2E] flex items-center justify-center text-white/60 hover:text-white transition-all"
+                  className="w-9 h-9 rounded-full bg-white/5 hover:bg-[#1C6B82] flex items-center justify-center text-white/60 hover:text-white transition-all"
                 >
                   <s.icon className="text-sm" />
                 </a>
@@ -64,7 +71,7 @@ export default function DLFooter() {
                 <li key={link.id}>
                   <a
                     href={`#${link.id}`}
-                    className="text-white/50 hover:text-[#B68A2E] text-sm transition-colors"
+                    className="text-white/50 hover:text-[#1C6B82] text-sm transition-colors"
                   >
                     {link.name}
                   </a>
@@ -79,19 +86,19 @@ export default function DLFooter() {
             </h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <FaMapMarkerAlt className="text-[#B68A2E] mt-1 flex-shrink-0" />
+                <FaMapMarkerAlt className="text-[#1C6B82] mt-1 flex-shrink-0" />
                 <span className="text-white/50 text-sm">
                   Suite No: 603, Sama Building, Al Barsha 1, Dubai, UAE
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <FaPhoneAlt className="text-[#B68A2E] flex-shrink-0" />
+                <FaPhoneAlt className="text-[#1C6B82] flex-shrink-0" />
                 <a href="tel:+971555769195" className="text-white/50 hover:text-white text-sm transition-colors">
                   +971 55 576 9195
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <FaEnvelope className="text-[#B68A2E] flex-shrink-0" />
+                <FaEnvelope className="text-[#1C6B82] flex-shrink-0" />
                 <a href="mailto:info@dnkre.com" className="text-white/50 hover:text-white text-sm transition-colors">
                   info@dnkre.com
                 </a>

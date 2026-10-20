@@ -8,18 +8,18 @@ export default function DLVideoSection() {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <section className="bg-[#F7F5F1] py-16 lg:py-24 px-4">
+    <section className="bg-white pb-16 lg:pb-24 px-4">
       <div className="max-w-[1100px] mx-auto">
-        <div className="text-center mb-10">
-          <p className="text-[#0F766E] text-xs font-semibold tracking-[0.25em] uppercase mb-3">
-            Watch
-          </p>
-          <h2 className="text-[#151A19] text-3xl lg:text-4xl font-semibold">
-            Experience Lagoon Views
-          </h2>
-        </div>
+        <p className="text-[#1C6B82] text-xs font-bold tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
+          <span>10</span>
+          <span className="w-8 h-px bg-[#1C6B82]" />
+          <span>Film</span>
+        </p>
+        <h2 className="text-[#151A19] text-3xl lg:text-4xl font-extrabold mb-8">
+          Watch the Sorrento Teaser
+        </h2>
 
-        <div className="relative rounded-3xl overflow-hidden aspect-video border border-[#EBE8E2] shadow-xl shadow-black/5">
+        <div className="relative rounded-3xl overflow-hidden aspect-video border border-[#E5E0D5] shadow-xl shadow-black/5">
           {playing ? (
             <video
               controls
@@ -36,18 +36,18 @@ export default function DLVideoSection() {
             <button
               onClick={() => setPlaying(true)}
               className="group absolute inset-0 w-full h-full"
-              aria-label="Play Lagoon Views project video"
+              aria-label="Play Sorrento Lagoon Views project video"
             >
               <Image
                 src="/assets/damac-lagoons/hero-poster.webp"
-                alt="Lagoon Views at Damac Lagoons — project video preview"
+                alt="Sorrento Lagoon Views at Damac Lagoons — project video preview"
                 fill
                 sizes="(max-width: 1100px) 100vw, 1100px"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 rounded-full bg-[#B68A2E] group-hover:scale-110 transition-transform flex items-center justify-center shadow-xl shadow-black/40">
+                <div className="w-20 h-20 rounded-full bg-[#1C6B82] group-hover:scale-110 transition-transform flex items-center justify-center shadow-xl shadow-black/40">
                   <FaPlay className="text-white text-xl ml-1" />
                 </div>
               </div>

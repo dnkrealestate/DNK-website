@@ -1,36 +1,52 @@
 "use client";
 
 import React from "react";
-import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa";
 
-const WHATSAPP_TEXT =
-  "Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views";
+const FACTS = [
+  { label: "Project", value: "Sorrento, Damac Lagoons" },
+  { label: "Apartments", value: "Studio & 1-Bed" },
+  { label: "From", value: "AED 680K*" },
+  { label: "DLD Fee", value: "0% — waived" },
+];
 
-export default function DLStickyBar({ onEnquire }) {
+export default function DLStickyBar() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 backdrop-blur-md border-t border-[#EBE8E2] shadow-[0_-4px_16px_rgba(0,0,0,0.06)] px-3 py-2.5 flex items-center gap-2">
-      <a
-        href="tel:+971555769195"
-        className="flex-1 flex items-center justify-center gap-2 border border-[#D8D4CC] text-[#151A19] font-semibold py-3 rounded-xl text-sm"
-        aria-label="Call DNK Real Estate"
-      >
-        <FaPhoneAlt className="text-xs" /> Call
-      </a>
-      <a
-        href={`https://wa.me/+971555769195?text=${WHATSAPP_TEXT}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white font-semibold py-3 rounded-xl text-sm"
-        aria-label="WhatsApp DNK Real Estate"
-      >
-        <FaWhatsapp /> WhatsApp
-      </a>
-      <button
-        onClick={onEnquire}
-        className="flex-1 bg-gradient-to-r from-[#B68A2E] to-[#D4AF6A] text-white font-semibold py-3 rounded-xl text-sm"
-      >
-        Enquire Now
-      </button>
+    <div className="sticky bottom-0 left-0 right-0 z-40 bg-[#0D1210] border-t border-white/10 px-4 py-2.5">
+      <div className="max-w-[1280px] mx-auto flex items-center justify-between gap-3">
+        <div className="hidden sm:flex items-center gap-6 overflow-x-auto">
+          {FACTS.map((fact) => (
+            <div key={fact.label} className="flex-shrink-0">
+              <p className="text-white/40 text-[0.6rem] uppercase tracking-wider">
+                {fact.label}
+              </p>
+              <p className="text-white text-sm font-semibold whitespace-nowrap">
+                {fact.value}
+              </p>
+            </div>
+          ))}
+        </div>
+        <p className="sm:hidden text-white text-xs font-semibold">
+          From AED 680K* · 0% DLD fee
+        </p>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <a
+            href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#25D366] hover:brightness-110 text-white font-semibold px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm flex items-center gap-1.5 transition-all"
+          >
+            <FaWhatsapp /> <span className="hidden sm:inline">WhatsApp</span>
+          </a>
+          <a
+            href="#enquire-hero"
+            className="bg-[#1C6B82] hover:bg-[#17596C] text-white font-semibold px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm transition-colors"
+          >
+            Register Interest
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { IoMenu, IoClose } from "react-icons/io5";
+import { IoMenu, IoClose, IoCallOutline } from "react-icons/io5";
+import { FaWhatsapp } from "react-icons/fa";
 
 const NAV_ITEMS = [
-  { name: "About", id: "top" },
-  { name: "Units", id: "units" },
+  { name: "Apartments", id: "units" },
+  { name: "Payment Plan", id: "payment-plan" },
   { name: "Amenities", id: "amenities" },
   { name: "Gallery", id: "gallery" },
   { name: "Location", id: "location" },
@@ -15,15 +16,7 @@ const NAV_ITEMS = [
 ];
 
 export default function DLHeader() {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -33,70 +26,106 @@ export default function DLHeader() {
     setMenuOpen(false);
   };
 
-  const solid = scrolled || menuOpen;
-
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        solid ? "bg-white shadow-sm border-b border-[#EBE8E2]" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-[1280px] mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/damac-lagoons-apartments" className="flex items-center gap-3">
-          <Image
-            src="/assets/logo/dnklogo_1.webp"
-            alt="DNK Real Estate"
-            width={110}
-            height={40}
-            className={`h-9 w-auto transition-all ${solid ? "brightness-0" : ""}`}
-            priority
-          />
-        </Link>
-
-        <nav className="hidden lg:flex items-center gap-7">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollToSection(item.id)}
-              className={`text-sm font-medium transition-colors ${
-                solid ? "text-[#4B5048] hover:text-[#B68A2E]" : "text-white/85 hover:text-white"
-              }`}
-            >
-              {item.name}
-            </button>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-3">
+    <div className="sticky top-0 z-50">
+      <div className="bg-[#0D1210] text-white/80 text-[0.7rem] sm:text-xs py-2 px-4">
+        <div className="max-w-[1280px] mx-auto flex items-center justify-between gap-3">
+          <p className="flex items-center gap-2 truncate mb-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3D8FA6] flex-shrink-0" />
+            <span className="truncate mb-0">
+              New Damac Launch · Studio &amp; 1-Bedroom Apartments · 4% DLD Fee
+              Waived · EOI Open
+            </span>
+          </p>
           <button
             onClick={() => scrollToSection("enquire-footer")}
-            className="hidden sm:inline-flex bg-gradient-to-r from-[#B68A2E] to-[#D4AF6A] text-white font-semibold px-5 py-2 rounded-xl text-sm hover:brightness-110 transition-all shadow-sm"
+            className="hidden sm:flex items-center gap-1 text-white hover:text-[#3D8FA6] font-medium flex-shrink-0"
           >
-            Enquire Now
-          </button>
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className={`lg:hidden text-2xl ${solid ? "text-[#151A19]" : "text-white"}`}
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <IoClose /> : <IoMenu />}
+            Get the Price List First →
           </button>
         </div>
       </div>
 
-      {menuOpen && (
-        <div className="lg:hidden bg-white border-t border-[#EBE8E2] px-4 py-4">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollToSection(item.id)}
-              className="block w-full text-left text-[#4B5048] py-3 border-b border-[#EBE8E2] text-sm font-medium"
+      <header className="bg-[#F5F1E8] border-b border-[#E5E0D5]">
+        <div className="max-w-[1280px] mx-auto px-4 h-16 flex items-center justify-between">
+          <Link href="/damac-lagoons-apartments" className="flex items-center gap-2.5">
+            <Image
+              src="/assets/damac-lagoons/logo-s-mark-black.png"
+              alt="Sorrento Lagoon Views"
+              width={34}
+              height={34}
+              className="h-8 w-auto"
+              priority
+            />
+            <span className="leading-tight">
+              <span className="block text-[#151A19] font-semibold text-sm tracking-wide">
+                SORRENTO
+              </span>
+              <span className="block text-[#8A8F8B] text-[0.6rem] tracking-[0.2em] uppercase">
+                Lagoon Views
+              </span>
+            </span>
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-6">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className="text-[#4B5048] hover:text-[#1C6B82] text-sm font-medium transition-colors"
+              >
+                {item.name}
+              </button>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2.5">
+            <a
+              href="tel:+971555769195"
+              aria-label="Call DNK Real Estate"
+              className="hidden sm:flex w-9 h-9 rounded-full border border-[#D8D4CC] items-center justify-center text-[#4B5048] hover:border-[#1C6B82] hover:text-[#1C6B82] transition-colors"
             >
-              {item.name}
+              <IoCallOutline />
+            </a>
+            <a
+              href="https://wa.me/+971555769195?text=Hello,%20I%20am%20interested%20in%20Damac%20Lagoons%20-%20Sorrento%20Lagoon%20Views"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp DNK Real Estate"
+              className="hidden sm:flex w-9 h-9 rounded-full border border-[#D8D4CC] items-center justify-center text-[#25D366] hover:border-[#25D366] transition-colors"
+            >
+              <FaWhatsapp />
+            </a>
+            <button
+              onClick={() => scrollToSection("enquire-footer")}
+              className="bg-[#1C6B82] hover:bg-[#17596C] text-white font-semibold px-4 sm:px-5 py-2 rounded-full text-sm transition-colors"
+            >
+              Register Interest
             </button>
-          ))}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden text-[#151A19] text-2xl"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <IoClose /> : <IoMenu />}
+            </button>
+          </div>
         </div>
-      )}
-    </header>
+
+        {menuOpen && (
+          <div className="lg:hidden bg-[#F5F1E8] border-t border-[#E5E0D5] px-4 py-4">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className="block w-full text-left text-[#4B5048] py-3 border-b border-[#E5E0D5] text-sm font-medium"
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </header>
+    </div>
   );
 }

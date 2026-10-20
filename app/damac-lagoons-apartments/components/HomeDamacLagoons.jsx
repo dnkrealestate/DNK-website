@@ -1,44 +1,48 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import DLHeader from "./DLHeader";
 import DLHero from "./DLHero";
 import DLAbout from "./DLAbout";
-import DLDeveloper from "./DLDeveloper";
-import DLUnitTypes from "./DLUnitTypes";
-import DLAmenities from "./DLAmenities";
+import DLInteriors from "./DLInteriors";
+import DLProcessSteps from "./DLProcessSteps";
+import DLBrochure from "./DLBrochure";
 import DLWhyInvest from "./DLWhyInvest";
-import DLGallery from "./DLGallery";
+import DLAdvisor from "./DLAdvisor";
+import DLPaymentPlan from "./DLPaymentPlan";
+import DLAmenities from "./DLAmenities";
 import DLVideoSection from "./DLVideoSection";
+import DLGallery from "./DLGallery";
 import DLLocation from "./DLLocation";
+import DLDeveloper from "./DLDeveloper";
 import DLFAQ from "./DLFAQ";
 import DLFinalCTA from "./DLFinalCTA";
 import DLFooter from "./DLFooter";
 import DLStickyBar from "./DLStickyBar";
-import DLPopupModal from "./DLPopupModal";
 
 export default function HomeDamacLagoons() {
-  const [showPopup, setShowPopup] = useState(false);
-
   return (
-    <div className="bg-white">
+    <div className="bg-[#F5F1E8]">
       <DLHeader />
-      <div className="overflow-hidden pb-20 lg:pb-0">
+      <div className="overflow-hidden">
         <DLHero />
         <DLAbout />
-        <DLDeveloper />
-        <DLUnitTypes />
-        <DLAmenities />
+        <DLInteriors />
+        <DLProcessSteps />
+        <DLBrochure />
         <DLWhyInvest />
-        <DLGallery />
+        <DLAdvisor />
+        <DLPaymentPlan />
+        <DLAmenities />
         <DLVideoSection />
+        <DLGallery />
         <DLLocation />
+        <DLDeveloper />
         <DLFAQ />
         <DLFinalCTA />
         <DLFooter />
       </div>
-      <DLStickyBar onEnquire={() => setShowPopup(true)} />
-      {showPopup && <DLPopupModal onClose={() => setShowPopup(false)} />}
+      <DLStickyBar />
     </div>
   );
 }

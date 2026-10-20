@@ -5,50 +5,42 @@ import Image from "next/image";
 import { IoClose } from "react-icons/io5";
 
 const GALLERY = [
-  { src: "/assets/damac-lagoons/gallery/gallery-01.webp", alt: "Lagoon Views community aerial view, Damac Lagoons", span: "col-span-2 sm:row-span-2" },
-  { src: "/assets/damac-lagoons/gallery/gallery-02.webp", alt: "Lagoon Views apartment exterior facade" },
-  { src: "/assets/damac-lagoons/gallery/gallery-03.webp", alt: "Lagoon Views waterfront walkway" },
-  { src: "/assets/damac-lagoons/gallery/gallery-04.webp", alt: "Lagoon Views apartment interior living space" },
-  { src: "/assets/damac-lagoons/gallery/gallery-05.webp", alt: "Lagoon Views lagoon and landscaping" },
-  { src: "/assets/damac-lagoons/gallery/gallery-06.webp", alt: "Lagoon Views apartment bedroom interior" },
-  { src: "/assets/damac-lagoons/gallery/gallery-07.webp", alt: "Lagoon Views community lifestyle view" },
-  { src: "/assets/damac-lagoons/gallery/gallery-08.webp", alt: "Lagoon Views balcony view over the lagoon" },
-  { src: "/assets/damac-lagoons/gallery/gallery-09.webp", alt: "Lagoon Views apartment kitchen interior" },
-  { src: "/assets/damac-lagoons/gallery/gallery-10.webp", alt: "Lagoon Views evening ambience" },
-  { src: "/assets/damac-lagoons/gallery/gallery-11.webp", alt: "Lagoon Views community amenities view" },
-  { src: "/assets/damac-lagoons/gallery/gallery-12.webp", alt: "Lagoon Views master bedroom view" },
+  { src: "/assets/damac-lagoons/gallery/gallery-01.webp", alt: "Sorrento Lagoon Views community view with lagoon and residences, Damac Lagoons", caption: "Sorrento: the residences around the lagoon" },
+  { src: "/assets/damac-lagoons/gallery/gallery-03.webp", alt: "Sorrento lagoon-front loungers and residences by day", caption: "Resort-style loungers along the lagoon" },
+  { src: "/assets/damac-lagoons/gallery/gallery-06.webp", alt: "Open-plan kitchen, dining and living at Sorrento Lagoon Views", caption: "Open-plan kitchen and living" },
+  { src: "/assets/damac-lagoons/gallery/gallery-09.webp", alt: "Rooftop terrace lounge and jacuzzi at Sorrento Lagoon Views", caption: "Rooftop terrace lounge and jacuzzi" },
+  { src: "/assets/damac-lagoons/gallery/gallery-10.webp", alt: "Evening fire pit lounge beneath palm trees at Sorrento Lagoon Views", caption: "Firepit lounge beneath the palms" },
+  { src: "/assets/damac-lagoons/gallery/gallery-12.webp", alt: "Poolside gathering on the floating deck at Sorrento Lagoon Views", caption: "Poolside gatherings on the floating deck" },
 ];
 
 export default function DLGallery() {
   const [selected, setSelected] = useState(null);
 
   return (
-    <section className="py-16 lg:py-24 bg-white" id="gallery">
+    <section className="py-16 lg:py-24 bg-[#F5F1E8]" id="gallery">
       <div className="max-w-[1280px] mx-auto px-4">
-        <div className="text-center mb-10">
-          <p className="text-[#0F766E] text-xs font-semibold tracking-[0.25em] uppercase mb-3">
-            Gallery
-          </p>
-          <h2 className="text-[#151A19] text-3xl lg:text-4xl font-semibold">
-            A Glimpse of Lagoon Living
-          </h2>
-        </div>
+        <p className="text-[#1C6B82] text-xs font-bold tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
+          <span>09</span>
+          <span className="w-8 h-px bg-[#1C6B82]" />
+          <span>Gallery</span>
+        </p>
+        <h2 className="text-[#151A19] text-3xl lg:text-4xl font-extrabold mb-10 max-w-[600px]">
+          Sorrento Renders &amp; Lifestyle
+        </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-4 auto-rows-[160px] sm:auto-rows-[180px]">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
           {GALLERY.map((item, i) => (
-            <button
-              key={i}
-              onClick={() => setSelected(item)}
-              className={`relative rounded-2xl overflow-hidden border border-[#EBE8E2] hover:border-[#B68A2E]/50 shadow-sm transition-all duration-300 group ${item.span || ""}`}
-            >
-              <Image
-                src={item.src}
-                alt={item.alt}
-                fill
-                sizes="(max-width: 768px) 50vw, 25vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <button key={i} onClick={() => setSelected(item)} className="text-left group">
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] border border-[#E5E0D5] shadow-sm">
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 33vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <p className="text-[#5B6460] text-xs mt-2 leading-snug">{item.caption}</p>
             </button>
           ))}
         </div>
