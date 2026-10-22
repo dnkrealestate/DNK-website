@@ -49,15 +49,16 @@ export default function ClientWrapper({ children, spclLogo,  developerSlugs = []
     const isPalmJebelAli = pathname.startsWith("/palmjebelali");
     const isDamacLagoons = pathname.startsWith("/damac-lagoons-apartments");
     const isManchesterCityYas = pathname.startsWith("/manchester-city-yas-residences");
+    const isYasRivaReserve = pathname.startsWith("/yas-riva-reserve");
 
     return (
         <>
-            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && !isDeveloperPage && !isRoadshowLive && !isAttendance && <HeaderMain logoData={spclLogo} />}
+            {!isProjectPage && !isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && !isYasRivaReserve && !isDeveloperPage && !isRoadshowLive && !isAttendance && <HeaderMain logoData={spclLogo} />}
             {children}
             <SpeedInsights />
             <Analytics />
-            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && !isDeveloperPage && !isRoadshowLive && !isAttendance && <FooterSection />}
-            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && <SplashScreen logoData={spclLogo} />}
+            {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && !isYasRivaReserve && !isDeveloperPage && !isRoadshowLive && !isAttendance && <FooterSection />}
+            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && !isYasRivaReserve && <SplashScreen logoData={spclLogo} />}
         </>
     );
 }
