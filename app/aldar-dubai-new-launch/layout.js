@@ -7,7 +7,7 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const OG_IMAGE = "/assets/aldar-dubai-launch/images/as-advertised.webp";
+const OG_IMAGE = "/assets/aldar-dubai-launch/images/masterplan-pin.webp";
 
 export const metadata = {
   title: "Aldar New Launch in Dubai | Villas, Townhouses & Payment Plan",
@@ -15,6 +15,13 @@ export const metadata = {
     "Explore Aldar's advertised new residential launch in Dubai, with three-bedroom townhouses from AED 2.875M, villas from AED 3.95M, and a 55/45 payment plan.",
   keywords:
     "Aldar new launch Dubai, Aldar townhouses Dubai, Aldar villas Dubai, Al Ain Road E66, Dubai Silicon Oasis villas, Academic City townhouses, Aldar Dubai 55/45 payment plan",
+  icons: {
+    icon: [
+      { url: "/assets/aldar-dubai-launch/logos/logo-aldar-ink.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/assets/aldar-dubai-launch/logos/logo-aldar-ink.svg",
+    apple: "/assets/aldar-dubai-launch/logos/logo-aldar-ink.svg",
+  },
   openGraph: {
     title: "Aldar New Launch in Dubai | Villas, Townhouses & Payment Plan",
     description:
@@ -25,9 +32,9 @@ export const metadata = {
     images: [
       {
         url: OG_IMAGE,
-        width: 591,
-        height: 820,
-        alt: "Aldar new residential launch in Dubai — advertised project details",
+        width: 940,
+        height: 1015,
+        alt: "Aldar new residential launch in Dubai — advertised masterplan render",
       },
     ],
   },
