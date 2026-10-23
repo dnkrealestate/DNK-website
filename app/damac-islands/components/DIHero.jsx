@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { FaWhatsapp } from "react-icons/fa";
 import DIContactForm from "./DIContactForm";
 import DIPopupModal from "./DIPopupModal";
@@ -56,6 +57,16 @@ export default function DIHero() {
       <div className="lg:hidden relative h-[64vh] min-h-[440px] flex items-center overflow-hidden">
         <HeroVideoBg />
         <div className="relative z-10 w-full px-4 text-center">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="text-white/50 text-[0.65rem] uppercase tracking-[0.2em]">Developed by</span>
+            <Image
+              src="/assets/damac-islands/logo-damac-clean.webp"
+              alt="Damac Properties"
+              width={324}
+              height={44}
+              className="h-3.5 w-auto"
+            />
+          </div>
           <p className="text-[#2DD4BF] text-[0.65rem] font-semibold tracking-[0.25em] uppercase mb-3">
             Island-Inspired Living · Dubailand
           </p>
@@ -136,6 +147,16 @@ export default function DIHero() {
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4 pt-40 pb-28">
           <div className="flex flex-row items-center gap-16">
             <div className="flex-1 text-left">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-white/50 text-xs uppercase tracking-[0.2em]">Developed by</span>
+                <Image
+                  src="/assets/damac-islands/logo-damac-clean.webp"
+                  alt="Damac Properties"
+                  width={324}
+                  height={44}
+                  className="h-5 w-auto"
+                />
+              </div>
               <p className="text-[#2DD4BF] text-sm font-semibold tracking-[0.3em] uppercase mb-4">
                 Island-Inspired Living · Dubailand
               </p>

@@ -27,20 +27,35 @@ export default function DLFooter() {
       <div className="max-w-[1200px] mx-auto">
         <div className="grid md:grid-cols-[1.2fr_1fr_1fr] gap-10 pb-10 border-b border-white/10">
           <div>
-            <Image
-              src="/assets/damac-lagoons/logo-sorrento-full-white.webp"
-              alt="Sorrento Lagoon Views"
-              width={140}
-              height={110}
-              className="h-20 w-auto mb-6"
-            />
-            <Image
-              src="/assets/logo/dnklogo_1.webp"
-              alt="DNK Real Estate"
-              width={120}
-              height={44}
-              className="h-8 w-auto mb-5 opacity-80"
-            />
+            <div className="flex items-center gap-3 mb-5">
+              <Image
+                src="/assets/damac-lagoons/logo-s-mark-black.png"
+                alt="Sorrento Lagoon Views"
+                width={34}
+                height={34}
+                className="h-10 w-auto brightness-0 invert"
+              />
+              <span className="leading-tight">
+                <span className="block text-white font-semibold text-base tracking-wide">
+                  SORRENTO
+                </span>
+                <span className="block text-white/50 text-[0.65rem] tracking-[0.2em] uppercase">
+                  Lagoon Views
+                </span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2.5 mb-5">
+              <Image
+                src="/assets/logo/dnklogo_1.webp"
+                alt="DNK Real Estate"
+                width={100}
+                height={36}
+                className="h-6 w-auto opacity-70"
+              />
+              <span className="text-white/30 text-xs border-l border-white/15 pl-2.5">
+                Marketed by DNK Real Estate
+              </span>
+            </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-[320px] mb-5">
               DNK Real Estate is your trusted partner for Sorrento Lagoon
               Views at Damac Lagoons — guiding you from enquiry to handover

@@ -42,10 +42,18 @@ export default function HIHero() {
           {/* ── Left: Property info ── */}
           <div className="flex-1 text-center lg:text-left">
             {/* Developer badge */}
-            <div className="inline-flex items-center gap-2 border border-[#C4973D]/30 bg-[#C4973D]/8 rounded-full px-4 py-1.5 mb-6">
-              <span className="w-1.5 h-1.5 bg-[#C4973D] rounded-full animate-pulse" />
+            <div className="inline-flex items-center gap-3 border border-[#C4973D]/30 bg-[#C4973D]/8 rounded-full pl-4 pr-5 py-2 mb-6">
+              <span className="text-white/60 text-xs uppercase tracking-widest">Developed by</span>
+              <Image
+                src="/assets/hudayriyat-island/logos/logo-modon-white.svg"
+                alt="Modon"
+                width={108}
+                height={20}
+                className="h-4 w-auto"
+              />
+              <span className="w-1 h-1 bg-[#C4973D] rounded-full" />
               <span className="text-[#C4973D] text-xs font-semibold tracking-widest uppercase">
-                Modon · Hudayriyat Island · Abu Dhabi
+                Abu Dhabi
               </span>
             </div>
 

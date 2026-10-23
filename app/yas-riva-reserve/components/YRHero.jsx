@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoArrowDown } from "react-icons/io5";
@@ -37,15 +38,29 @@ export default function YRHero({ onOpenDrawer }) {
         />
 
         <div className="relative z-10 h-full max-w-[1400px] mx-auto px-5 sm:px-8 flex flex-col justify-end pb-24 sm:pb-28">
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-white/70 text-xs font-semibold tracking-[0.4em] uppercase mb-5 flex items-center gap-3"
+            className="flex items-center gap-4 mb-5"
           >
-            <span className="w-8 h-px bg-[#B08D57]" />
-            Yas Island, Abu Dhabi &middot; By Aldar
-          </motion.p>
+            <p className="text-white/70 text-xs font-semibold tracking-[0.4em] uppercase flex items-center gap-3">
+              <span className="w-8 h-px bg-[#B08D57]" />
+              Yas Island, Abu Dhabi
+            </p>
+            <span className="w-px h-4 bg-white/25" />
+            <div className="flex items-center gap-2.5">
+              <span className="text-white/50 text-xs">by</span>
+              <Image
+                src="/assets/yas-riva-reserve/logos/logo-aldar-ink.svg"
+                alt="Aldar Properties"
+                width={461}
+                height={461}
+                className="h-8 w-auto brightness-0 invert"
+              />
+              <span className="text-white text-sm font-semibold tracking-wide">ALDAR</span>
+            </div>
+          </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
