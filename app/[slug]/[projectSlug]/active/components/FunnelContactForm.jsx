@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { track } from "@vercel/analytics";
 import { userUserServices } from "@/services/userServices";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 export default function FunnelContactForm({ answers = {}, projectData = null, onFormSubmit = () => {} }) {
   const [fullName, setFullName] = useState("");
@@ -19,7 +20,8 @@ export default function FunnelContactForm({ answers = {}, projectData = null, on
   const [errors, setErrors] = useState({});
   const { contactData } = userUserServices();
   const pathname = usePathname();
-  
+  const gclid = useGclid();
+
 
   const formatPath = (path) => {
     return path
@@ -61,6 +63,7 @@ export default function FunnelContactForm({ answers = {}, projectData = null, on
         PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
         UF_CRM_LEAD_1724493296911: note,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -118,7 +121,8 @@ Timeline: ${answers.question_4 || ""}
       fullName,
       email,
       phoneNumber,
-      city: note, 
+      city: note,
+      gclid,
     });
 
     if (typeof window !== "undefined") {
@@ -154,6 +158,7 @@ Timeline: ${answers.question_4 || ""}
   return (
     
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <input type="hidden" name="gclid" value={gclid} />
       <input
         type="text"
         placeholder="Full Name*"

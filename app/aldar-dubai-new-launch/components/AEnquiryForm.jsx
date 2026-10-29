@@ -8,6 +8,7 @@ import { userUserServices } from "@/services/userServices";
 import Swal from "sweetalert2";
 import { track } from "@vercel/analytics";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 const PROPERTY_OPTIONS = ["Townhouse", "Villa", "Not decided"];
 const CONTACT_OPTIONS = ["WhatsApp", "Phone", "Email"];
@@ -40,6 +41,7 @@ export default function AEnquiryForm({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const { contactData } = userUserServices();
+  const gclid = useGclid();
 
   const validateForm = () => {
     const formErrors = {};
@@ -80,6 +82,7 @@ export default function AEnquiryForm({
       const commentParts = [
         ...extraFields,
         "Source: Aldar new launch Dubai landing page (project name unconfirmed)",
+        ...(gclid ? [`GCLID: ${gclid}`] : []),
       ];
 
       await fetch(
@@ -129,6 +132,7 @@ export default function AEnquiryForm({
         email,
         phoneNumber,
         city: extraFields.length ? extraFields.join(" | ") : "General Enquiry",
+        gclid,
       });
 
       if (typeof window !== "undefined" && window.snaptr) {
@@ -185,6 +189,7 @@ export default function AEnquiryForm({
 
   return (
     <form onSubmit={handleSubmit} className={compact ? "space-y-3" : "space-y-4"}>
+      <input type="hidden" name="gclid" value={gclid} />
       <div>
         <label className="text-white/60 text-xs font-medium mb-1.5 block">Full Name *</label>
         <input

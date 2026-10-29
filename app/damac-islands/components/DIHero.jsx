@@ -141,7 +141,7 @@ export default function DIHero() {
       </div>
 
       {/* Desktop */}
-      <div className="hidden lg:flex relative min-h-screen items-center overflow-hidden">
+      <div className="hidden lg:flex relative min-h-[100dvh] items-center overflow-hidden">
         <HeroVideoBg />
 
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4 pt-40 pb-28">

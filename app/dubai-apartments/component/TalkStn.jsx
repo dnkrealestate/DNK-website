@@ -7,6 +7,7 @@ import "react-phone-input-2/lib/style.css";
 import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 import Assist from "@/public/assets/dubaiApaetment/icon01.webp";
 import Consultation from "@/public/assets/dubaiApaetment/icon02.webp";
@@ -22,6 +23,7 @@ export const TalkStn = () => {
   const [loading, setLoading] = useState(false);
   const { contactData } = userUserServices();
   const [errors, setErrors] = useState({});
+  const gclid = useGclid();
 
   const validateForm = () => {
     let formErrors = {};
@@ -64,6 +66,7 @@ export const TalkStn = () => {
         ],
         UF_CRM_LEAD_1724493296911: city,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -91,7 +94,7 @@ export const TalkStn = () => {
     if (!validateForm()) return;
     setLoading(true);
     try {
-      await contactData({ fullName, email, phoneNumber, city });
+      await contactData({ fullName, email, phoneNumber, city, gclid });
 
       // ✅ Send event to Google Tag Manager
       if (typeof window !== "undefined") {
@@ -168,6 +171,7 @@ export const TalkStn = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="mt-3 md:mt-0 md:ml-4">
+              <input type="hidden" name="gclid" value={gclid} />
               <input
                 placeholder="Full Name*"
                 type="text"

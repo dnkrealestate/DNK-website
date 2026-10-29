@@ -5,8 +5,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { WWURL } from "@/url/axios";
 
-const SplashScreen = ({ logoData }) => {
-    
+const SplashScreen = ({ logoData, onFadeComplete }) => {
+
     const imageUrl = logoData && logoData.image ? `${WWURL}${logoData.image}` : DNKLogo;
 
     return (
@@ -14,6 +14,7 @@ const SplashScreen = ({ logoData }) => {
             initial={{ opacity: 1 }}
             animate={{ opacity: 0 }}
             transition={{ duration: 1, ease: "easeInOut" }}
+            onAnimationComplete={onFadeComplete}
         >
             <div className="fade-out-bg splash-screen z-[999] fixed top-0 left-0 w-full h-full bg-black flex justify-center items-center ">
                 <Image

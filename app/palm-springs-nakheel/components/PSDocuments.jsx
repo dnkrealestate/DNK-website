@@ -34,7 +34,7 @@ const DOCUMENTS = [
 
 export default function PSDocuments({ onOpenEnquiry }) {
   return (
-    <section className="bg-[#011945] py-16 sm:py-24 px-5 sm:px-8 scroll-mt-24" id="documents">
+    <section className="bg-[#011945] py-16 sm:py-24 px-5 sm:px-8 scroll-mt-24" id="brochure">
       <div className="max-w-[1320px] mx-auto">
         <p className="text-[#C6A66B] text-xs font-bold tracking-[0.2em] uppercase mb-3">
           Brochure &amp; Plans

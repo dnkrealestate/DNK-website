@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSplash } from "../context/SplashContext";
 import { usePathname } from "next/navigation";
 import SplashScreen from "./splashScreen/SplashScreen";
@@ -14,13 +14,6 @@ export default function ClientWrapper({ children, spclLogo,  developerSlugs = []
     const pathname = usePathname();
     const { showSplash } = useSplash();
     const [isSplashComplete, setIsSplashComplete] = useState(!showSplash);
-    
-
-    useEffect(() => {
-        if (showSplash) {
-            setTimeout(() => setIsSplashComplete(true), 40);
-        }
-    }, [showSplash]);
 
 
   // ✅ Get first URL segment
@@ -60,7 +53,7 @@ export default function ClientWrapper({ children, spclLogo,  developerSlugs = []
             <SpeedInsights />
             <Analytics />
             {!isAdminPage && !isDashboardPage && !isLoginPage && !isRoadshowPage && !isAddressVillas && !isGrandPolo && !isDubaiApartments && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && !isYasRivaReserve && !isAldarDubaiLaunch && !isPalmSpringsNakheel && !isDeveloperPage && !isRoadshowLive && !isAttendance && <FooterSection />}
-            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && !isYasRivaReserve && !isAldarDubaiLaunch && !isPalmSpringsNakheel && <SplashScreen logoData={spclLogo} />}
+            {!isSplashComplete && !isAddressVillas && !isGrandPolo && !isNadAlSheba && !isForgotPassword && !isIslands && !isPromotion && !isHudayriyat && !isPalmJebelAli && !isDamacLagoons && !isManchesterCityYas && !isYasRivaReserve && !isAldarDubaiLaunch && !isPalmSpringsNakheel && <SplashScreen logoData={spclLogo} onFadeComplete={() => setIsSplashComplete(true)} />}
         </>
     );
 }

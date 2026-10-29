@@ -9,6 +9,7 @@ import { userUserServices } from "@/services/userServices";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -20,6 +21,7 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
   const { contactData } = userUserServices();
   const [errors, setErrors] = useState({});
   const pathname = usePathname();
+  const gclid = useGclid();
 
   const pageTitle = `Website Lead from ${data.projectname}`;
 
@@ -60,6 +62,7 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
         PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
         UF_CRM_LEAD_1724493296911: city,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -83,7 +86,7 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
 
     setLoading(true);
     try {
-      await contactData({ fullName, email, phoneNumber, city });
+      await contactData({ fullName, email, phoneNumber, city, gclid });
 
       // ✅ Send event to Google Tag Manager
       if (typeof window !== "undefined") {
@@ -147,6 +150,7 @@ const PopupClick = ({ data, onFormSubmit, onClose, imageUrl }) => {
           </div>
           <div className="pt-0 p-4 md:p-5 space-y-4">
             <form onSubmit={handleSubmit}>
+              <input type="hidden" name="gclid" value={gclid} />
               <div className="flex flex-col justify-between mx-0 md:mx-[10px] mt-3 md:mt-0">
                 <div>
                   <p className="text-[#A4815C]">More About</p>

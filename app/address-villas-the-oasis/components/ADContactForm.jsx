@@ -7,6 +7,7 @@ import "react-phone-input-2/lib/style.css";
 import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 export const ADContactForm = ({ onFormSubmit }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -17,7 +18,8 @@ export const ADContactForm = ({ onFormSubmit }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const { contactData } = userUserServices(); 
+  const { contactData } = userUserServices();
+  const gclid = useGclid();
 
   const validateForm = () => {
     let formErrors = {};
@@ -55,6 +57,7 @@ export const ADContactForm = ({ onFormSubmit }) => {
         PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
         UF_CRM_LEAD_1724493296911: city,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -79,7 +82,7 @@ export const ADContactForm = ({ onFormSubmit }) => {
     setLoading(true);
 
     try {
-      await contactData({ fullName, email, phoneNumber, city });
+      await contactData({ fullName, email, phoneNumber, city, gclid });
 
       // ✅ Send event to Google Tag Manager
       if (typeof window !== "undefined") {
@@ -116,6 +119,7 @@ export const ADContactForm = ({ onFormSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <input type="hidden" name="gclid" value={gclid} />
       <div className="flex flex-col justify-between mx-0 md:mx-2 mt-3 md:mt-0">
         <div>
           <input

@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { track } from "@vercel/analytics";
 import { gtag_report_conversion } from "./gtagReportConversion";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 const WHATSAPP_TEXT =
   "Hello,%20I%20am%20interested%20in%20Palm%20Jebel%20Ali%20Beach%20Villas";
@@ -43,6 +44,7 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const { contactData } = userUserServices();
+  const gclid = useGclid();
 
   const validateForm = () => {
     const formErrors = {};
@@ -83,7 +85,7 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
               PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
               UF_CRM_LEAD_1724493296911: `${city} | Meeting: ${dateStr} at ${timeStr}`,
               EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
-              COMMENTS: `Preferred consultation: ${dateStr} at ${timeStr}`,
+              COMMENTS: `Preferred consultation: ${dateStr} at ${timeStr}${gclid ? ` | GCLID: ${gclid}` : ""}`,
             },
           }),
         }
@@ -112,7 +114,7 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
     });
 
     try {
-      await contactData({ fullName, email, phoneNumber, city: nationality });
+      await contactData({ fullName, email, phoneNumber, city: nationality, gclid });
 
       if (typeof window !== "undefined" && window.snaptr) {
         window.snaptr("track", "SIGN_UP", {
@@ -173,6 +175,7 @@ export default function PJContactForm({ onFormSubmit, unitInterest = "Beach Vill
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <input type="hidden" name="gclid" value={gclid} />
       <div>
         <input
           placeholder="Full Name *"

@@ -12,6 +12,7 @@ import { WWURL } from "@/url/axios";
 import { usePathname } from "next/navigation";
 import { track } from "@vercel/analytics";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 export const ProjectConnect = ({ projectId, teamData }) => {
   const [ShowPopup, setShowPopup] = useState(false);
@@ -24,6 +25,7 @@ export const ProjectConnect = ({ projectId, teamData }) => {
   const [errors, setErrors] = useState({});
   const [loading2, setLoading2] = useState(false);
   const pathname = usePathname();
+  const gclid = useGclid();
 
   const validateForm = () => {
     let formErrors = {};
@@ -66,6 +68,7 @@ export const ProjectConnect = ({ projectId, teamData }) => {
         ],
         UF_CRM_LEAD_1724493296911: city,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -104,6 +107,7 @@ export const ProjectConnect = ({ projectId, teamData }) => {
         email,
         phoneNumber,
         city,
+        gclid,
       });
       
       // ✅ Snapchat Lead Tracking
@@ -248,6 +252,7 @@ export const ProjectConnect = ({ projectId, teamData }) => {
           </h5>
         </div>
         <form onSubmit={handleSubmit}>
+          <input type="hidden" name="gclid" value={gclid} />
           <div className="flex flex-col justify-between mt-3 md:mt-0 p-3 ">
             <div>
               <input

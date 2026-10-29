@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { userUserServices } from "@/services/userServices";
 import { track } from "@vercel/analytics";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 export const ADModelForm = ({ onFormSubmit, promotionData }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -18,6 +19,7 @@ export const ADModelForm = ({ onFormSubmit, promotionData }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const { contactData } = userUserServices();
+  const gclid = useGclid();
 
   const validateForm = () => {
     let formErrors = {};
@@ -55,6 +57,7 @@ export const ADModelForm = ({ onFormSubmit, promotionData }) => {
         PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
         UF_CRM_LEAD_1724493296911: city,
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -92,7 +95,7 @@ export const ADModelForm = ({ onFormSubmit, promotionData }) => {
     setLoading(true);
 
     try {
-      await contactData({ fullName, email, phoneNumber, city });
+      await contactData({ fullName, email, phoneNumber, city, gclid });
 
       // ✅ Send event to Google Tag Manager
       if (typeof window !== "undefined") {
@@ -129,6 +132,7 @@ export const ADModelForm = ({ onFormSubmit, promotionData }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <input type="hidden" name="gclid" value={gclid} />
       <div className="flex flex-col justify-between mx-0 md:mx-[10px] mt-3 md:mt-0">
         <input
           placeholder="Full Name*"

@@ -16,7 +16,7 @@ const STATS = [
 export default function YRHero({ onOpenDrawer }) {
   return (
     <section className="relative" id="top">
-      <div className="relative h-[100vh] min-h-[640px] overflow-hidden bg-[#15130F]">
+      <div className="relative h-[100dvh] min-h-[640px] overflow-hidden bg-[#15130F]">
         <video
           autoPlay
           muted

@@ -25,7 +25,7 @@ const fadeUp = {
 export default function MCHero() {
   return (
     <section className="relative" id="top">
-      <div className="relative min-h-[94vh] lg:min-h-screen overflow-hidden bg-[#050810]">
+      <div className="relative min-h-[94dvh] lg:min-h-[100dvh] overflow-hidden bg-[#050810]">
         <Image
           src="/assets/manchester-city-yas/renders/render-masterplan-aerial.webp"
           alt="Manchester City Yas Residences masterplan, Yas Island, Abu Dhabi"
@@ -58,7 +58,7 @@ export default function MCHero() {
           }}
         />
 
-        <div className="relative z-10 max-w-[1280px] mx-auto px-4 pt-10 lg:pt-16 pb-12 lg:pb-16 min-h-[94vh] lg:min-h-screen flex flex-col justify-center lg:flex-row lg:items-center gap-10 lg:gap-8 xl:gap-16">
+        <div className="relative z-10 max-w-[1280px] mx-auto px-4 pt-10 lg:pt-16 pb-12 lg:pb-16 min-h-[94dvh] lg:min-h-[100dvh] flex flex-col justify-center lg:flex-row lg:items-center gap-10 lg:gap-8 xl:gap-16">
           <div className="flex-1 lg:max-w-[640px]">
             <motion.div
               variants={fadeUp}

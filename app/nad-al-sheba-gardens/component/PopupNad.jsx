@@ -9,6 +9,7 @@ import Image from "next/image";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 export const PopupNad = ({ onClose }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -20,6 +21,7 @@ export const PopupNad = ({ onClose }) => {
   const { contactData } = userUserServices();
   const [errors, setErrors] = useState({});
   const pathname = usePathname();
+  const gclid = useGclid();
 
   const pageTitle = `Website Lead from ${ pathname }`;
 
@@ -64,6 +66,7 @@ export const PopupNad = ({ onClose }) => {
         ],
         UF_CRM_LEAD_1724493296911: city,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -101,6 +104,7 @@ export const PopupNad = ({ onClose }) => {
         email,
         phoneNumber,
         city,
+        gclid,
       });
 
       // ✅ Send event to Google Tag Manager
@@ -170,6 +174,7 @@ export const PopupNad = ({ onClose }) => {
           </div>
           <div className="!pt-0 p-4 md:p-5 space-y-4">
             <form onSubmit={handleSubmit}>
+              <input type="hidden" name="gclid" value={gclid} />
               <div className="flex flex-col justify-between mx-[0px] md:mx-[10px] mt-3 md:mt-0">
                 <div>
                   <p className="m-0 !text-[#258493]">More About</p>

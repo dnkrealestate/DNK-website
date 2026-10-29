@@ -9,6 +9,7 @@ import { userUserServices } from "@/services/userServices";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 const GPContactForm = ({ onFormSubmit }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -20,6 +21,7 @@ const GPContactForm = ({ onFormSubmit }) => {
   const { contactData } = userUserServices();
   const [errors, setErrors] = useState({});
   const pathname = usePathname();
+  const gclid = useGclid();
 
     const pageTitle = `Website Lead from ${ pathname }`;
 
@@ -60,6 +62,7 @@ const GPContactForm = ({ onFormSubmit }) => {
         PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
         UF_CRM_LEAD_1724493296911: city,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -93,6 +96,7 @@ const GPContactForm = ({ onFormSubmit }) => {
         email,
         phoneNumber,
         city,
+        gclid,
       });
 
       // ✅ Send event to Google Tag Manager
@@ -130,6 +134,7 @@ const GPContactForm = ({ onFormSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <input type="hidden" name="gclid" value={gclid} />
       <div className="flex flex-col justify-between mx-0 md:mx-[10px] mt-3 md:mt-0">
         <div>
           <input

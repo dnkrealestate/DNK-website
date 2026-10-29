@@ -15,7 +15,7 @@ const BADGES = [
 export default function DLHero() {
   return (
     <section className="relative" id="top">
-      <div className="relative min-h-[90vh] lg:min-h-screen overflow-hidden">
+      <div className="relative min-h-[90dvh] lg:min-h-[100dvh] overflow-hidden">
         <Image
           src="/assets/damac-lagoons/hero-poster.webp"
           alt="Sorrento Lagoon Views waterfront apartments at Damac Lagoons"
@@ -27,7 +27,7 @@ export default function DLHero() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-        <div className="relative z-10 max-w-[1280px] mx-auto px-4 pt-10 lg:pt-16 pb-12 lg:pb-16 min-h-[90vh] lg:min-h-screen flex flex-col justify-center lg:flex-row lg:items-center gap-10 lg:gap-16">
+        <div className="relative z-10 max-w-[1280px] mx-auto px-4 pt-10 lg:pt-16 pb-12 lg:pb-16 min-h-[90dvh] lg:min-h-[100dvh] flex flex-col justify-center lg:flex-row lg:items-center gap-10 lg:gap-16">
           <div className="flex-1 lg:max-w-[640px]">
             <div className="flex items-center gap-3 mb-6">
               <Image

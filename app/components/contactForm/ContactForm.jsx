@@ -11,6 +11,7 @@ import posthog from "posthog-js";
 import { track } from "@vercel/analytics";
 import { trackLeadClick } from "@/services/leadServices";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 
 export default function ContactForm({ onFormSubmit = () => {} }) {
@@ -23,6 +24,7 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
   const { contactData } = userUserServices();
   const [errors, setErrors] = useState({});
   const pathname = usePathname();
+  const gclid = useGclid();
 
   const formatPath = (path) => {
     return path
@@ -76,6 +78,7 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
         ],
         UF_CRM_LEAD_1724493296911: city,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -122,6 +125,7 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
         email,
         phoneNumber,
         city,
+        gclid,
       });
 
       // ✅ Snapchat Lead Tracking
@@ -169,6 +173,7 @@ export default function ContactForm({ onFormSubmit = () => {} }) {
   };
   return (
     <form onSubmit={handleSubmit}>
+      <input type="hidden" name="gclid" value={gclid} />
       <div className="flex flex-col justify-between mx-[0px] md:mx-[10px] mt-3 md:mt-0">
         <div>
           <input

@@ -23,6 +23,7 @@ import { track } from "@vercel/analytics";
 import ChatBot from "../ChatBot";
 import { trackLeadClick } from "@/services/leadServices";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 export default function FooterSection() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -34,7 +35,8 @@ export default function FooterSection() {
   const [loading, setLoading] = useState(false);
   const { callBackData } = userUserServices();
   const pathname = usePathname();
-  
+  const gclid = useGclid();
+
 
    const formatPath = (path) => {
      return path
@@ -94,6 +96,7 @@ export default function FooterSection() {
               VALUE_TYPE: "WORK",
             },
           ],
+          ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
         },
       };
 
@@ -151,6 +154,7 @@ export default function FooterSection() {
         await callBackData({
           fullName,
           phoneNumber,
+          gclid,
         });
   
         Swal.fire({
@@ -580,6 +584,7 @@ export default function FooterSection() {
                   Let’s talk! Leave your number and we’ll reach out immediately.
                 </p>
                 <form onSubmit={handleSubmit}>
+                  <input type="hidden" name="gclid" value={gclid} />
                   {errors.fullName && (
                     <p className="error text-[0.9rem] m-0 text-[#FF0202]">
                       {errors.fullName}

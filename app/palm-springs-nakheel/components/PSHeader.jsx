@@ -8,7 +8,7 @@ import { IoMenu, IoClose, IoCallOutline } from "react-icons/io5";
 const NAV_ITEMS = [
   { name: "Overview", id: "overview" },
   { name: "Residences", id: "residences" },
-  { name: "Lifestyle", id: "lifestyle" },
+  { name: "Brochure & Plans", id: "brochure" },
   { name: "Location", id: "location" },
   { name: "Gallery", id: "gallery" },
 ];

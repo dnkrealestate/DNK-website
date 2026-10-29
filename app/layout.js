@@ -8,6 +8,7 @@ import { getDeveloperSlugs } from "@/utils/developerSlugs";
 import PixelTracker from "./PixelTracker";
 import ClarityProvider from "./components/ClarityProvider";
 import PageViewTracker from "./components/PageViewTracker";
+import GclidCapture from "./components/GclidCapture";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -197,6 +198,7 @@ export default async function RootLayout({ children }) {
             <PixelTracker />
             <ClarityProvider />
             <PageViewTracker />
+            <GclidCapture />
             {children}
           </ClientWrapper>
         </SplashProvider>

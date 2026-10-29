@@ -17,7 +17,7 @@ const WHATSAPP_TEXT =
 
 export default function AHero({ onOpenEnquiry }) {
   return (
-    <section className="relative h-[100vh] min-h-[680px] overflow-hidden bg-[#071321] scroll-mt-24" id="top">
+    <section className="relative h-[100dvh] min-h-[680px] overflow-hidden bg-[#071321] scroll-mt-24" id="top">
       <motion.div
         animate={{ scale: [1, 1.1, 1] }}
         transition={{ duration: 36, repeat: Infinity, ease: "easeInOut" }}

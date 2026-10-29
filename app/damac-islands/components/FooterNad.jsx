@@ -17,6 +17,7 @@ import logo from "@/public/assets/pojects/NadAlSheba/meraas-logo.webp";
 import bgImg from "@/public/assets/pojects/NadAlSheba/footer-bg.webp";
 import { userUserServices } from "@/services/userServices";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 const FooterNad = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -28,6 +29,7 @@ const FooterNad = () => {
     const [loading, setLoading] = useState(false);
     const { callBackData } = userUserServices();
     const pathname = usePathname();
+    const gclid = useGclid();
   
   
   
@@ -68,7 +70,7 @@ const FooterNad = () => {
       const addLeadtobitrix = async (name, phone) => {
         const apiUrl =
           "https://crm.dnkre.com/rest/1/tu18jyuvffebb7mc/crm.lead.add.json";
-  
+
         const leadData = {
           fields: {
             TITLE: pageTitle,
@@ -79,6 +81,7 @@ const FooterNad = () => {
                 VALUE_TYPE: "WORK",
               },
             ],
+            ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
           },
         };
   
@@ -121,6 +124,7 @@ const FooterNad = () => {
           await callBackData({
             fullName,
             phoneNumber,
+            gclid,
           });
     
           // ✅ Send event to Google Tag Manager
@@ -277,6 +281,7 @@ const FooterNad = () => {
               Let’s talk! Leave your number and we’ll reach out immediately.
             </p>
             <form onSubmit={handleSubmit}>
+              <input type="hidden" name="gclid" value={gclid} />
               {errors.fullName && (
                 <p className="error text-[0.9rem] m-0 text-[#FF0202]">
                   {errors.fullName}

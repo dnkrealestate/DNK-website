@@ -8,6 +8,7 @@ import { userUserServices } from "@/services/userServices";
 import Swal from "sweetalert2";
 import { track } from "@vercel/analytics";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 export default function HIContactForm({ onFormSubmit }) {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -18,6 +19,7 @@ export default function HIContactForm({ onFormSubmit }) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const { contactData } = userUserServices();
+  const gclid = useGclid();
 
   const validateForm = () => {
     const formErrors = {};
@@ -56,6 +58,7 @@ export default function HIContactForm({ onFormSubmit }) {
               PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
               UF_CRM_LEAD_1724493296911: city,
               EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+              ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
             },
           }),
         }
@@ -78,7 +81,7 @@ export default function HIContactForm({ onFormSubmit }) {
     });
 
     try {
-      await contactData({ fullName, email, phoneNumber, city });
+      await contactData({ fullName, email, phoneNumber, city, gclid });
 
       if (typeof window !== "undefined" && window.snaptr) {
         window.snaptr("track", "SIGN_UP", {
@@ -126,6 +129,7 @@ export default function HIContactForm({ onFormSubmit }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <input type="hidden" name="gclid" value={gclid} />
       <div>
         <input
           placeholder="Full Name *"

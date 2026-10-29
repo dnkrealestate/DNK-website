@@ -58,7 +58,7 @@ export default function YROverview() {
     <section className="bg-[#F3EDE3]">
       <div className="max-w-[1500px] mx-auto grid lg:grid-cols-2">
         <div className="hidden lg:block relative">
-          <div className="sticky top-0 h-screen overflow-hidden">
+          <div className="sticky top-0 h-[100dvh] overflow-hidden">
             <AnimatePresence initial={false}>
               <motion.div
                 key={active}
@@ -87,7 +87,7 @@ export default function YROverview() {
             <div
               key={block.eyebrow}
               ref={(el) => (blockRefs.current[blockIndex] = el)}
-              className="min-h-[60vh] lg:min-h-screen flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-16 border-b border-[#E5DCC9] last:border-b-0"
+              className="min-h-[60dvh] lg:min-h-[100dvh] flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-16 border-b border-[#E5DCC9] last:border-b-0"
             >
               <div className="lg:hidden relative aspect-[4/3] mb-8 rounded-sm overflow-hidden">
                 <Image src={block.image} alt={block.title} fill sizes="100vw" className="object-cover" />

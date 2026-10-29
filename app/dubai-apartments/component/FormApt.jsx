@@ -9,6 +9,7 @@ import { userUserServices } from "@/services/userServices";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
 import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validatePhone";
+import { useGclid } from "@/app/hooks/useGclid";
 
 export const FormApt = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -20,9 +21,10 @@ export const FormApt = () => {
   const { contactData } = userUserServices();
   const [errors, setErrors] = useState({});
   const pathname = usePathname();
+  const gclid = useGclid();
 
   const pageTitle = `Website Lead from ${pathname}`;
-  
+
   const validateForm = () => {
     let formErrors = {};
     if (!fullName) formErrors.fullName = "Full Name is required.";
@@ -59,6 +61,7 @@ export const FormApt = () => {
         PHONE: [{ VALUE: phone, VALUE_TYPE: "WORK" }],
         UF_CRM_LEAD_1724493296911: city,
         EMAIL: [{ VALUE: email, VALUE_TYPE: "WORK" }],
+        ...(gclid ? { COMMENTS: `GCLID: ${gclid}` } : {}),
       },
     };
 
@@ -83,7 +86,7 @@ export const FormApt = () => {
     setLoading(true);
 
     try {
-      await contactData({ fullName, email, phoneNumber, city });
+      await contactData({ fullName, email, phoneNumber, city, gclid });
 
       // ✅ Send event to Google Tag Manager
       if (typeof window !== "undefined") {
@@ -131,6 +134,7 @@ export const FormApt = () => {
               </p>
 
               <form onSubmit={handleSubmit}>
+                <input type="hidden" name="gclid" value={gclid} />
                 <div className="flex flex-col justify-between mx-0 md:mx-[10px] mt-3 md:mt-0">
                   <input
                     placeholder="Full Name*"

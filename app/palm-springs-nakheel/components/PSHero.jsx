@@ -11,7 +11,7 @@ const WHATSAPP_TEXT =
 
 export default function PSHero({ onOpenEnquiry }) {
   return (
-    <section className="relative min-h-[100vh] bg-[#011945] scroll-mt-24" id="overview">
+    <section className="relative min-h-[100dvh] bg-[#011945] scroll-mt-24" id="overview">
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
@@ -32,7 +32,7 @@ export default function PSHero({ onOpenEnquiry }) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#011945] via-transparent to-[#011945]/40" />
       </div>
 
-      <div className="relative z-10 min-h-[100vh] max-w-[1320px] mx-auto px-5 sm:px-8 flex flex-col justify-center pt-28 sm:pt-32 pb-28 sm:pb-10">
+      <div className="relative z-10 min-h-[100dvh] max-w-[1320px] mx-auto px-5 sm:px-8 flex flex-col justify-center pt-28 sm:pt-32 pb-28 sm:pb-10">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
