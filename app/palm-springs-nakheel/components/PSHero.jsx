@@ -76,9 +76,7 @@ export default function PSHero({ onOpenEnquiry }) {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="text-white/65 text-base max-w-[520px] mb-8 leading-relaxed"
         >
-          Contemporary architecture and elevated everyday living on Dubai's
-          waterfront &mdash; with DNK Real Estate giving you direct access
-          to verified pricing and floor plans as they're confirmed.
+          Discover a new community by Nakheel near Palm Jebel Ali, Dubai, with 3 and 4 bedroom townhouses and 4 and 5 bedroom villas for modern family living. Prices start from AED 3.8M.
         </motion.p>
 
         <motion.div

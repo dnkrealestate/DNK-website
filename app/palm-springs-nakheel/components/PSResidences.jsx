@@ -30,9 +30,7 @@ export default function PSResidences({ onOpenEnquiry }) {
           Spaces Designed Around the Way You Live
         </h2>
         <p className="text-[#4B534E] max-w-[640px] mb-12 leading-relaxed">
-          Two residence collections, priced from AED 3.8M to AED 9M across
-          the community &mdash; register today and our advisors will send
-          you specifications, floor plans and pricing.
+          Explore a collection of townhouses and villas, with prices expected to range from AED 3.8M+. Register your interest to receive confirmed specifications, floor plans and pricing as they become available.
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -72,7 +70,7 @@ export default function PSResidences({ onOpenEnquiry }) {
                     Price
                   </span>
                   <span className="font-[family-name:var(--font-body)] text-[#A9874F] text-base sm:text-lg font-bold tracking-tight tabular-nums">
-                    Within the advertised AED 3.8M&ndash;9M range
+                    AED 3.8M&ndash;9M range
                   </span>
                 </div>
 

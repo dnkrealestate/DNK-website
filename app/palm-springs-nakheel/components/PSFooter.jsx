@@ -42,9 +42,7 @@ export default function PSFooter() {
                 />
             </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-[360px] mb-5">
-              DNK Real Estate is bringing you early access to Palm Springs
-              by Nakheel. Register your interest now and be first in line
-              for verified pricing, floor plans and launch offers.
+             Discover the upcoming residential development by Nakheel. Register your interest to receive the latest confirmed project details, pricing, floor plans and launch updates as soon as they become available.
             </p>
             <div className="flex items-center gap-3">
               {SOCIALS.map((s) => (
@@ -116,10 +114,7 @@ export default function PSFooter() {
 
         <div className="pt-8 space-y-3">
           <p className="text-white/35 text-xs leading-relaxed max-w-[900px]">
-            This page is produced by DNK Real Estate to help you register
-            early interest in Palm Springs by Nakheel. Official project
-            details &mdash; name, location, pricing and specifications
-            &mdash; are confirmed directly by Nakheel.
+            This page is provided for early interest registration for Palm Springs by Nakheel. Official project details, including location, pricing and specifications, are subject to confirmation by Nakheel.
           </p>
           <p className="text-white/25 text-xs">© {year} DNK Real Estate. All rights reserved.</p>
         </div>

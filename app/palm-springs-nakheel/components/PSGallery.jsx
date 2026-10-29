@@ -22,8 +22,8 @@ const IMAGES = [
     caption: "Interior living space",
   },
   {
-    src: "/assets/palm-springs-nakheel/images/location-map-reference.png",
-    alt: "Reference map showing the Palm Springs site relative to Dubai's coastline",
+    src: "/assets/palm-springs-nakheel/images/location-map-reference.webp",
+    alt: "Reference map showing the Palm Springs site relative to Palm Jebel Ali, Palm Jumeirah, Bluewaters Island, Burj Al Arab and DWC Airport",
     caption: "Location reference map",
   },
 ];
@@ -93,7 +93,7 @@ export default function PSGallery({ onOpenEnquiry }) {
           </div>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden mb-10">
+        <div className="flex gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {IMAGES.map((img, i) => (
             <button
               key={img.src}
@@ -107,7 +107,7 @@ export default function PSGallery({ onOpenEnquiry }) {
           ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white border border-[#1C211F]/10 rounded-sm p-6 sm:p-7">
+        {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white border border-[#1C211F]/10 rounded-sm p-6 sm:p-7">
           <p className="text-[#4B534E] text-sm leading-relaxed max-w-[520px]">
             Images shown are representative renders provided for this
             launch, not confirmed photographs of specific units. The full
@@ -128,7 +128,7 @@ export default function PSGallery({ onOpenEnquiry }) {
           >
             Notify Me When Available
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

@@ -6,11 +6,11 @@ import { motion } from "framer-motion";
 import { IoLocationOutline } from "react-icons/io5";
 
 const REFERENCES = [
+  { name: "DWC Airport", time: "15 min" },
   { name: "Palm Jebel Ali", time: "17 min" },
-  { name: "Palm Jumeirah", time: "25 min" },
   { name: "Bluewaters Island", time: "20 min" },
+  { name: "Palm Jumeirah", time: "25 min" },
   { name: "Burj Al Arab", time: "30 min" },
-  { name: "DXB Airport", time: "15 min" },
 ];
 
 export default function PSLocation({ onOpenEnquiry }) {
@@ -72,8 +72,8 @@ export default function PSLocation({ onOpenEnquiry }) {
           className="relative aspect-[3/2] rounded-sm overflow-hidden border border-white/10"
         >
           <Image
-            src="/assets/palm-springs-nakheel/images/location-map-reference.png"
-            alt="Reference map showing the Palm Springs site relative to Palm Jebel Ali, Palm Jumeirah and Dubai's coastline"
+            src="/assets/palm-springs-nakheel/images/location-map-reference.webp"
+            alt="Reference map showing the Palm Springs site relative to Palm Jebel Ali, Palm Jumeirah, Bluewaters Island, Burj Al Arab and DWC Airport"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
@@ -81,7 +81,7 @@ export default function PSLocation({ onOpenEnquiry }) {
           <div className="absolute inset-0 bg-gradient-to-t from-[#011945]/80 via-transparent to-transparent" />
           <div className="absolute bottom-0 inset-x-0 p-5">
             <p className="text-white font-semibold text-sm flex items-center gap-2">
-              <IoLocationOutline className="text-[#649aff]" /> Location Map
+              <IoLocationOutline className="text-[#ffffff]" /> Location Map
             </p>
             <p className="text-white/50 text-xs mt-1 leading-relaxed">
               Register to receive the full site map and location details.

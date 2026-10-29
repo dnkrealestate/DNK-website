@@ -8,22 +8,22 @@ const HIGHLIGHTS = [
   {
     icon: IoHomeOutline,
     title: "Contemporary Residential Design",
-    text: "Architecture shaped around natural light, clean lines and considered everyday living.",
+    text: "A planned residential development featuring townhouses and villas.",
   },
   {
     icon: IoLeafOutline,
     title: "Thoughtfully Landscaped Surroundings",
-    text: "Green, considered outdoor spaces woven through the community.",
+    text: "Community landscaping and outdoor amenities are subject to official confirmation.",
   },
   {
     icon: IoCarOutline,
     title: "Connected to Dubai",
-    text: "Positioned along Dubai's wider waterfront growth corridor.",
+    text: "Located in Jebel Ali, near Palm Jebel Ali, with access to Sheikh Zayed Road",
   },
   {
     icon: IoRibbonOutline,
     title: "A Development by Nakheel",
-    text: "Backed by one of Dubai's most established master developers.",
+    text: "Developed by Nakheel, a leading developer known for creating landmark residential communities in Dubai.",
   },
 ];
 

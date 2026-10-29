@@ -47,10 +47,8 @@ export default function PSIntro() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-[#4B534E] leading-relaxed mb-5 max-w-[480px]"
           >
-            Palm Springs is Nakheel's newest residential vision for Dubai's
-            waterfront &mdash; a community shaped by contemporary
-            architecture, considered landscaping and an elevated everyday
-            lifestyle.
+            Palm Springs by Nakheel introduces an exciting new residential vision in Dubai, with a planned collection of townhouses and villas designed for modern living. Set in the Jebel Ali area, near Palm Jebel Ali, the development offers an opportunity to explore a new address in one of Dubai’s growing residential destinations.
+
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -59,12 +57,7 @@ export default function PSIntro() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="text-[#4B534E] leading-relaxed mb-8 max-w-[480px]"
           >
-            Final specifications, residence types and pricing are being
-            finalized by Nakheel &mdash; register now and our team will
-            hand-deliver every verified detail to you first. As your
-            dedicated point of contact, DNK Real Estate makes buying into
-            this launch simple, transparent and fully supported from day
-            one.
+            Register your interest to receive the latest confirmed details on residences, floor plans, prices and payment plans as soon as they are announced. Be among the first to discover what Palm Springs has to offer.
           </motion.p>
 
           <button

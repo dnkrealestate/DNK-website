@@ -5,11 +5,11 @@ export const FAQ_ITEMS = [
   },
   {
     q: "Where is Palm Springs located?",
-    a: "Palm Springs sits within Nakheel's wider Dubai waterfront portfolio. The exact plot location has not yet been officially confirmed — register your interest and we'll share the verified location as soon as it's released.",
+    a: "Palm Springs is an upcoming residential development by Nakheel in Dubai.  register your interest and we'll share the verified location as soon as it's released.",
   },
   {
     q: "What residential property types are available?",
-    a: "Property types and configurations have not yet been officially released. Register with DNK Real Estate to be notified the moment verified residence details are available.",
+    a: "The official property types and configurations are yet to be confirmed. Register your interest to receive the latest verified residence details as soon as they become available.",
   },
   {
     q: "What are the starting prices?",
@@ -29,10 +29,6 @@ export const FAQ_ITEMS = [
   },
   {
     q: "How can I arrange a private consultation?",
-    a: "Use the enquiry form on this page or message us on WhatsApp, and a DNK Real Estate advisor will arrange a private consultation at your convenience.",
-  },
-  {
-    q: "Why register through DNK Real Estate?",
-    a: "DNK Real Estate tracks every major Nakheel launch closely, so our advisors can give you accurate, up-to-date information, fast responses and dedicated one-to-one support from your very first enquiry through to handover — at no extra cost to you.",
+    a: "Complete the enquiry form on this page or contact us via WhatsApp to arrange a personalised consultation at your convenience.",
   },
 ];

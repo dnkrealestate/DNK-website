@@ -26,7 +26,7 @@ const DOCUMENTS = [
     icon: IoMapOutline,
     title: "Location & Masterplan",
     text: "Explore the reference map and register for the verified masterplan.",
-    image: "/assets/palm-springs-nakheel/images/location-map-reference.png",
+    image: "/assets/palm-springs-nakheel/images/location-map-reference.webp",
     interest: "Masterplan",
     cta: "Request Master Plan",
   },
@@ -43,8 +43,7 @@ export default function PSDocuments({ onOpenEnquiry }) {
           Your First Step Towards Something Exceptional
         </h2>
         <p className="text-white/50 max-w-[600px] mb-12 leading-relaxed">
-          Request the latest project information below and receive it
-          directly from a DNK Real Estate advisor as soon as it's available.
+          Register your interest below to receive the latest confirmed project details, pricing and floor plans as soon as they become available.
         </p>
 
         <div className="grid sm:grid-cols-3 gap-6">
