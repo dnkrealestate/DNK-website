@@ -44,6 +44,7 @@ export default function ClientWrapper({ children, spclLogo,  developerSlugs = []
     const isManchesterCityYas = pathname.startsWith("/manchester-city-yas-residences");
     const isYasRivaReserve = pathname.startsWith("/yas-riva-reserve");
     const isAldarDubaiLaunch = pathname.startsWith("/aldar-dubai-new-launch");
+    // Prefix match deliberately also covers /palm-springs-nakheel-premium.
     const isPalmSpringsNakheel = pathname.startsWith("/palm-springs-nakheel");
 
     return (
