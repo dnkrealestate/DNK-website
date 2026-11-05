@@ -61,16 +61,10 @@ export default function PPIntro() {
             Discover Palm Springs.
           </motion.h2>
           <p className="text-[#252D36]/60 leading-relaxed mb-4">
-            Palm Springs is Nakheel&apos;s newest residential vision for
-            Dubai&apos;s waterfront &mdash; a community shaped by contemporary
-            architecture, considered landscaping and an elevated everyday
-            lifestyle.
+           Palm Springs by Nakheel brings 3 and 4 bedroom townhouses and 4 and 5 bedroom villas to Jebel Ali, Dubai, near Palm Jebel Ali.
           </p>
           <p className="text-[#252D36]/60 leading-relaxed">
-            Final specifications, residence types and pricing are being
-            finalized by Nakheel. DNK Real Estate is your dedicated point of
-            contact &mdash; register now and we hand-deliver every verified
-            detail to you first.
+           Planned as a family community in Jebel Ali, Palm Springs is designed for spacious everyday living, with amenities and specifications to be confirmed by Nakheel. Early registrants receive the brochure, floor plans, price list and payment plan as soon as Nakheel releases them.
           </p>
         </div>
 
@@ -82,8 +76,8 @@ export default function PPIntro() {
           className="relative rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden min-h-[320px]"
         >
           <Image
-            src="/assets/palm-springs-nakheel/images/villas-exterior-sunset.png"
-            alt="Palm Springs by Nakheel villa exteriors with landscaped gardens at sunset"
+            src="/assets/palm-springs-nakheel/images/villa-exterior-infinity-pool-dusk.jpg"
+            alt="Palm Springs by Nakheel villa exterior with infinity pool at dusk"
             fill
             sizes="(max-width: 1024px) 100vw, 33vw"
             className="object-cover"

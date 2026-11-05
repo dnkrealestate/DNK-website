@@ -11,12 +11,12 @@ export default function PPEnquiry() {
         <div>
           <p className="text-[#367BA8] text-xs font-bold tracking-[0.25em] uppercase mb-4">Enquiry</p>
           <h2 className="font-[family-name:var(--font-display)] text-[#102B46] text-3xl sm:text-4xl lg:text-[2.75rem] font-semibold leading-tight mb-6 max-w-[460px]">
-            Your Waterfront Residence Awaits
+            Your New Residence Awaits
           </h2>
           <p className="text-[#252D36]/55 leading-relaxed max-w-[420px]">
-            Share your details and a DNK Real Estate advisor will reach out
-            with verified pricing, floor plans and availability for Palm
-            Springs by Nakheel.
+            Share your details and our team will reach out with verified
+            pricing, floor plans and availability for Palm Springs by
+            Nakheel.
           </p>
         </div>
 

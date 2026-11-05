@@ -27,7 +27,7 @@ export default function PPFooter() {
             className="h-6 w-auto brightness-0 invert mb-4"
           />
           <p className="text-white/45 text-sm leading-relaxed max-w-[280px]">
-            A private waterfront presentation marketed by DNK Real Estate.
+            A private presentation for Palm Springs by Nakheel.
           </p>
         </div>
 
@@ -84,16 +84,16 @@ export default function PPFooter() {
 
       <div className="pt-8 border-t border-white/10">
         <p className="text-white/35 text-xs leading-relaxed max-w-[760px]">
-          This is an independent marketing presentation produced by DNK Real
-          Estate to promote Palm Springs by Nakheel, an advertised Dubai
-          residential launch. It is not Nakheel&apos;s official website.
+          This is an independent marketing presentation to promote Palm
+          Springs by Nakheel, an advertised Dubai residential launch. It is
+          not Nakheel&apos;s official website.
           Prices shown in USD are an approximate conversion from the
           advertised AED figures and are provided for reference only.
           Project details, pricing, availability and specifications are
           subject to confirmation by Nakheel or an authorized representative.
         </p>
         <p className="text-white/25 text-xs mt-4">
-          &copy; {new Date().getFullYear()} DNK Real Estate. All rights reserved.
+          &copy; {new Date().getFullYear()} Palm Springs by Nakheel. All rights reserved.
         </p>
       </div>
     </footer>

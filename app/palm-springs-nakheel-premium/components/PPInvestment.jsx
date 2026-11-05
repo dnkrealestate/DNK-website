@@ -7,7 +7,7 @@ import { PRICE_USD_MIN, PRICE_USD_MAX, PRICE_AED_MIN, PRICE_AED_MAX, AED_TO_USD_
 
 const HIGHLIGHTS = [
   "Developed by Nakheel, one of Dubai's most established master developers",
-  "Positioned along Dubai's wider waterfront growth corridor",
+  "Positioned along Dubai's wider Jebel Ali growth corridor",
   "3 & 4 bedroom townhouses and 4 & 5 bedroom villas, as advertised",
 ];
 
@@ -23,7 +23,7 @@ export default function PPInvestment({ onOpenEnquiry }) {
           <p className="text-white/60 leading-relaxed mb-8 max-w-[440px]">
             Palm Springs is advertised from AED {(PRICE_AED_MIN / 1_000_000).toFixed(1)}M to AED{" "}
             {(PRICE_AED_MAX / 1_000_000).toFixed(0)}M. Payment plan terms have not yet been
-            released by Nakheel &mdash; register and DNK Real Estate will send you the
+            released by Nakheel &mdash; register and we will send you the
             confirmed structure the moment it's available.
           </p>
           <ul className="space-y-3 mb-9">

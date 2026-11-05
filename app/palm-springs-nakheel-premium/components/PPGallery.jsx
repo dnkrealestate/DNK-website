@@ -8,28 +8,38 @@ import { IoClose, IoArrowBack, IoArrowForward } from "react-icons/io5";
 const IMAGES = [
   {
     src: "/assets/palm-springs-nakheel/images/hero-waterfront-sunset.png",
-    alt: "Aerial view of Palm Springs waterfront villas at sunset",
-    caption: "Waterfront aerial view",
-    span: "sm:row-span-2",
-  },
-  {
-    src: "/assets/palm-springs-nakheel/images/villas-exterior-sunset.png",
-    alt: "Palm Springs villa exteriors",
-    caption: "Villa exteriors",
-    span: "",
-  },
-  {
-    src: "/assets/palm-springs-nakheel/images/interior-living-sunset-view.png",
-    alt: "Palm Springs interior living space",
-    caption: "Interior living space",
-    span: "",
-  },
-  {
-    src: "/assets/palm-springs-nakheel/images/lifestyle-concept-villa.jpg",
-    alt: "Waterfront lifestyle concept visual, for inspiration only — not an actual Palm Springs residence",
-    caption: "Lifestyle Concept (Inspiration Only)",
+    alt: "Aerial view of Palm Springs villas at sunset",
+    caption: "Aerial view",
     span: "sm:col-span-2",
-    concept: true,
+    height: "h-[220px] sm:h-[260px]",
+  },
+  {
+    src: "/assets/palm-springs-nakheel/images/beachfront-villas-waterline.jpg",
+    alt: "Palm Springs beachfront villas along the waterline",
+    caption: "Beachfront villas",
+    span: "",
+    height: "h-[220px] sm:h-[260px]",
+  },
+  {
+    src: "/assets/palm-springs-nakheel/images/interior-kitchen-dining.jpg",
+    alt: "Open-plan kitchen and dining interior at Palm Springs by Nakheel",
+    caption: "Open-plan living & dining",
+    span: "",
+    height: "h-[220px] sm:h-[260px]",
+  },
+  {
+    src: "/assets/palm-springs-nakheel/images/interior-bedroom-garden-view.jpg",
+    alt: "Bedroom interior with garden view at Palm Springs by Nakheel",
+    caption: "Bedroom with garden view",
+    span: "",
+    height: "h-[220px] sm:h-[260px]",
+  },
+  {
+    src: "/assets/palm-springs-nakheel/images/villa-exterior-dual-garage.jpg",
+    alt: "Palm Springs villa exterior",
+    caption: "Villa exterior",
+    span: "",
+    height: "h-[220px] sm:h-[260px]",
   },
 ];
 
@@ -48,26 +58,22 @@ export default function PPGallery() {
         Imagery &amp; Renders
       </h2>
 
-      <div className="grid sm:grid-cols-3 auto-rows-[220px] sm:auto-rows-[180px] gap-4">
+      <div className="grid sm:grid-cols-3 gap-4">
         {IMAGES.map((img, i) => (
           <button
             key={img.src}
             onClick={() => setOpen(i)}
-            className={`relative rounded-[1.5rem] overflow-hidden group ${img.span}`}
+            className={`relative rounded-[1.5rem] overflow-hidden group shadow-[0_8px_24px_rgba(16,43,70,0.08)] w-full ${img.height} ${img.span}`}
           >
             <Image
               src={img.src}
               alt={img.alt}
               fill
-              sizes="(max-width: 640px) 100vw, 33vw"
+              sizes={img.span ? "(max-width: 640px) 100vw, 66vw" : "(max-width: 640px) 100vw, 33vw"}
+              quality={90}
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A1D30]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            {img.concept && (
-              <span className="absolute top-3 right-3 bg-[#0A1D30]/80 text-white text-[0.6rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full">
-                Concept
-              </span>
-            )}
             <p className="absolute bottom-3 left-4 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
               {img.caption}
             </p>

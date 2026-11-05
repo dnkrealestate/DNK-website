@@ -68,7 +68,7 @@ export default function PPNav({ onOpenEnquiry }) {
               <div className="flex items-center gap-2">
                 <a
                   href="tel:+971555769195"
-                  aria-label="Call DNK Real Estate"
+                  aria-label="Call us"
                   className="hidden sm:flex w-9 h-9 rounded-full border border-[#102B46]/15 items-center justify-center text-[#102B46]/70 hover:border-[#367BA8] hover:text-[#367BA8] transition-colors flex-shrink-0"
                 >
                   <IoCallOutline />

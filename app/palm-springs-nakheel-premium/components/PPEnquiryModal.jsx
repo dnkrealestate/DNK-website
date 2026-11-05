@@ -24,7 +24,7 @@ export default function PPEnquiryModal({ config, onClose }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full max-w-[480px] max-h-[90vh] overflow-y-auto bg-white border border-[#102B46]/10 rounded-[1.75rem] p-6 sm:p-8"
+            className="relative w-full max-w-[480px] max-h-[90vh] overflow-y-auto overflow-x-hidden bg-white border border-[#102B46]/10 rounded-[1.75rem] p-6 sm:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             <button

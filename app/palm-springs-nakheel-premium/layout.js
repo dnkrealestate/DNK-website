@@ -19,24 +19,24 @@ const OG_IMAGE =
 const PAGE_URL = "https://www.dnkre.com/palm-springs-nakheel-premium";
 
 export const metadata = {
-  title: "Palm Springs by Nakheel | Private Waterfront Presentation | DNK Real Estate",
+  title: "Palm Springs by Nakheel | Private Presentation",
   description:
-    "A private waterfront presentation of Palm Springs by Nakheel, Dubai — 3 & 4 bedroom townhouses and 4 & 5 bedroom villas, as advertised from AED 3.8M. Register with DNK Real Estate for verified details.",
+    "A private presentation of Palm Springs by Nakheel, Dubai — 3 & 4 bedroom townhouses and 4 & 5 bedroom villas, as advertised from AED 3.8M. Register now for verified details.",
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: "Palm Springs by Nakheel | Private Waterfront Presentation",
+    title: "Palm Springs by Nakheel | Private Presentation",
     description:
-      "An exclusive waterfront residence collection by Nakheel, Dubai. As advertised from AED 3.8M — register with DNK Real Estate for verified project details.",
+      "An exclusive residence collection by Nakheel, Dubai. As advertised from AED 3.8M — register now for verified project details.",
     url: PAGE_URL,
-    siteName: "DNK Real Estate",
-    images: [{ url: OG_IMAGE, width: 1674, height: 940, alt: "Palm Springs by Nakheel — waterfront villas at sunset" }],
+    siteName: "Palm Springs by Nakheel",
+    images: [{ url: OG_IMAGE, width: 1674, height: 940, alt: "Palm Springs by Nakheel — villas at sunset" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Palm Springs by Nakheel | DNK Real Estate",
+    title: "Palm Springs by Nakheel",
     description:
-      "An exclusive waterfront residence collection by Nakheel, Dubai. As advertised from AED 3.8M.",
+      "An exclusive residence collection by Nakheel, Dubai. As advertised from AED 3.8M.",
     images: [OG_IMAGE],
   },
   robots: "index, follow",

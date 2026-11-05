@@ -38,9 +38,9 @@ export default function PPBrochure({ onOpenEnquiry }) {
           </h2>
           <p className="text-white/60 leading-relaxed mb-8 max-w-[440px]">
             The sample shown here reflects the detail, finishes and lifestyle
-            presentation you can expect. Request the brochure and DNK Real
-            Estate will send you the confirmed Palm Springs edition the moment
-            Nakheel releases it.
+            presentation you can expect. Request the brochure and we will
+            send you the confirmed Palm Springs edition the moment Nakheel
+            releases it.
           </p>
           <button
             onClick={() =>

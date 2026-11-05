@@ -8,13 +8,13 @@ import { IoWaterOutline, IoRibbonOutline, IoSparklesOutline } from "react-icons/
 const CARDS = [
   {
     icon: IoWaterOutline,
-    title: "Exclusive Waterfront Living",
-    text: "A residential address positioned along Dubai's waterfront, with landscaped surroundings designed for everyday living.",
+    title: "Exclusive Residential Living",
+    text: "A residential address in Jebel Ali, Dubai, with landscaped surroundings designed for everyday living.",
   },
   {
     icon: IoRibbonOutline,
     title: "Distinguished Developer",
-    text: "Delivered by Nakheel, one of Dubai's most established master developers of waterfront communities.",
+    text: "Delivered by Nakheel, one of Dubai's most established master developers of residential communities.",
   },
   {
     icon: IoSparklesOutline,
@@ -68,7 +68,7 @@ export default function PPWhyChoose() {
         <p className="font-[family-name:var(--font-display)] text-lg sm:text-xl font-semibold leading-snug max-w-[720px]">
           Backed by Nakheel &mdash; one of Dubai&apos;s most established
           master developers, delivering some of the emirate&apos;s most
-          recognizable waterfront communities.
+          recognizable residential communities.
         </p>
       </motion.div>
 
@@ -80,8 +80,8 @@ export default function PPWhyChoose() {
         className="relative rounded-[1.75rem] overflow-hidden aspect-[21/9] flex items-end"
       >
         <Image
-          src="/assets/palm-springs-nakheel/images/hero-waterfront-sunset.png"
-          alt="Palm Springs by Nakheel waterfront architecture"
+          src="/assets/palm-springs-nakheel/images/community-lagoon-golden-hour.jpg"
+          alt="Palm Springs by Nakheel community and lagoon at golden hour"
           fill
           sizes="100vw"
           className="object-cover"

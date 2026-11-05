@@ -11,7 +11,7 @@ import { isValidPhoneNumber, getPhoneValidationMessage } from "@/utils/validateP
 import { useGclid } from "@/app/hooks/useGclid";
 import { BITRIX_LEAD_URL, WHATSAPP_NUMBER, WHATSAPP_TEXT } from "../constants";
 
-const INTEREST_OPTIONS = ["Brochure", "Floor Plans", "Masterplan", "Pricing", "Payment Plan", "Private Consultation"];
+const PURPOSE_OPTIONS = ["Investment", "End-User (Own Stay)", "Second Home", "Rental Income"];
 const CONTACT_OPTIONS = ["WhatsApp", "Phone", "Email"];
 const PROPERTY_TYPE_OPTIONS = ["Either", "Townhouses (3 & 4 BR)", "Villas (4 & 5 BR)"];
 const BUDGET_OPTIONS = ["$1M - $1.5M", "$1.5M - $2M", "$2M - $2.5M+"];
@@ -61,7 +61,7 @@ export default function PPEnquiryForm({
 
   const buildExtraFieldsSummary = () => {
     const parts = [];
-    if (interest) parts.push(`Interested In: ${interest}`);
+    if (interest) parts.push(`Purpose: ${interest}`);
     if (propertyType) parts.push(`Preferred Property Type: ${propertyType}`);
     if (budget) parts.push(`Budget: ${budget}`);
     if (contactMethod) parts.push(`Preferred Contact Method: ${contactMethod}`);
@@ -141,11 +141,7 @@ export default function PPEnquiryForm({
 
       Swal.fire({
         title: `Thank you, ${fullName}!`,
-        html: `<p>Your request has been received.${
-          interest
-            ? ` A DNK Real Estate advisor will send you the ${interest.toLowerCase()} shortly.`
-            : " A DNK Real Estate advisor will contact you shortly with the latest available project information."
-        } This is an enquiry, not a payment or a reservation.</p>`,
+        html: `<p>Your request has been received. Our team will contact you shortly with the latest available project information. This is an enquiry, not a payment or a reservation.</p>`,
         icon: "success",
         confirmButtonColor: "#343B32",
       });
@@ -188,7 +184,7 @@ export default function PPEnquiryForm({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
+        <div className="min-w-0">
           <label className="text-[#102B46]/60 text-xs font-medium mb-1.5 block">Email *</label>
           <input
             placeholder="Email address"
@@ -199,9 +195,9 @@ export default function PPEnquiryForm({
           />
           {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
         </div>
-        <div>
+        <div className="min-w-0">
           <label className="text-[#102B46]/60 text-xs font-medium mb-1.5 block">Mobile Number *</label>
-          <div className="phoneInput">
+          <div className="phoneInput max-w-full overflow-hidden">
             <PhoneInput
               enableSearch
               placeholder="Mobile number"
@@ -210,7 +206,8 @@ export default function PPEnquiryForm({
               onChange={handleChangePhone}
               enableAreaCodeStretch
               inputProps={{ required: true }}
-              className="w-full bg-transparent border border-[#102B46]/15 p-[5px] pl-0 rounded-xl text-[#102B46]"
+              containerClass="w-full max-w-full"
+              className="w-full max-w-full bg-transparent border border-[#102B46]/15 p-[5px] pl-0 rounded-xl text-[#102B46]"
             />
           </div>
           {errors.phoneNumber ? (
@@ -226,18 +223,18 @@ export default function PPEnquiryForm({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label className="text-[#102B46]/60 text-xs font-medium mb-1.5 block">Interested In</label>
+        <div className="min-w-0">
+          <label className="text-[#102B46]/60 text-xs font-medium mb-1.5 block">Purpose</label>
           <select className={selectCls} value={interest} onChange={(e) => setInterest(e.target.value)}>
             <option value="">Select an option</option>
-            {INTEREST_OPTIONS.map((opt) => (
+            {PURPOSE_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
                 {opt}
               </option>
             ))}
           </select>
         </div>
-        <div>
+        <div className="min-w-0">
           <label className="text-[#102B46]/60 text-xs font-medium mb-1.5 block">Preferred Contact Method</label>
           <select
             className={selectCls}
@@ -255,7 +252,7 @@ export default function PPEnquiryForm({
 
       {extended && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
+          <div className="min-w-0">
             <label className="text-[#102B46]/60 text-xs font-medium mb-1.5 block">Preferred Property Type</label>
             <select className={selectCls} value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
               <option value="">Select an option</option>
@@ -266,7 +263,7 @@ export default function PPEnquiryForm({
               ))}
             </select>
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="text-[#102B46]/60 text-xs font-medium mb-1.5 block">Budget (USD)</label>
             <select className={selectCls} value={budget} onChange={(e) => setBudget(e.target.value)}>
               <option value="">Select a range</option>

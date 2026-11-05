@@ -30,9 +30,9 @@ export default function HomePalmSpringsPremium() {
     <div className="bg-[#DCEAF4] min-h-screen font-[family-name:var(--font-body)]">
       <PPNav onOpenEnquiry={openEnquiry} />
 
-      <div className="sm:p-6 lg:p-8">
+      <div className="sm:p-6 lg:p-4">
         <div className="relative bg-white sm:rounded-[2.5rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(16,43,70,0.25)] max-w-[1440px] mx-auto">
-          <main className="pt-24 sm:pt-28">
+          <main className="pt-20 sm:pt-4">
             <PPHero onOpenEnquiry={openEnquiry} />
             <PPIntro />
             <PPStats />

@@ -8,29 +8,28 @@ import { IoAddOutline, IoRemoveOutline, IoArrowForward } from "react-icons/io5";
 const PANELS = [
   {
     title: "Discover Palm Springs",
-    text: "Uncover Nakheel's newest waterfront vision for Dubai, shaped by contemporary architecture and considered landscaping.",
+    text: "A master-planned family community by Nakheel in Jebel Ali, Dubai, close to Palm Jebel Ali.",
     image: "/assets/palm-springs-nakheel/images/hero-waterfront-sunset.png",
   },
   {
     title: "Explore Residences",
-    text: "Browse 3 & 4 bedroom townhouses and 4 & 5 bedroom villas, as advertised by Nakheel across the Palm Springs community.",
-    image: "/assets/palm-springs-nakheel/images/villas-exterior-sunset.png",
+    text: "3 and 4 bedroom townhouses and 4 and 5 bedroom villas. Register to receive the floor plans as soon as Nakheel releases them.",
+    image: "/assets/palm-springs-nakheel/images/villa-exterior-dual-garage.jpg",
   },
   {
     title: "Experience the Lifestyle",
-    text: "Step into a community built around waterfront living, landscaped surroundings and considered everyday comfort.",
-    image: "/assets/palm-springs-nakheel/images/interior-living-sunset-view.png",
+    text: "Planned for spacious everyday family living. Amenities and specifications are to be confirmed by Nakheel.",
+    image: "/assets/palm-springs-nakheel/images/interior-living-pool-view.jpg",
   },
   {
     title: "Understand the Investment",
-    text: "Review the advertised price range and register for the confirmed payment plan the moment Nakheel releases it.",
-    image: "/assets/palm-springs-nakheel/images/lifestyle-concept-villa.jpg",
-    concept: true,
+    text: "Register to receive the price list and payment plan as soon as Nakheel releases them. Prices and payment terms are not yet confirmed.",
+    image: "/assets/palm-springs-nakheel/images/villa-exterior-infinity-pool-dusk.jpg",
   },
   {
     title: "Request a Private Consultation",
-    text: "Connect directly with a DNK Real Estate advisor for verified details, floor plans and availability.",
-    image: "/assets/palm-springs-nakheel/images/interior-living-sunset-view.png",
+    text: "Leave your details and our team will contact you with the latest Palm Springs updates once Nakheel releases the official information.",
+    image: "/assets/palm-springs-nakheel/images/community-lagoon-golden-hour.jpg",
     cta: true,
   },
 ];
@@ -44,7 +43,7 @@ export default function PPJourney({ onOpenEnquiry }) {
         The Process
       </p>
       <h2 className="font-[family-name:var(--font-display)] text-[#102B46] text-3xl sm:text-4xl lg:text-[2.75rem] font-semibold leading-tight mb-8 sm:mb-10 max-w-[680px]">
-        Your Journey to Exceptional Waterfront Living.
+        Your Journey to Exceptional Living at Palm Springs.
       </h2>
 
       <div className="space-y-3">
@@ -111,16 +110,11 @@ export default function PPJourney({ onOpenEnquiry }) {
                   <div className="relative aspect-[16/10] rounded-[1.25rem] overflow-hidden">
                     <Image
                       src={panel.image}
-                      alt={panel.concept ? "Lifestyle concept visual, for inspiration only" : panel.title}
+                      alt={panel.title}
                       fill
                       sizes="(max-width: 1024px) 100vw, 50vw"
                       className="object-cover"
                     />
-                    {panel.concept && (
-                      <span className="absolute top-3 right-3 bg-[#0A1D30]/80 text-white text-[0.6rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full">
-                        Concept
-                      </span>
-                    )}
                   </div>
                 </motion.div>
               )}

@@ -13,7 +13,7 @@ const POINTS = [
   {
     icon: IoNotificationsOutline,
     title: "Register to Be Notified",
-    text: "Submit your details once and DNK Real Estate will send you the confirmed structure the moment it's announced.",
+    text: "Submit your details once and we will send you the confirmed structure the moment it's announced.",
   },
   {
     icon: IoShieldCheckmarkOutline,
