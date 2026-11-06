@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  IoBusinessOutline,
   IoLocationOutline,
   IoHomeOutline,
   IoPricetagOutline,
@@ -12,7 +12,7 @@ import {
 import { PRICE_USD_MIN, PRICE_AED_MIN } from "../constants";
 
 const STATS = [
-  { icon: IoBusinessOutline, label: "Developer", value: "Nakheel" },
+  { label: "Developer", value: "Nakheel", logo: true },
   { icon: IoLocationOutline, label: "Location", value: "Dubai, UAE" },
   { icon: IoHomeOutline, label: "Property Configuration", value: "3, 4 & 5 Bedroom" },
   {
@@ -36,7 +36,17 @@ export default function PPStats() {
       >
         {STATS.map((s) => (
           <div key={s.label} className="p-5 sm:p-6">
-            <s.icon className="text-[#367BA8] text-lg mb-2.5" />
+            {s.logo ? (
+              <Image
+                src="/assets/palm-springs-nakheel/logos/nakheel-logo-ink.webp"
+                alt="Nakheel"
+                width={3840}
+                height={667}
+                className="h-4 sm:h-[1.1rem] w-auto mb-2.5"
+              />
+            ) : (
+              <s.icon className="text-[#367BA8] text-lg mb-2.5" />
+            )}
             <p className="text-[#252D36]/40 text-[0.6rem] font-semibold tracking-[0.15em] uppercase mb-1">
               {s.label}
             </p>

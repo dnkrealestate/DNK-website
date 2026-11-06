@@ -62,9 +62,19 @@ export default function PPWhyChoose() {
         transition={{ duration: 0.6 }}
         className="rounded-[1.75rem] bg-[#102B46] text-white p-7 sm:p-8 mb-6"
       >
-        <p className="text-[#8DB6D3] text-xs font-bold tracking-[0.2em] uppercase mb-2.5">
-          Most Important Highlight
-        </p>
+        <div className="flex items-center gap-3 mb-4">
+          <Image
+            src="/assets/palm-springs-nakheel/logos/nakheel-logo-ink.webp"
+            alt="Nakheel"
+            width={3840}
+            height={667}
+            className="h-5 sm:h-6 w-auto brightness-0 invert"
+          />
+          <span className="w-px h-4 bg-white/20" />
+          <p className="text-[#8DB6D3] text-xs font-bold tracking-[0.2em] uppercase">
+            Most Important Highlight
+          </p>
+        </div>
         <p className="font-[family-name:var(--font-display)] text-lg sm:text-xl font-semibold leading-snug max-w-[720px]">
           Backed by Nakheel &mdash; one of Dubai&apos;s most established
           master developers, delivering some of the emirate&apos;s most

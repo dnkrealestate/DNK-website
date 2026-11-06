@@ -7,10 +7,11 @@ import { IoLocationOutline } from "react-icons/io5";
 
 const REFERENCES = [
   { name: "DWC Airport", time: "15 min" },
-  { name: "Palm Jebel Ali", time: "17 min" },
+  { name: "Jebel Ali", time: "10 min" },
   { name: "Bluewaters Island", time: "20 min" },
   { name: "Palm Jumeirah", time: "25 min" },
-  { name: "Burj Al Arab", time: "30 min" },
+  { name: "Dubai Marina", time: "30 min" },
+  { name: "Burj Al Arab", time: "40 min" },
 ];
 
 export default function PPLocation({ onOpenEnquiry }) {
@@ -25,8 +26,8 @@ export default function PPLocation({ onOpenEnquiry }) {
           className="relative aspect-[4/3] rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(16,43,70,0.12)]"
         >
           <Image
-            src="/assets/palm-springs-nakheel/images/location-map-reference.webp"
-            alt="Reference map showing Palm Springs relative to Palm Jebel Ali, Palm Jumeirah, Bluewaters Island, Burj Al Arab and DWC Airport"
+            src="/assets/palm-springs-nakheel/images/location-map-detailed.jpg"
+            alt="Location map showing Palm Springs relative to Palm Jebel Ali, Palm Jumeirah, Bluewaters Island, Burj Al Arab, Dubai Marina and DWC Airport"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
@@ -37,8 +38,8 @@ export default function PPLocation({ onOpenEnquiry }) {
             <p className="font-[family-name:var(--font-body)] text-[#102B46] text-lg font-extrabold">15 min</p>
           </div>
           <div className="absolute bottom-5 right-5 rounded-2xl bg-white/90 backdrop-blur-xl border border-white/60 px-4 py-3">
-            <p className="text-[#252D36]/50 text-[0.6rem] font-semibold tracking-[0.15em] uppercase">Palm Jumeirah</p>
-            <p className="font-[family-name:var(--font-body)] text-[#102B46] text-lg font-extrabold">25 min</p>
+            <p className="text-[#252D36]/50 text-[0.6rem] font-semibold tracking-[0.15em] uppercase">Jebel Ali</p>
+            <p className="font-[family-name:var(--font-body)] text-[#102B46] text-lg font-extrabold">10 min</p>
           </div>
         </motion.div>
 

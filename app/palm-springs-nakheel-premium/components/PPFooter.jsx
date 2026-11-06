@@ -1,6 +1,4 @@
 import React from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedin } from "react-icons/fa";
 import { IoCallOutline, IoMailOutline } from "react-icons/io5";
 import { WHATSAPP_NUMBER, WHATSAPP_TEXT } from "../constants";
@@ -19,13 +17,14 @@ export default function PPFooter() {
     <footer className="bg-[#102B46] text-white px-4 sm:px-6 lg:px-10 py-14 sm:py-16">
       <div className="grid sm:grid-cols-3 gap-10 mb-12">
         <div>
-          <Image
-            src="/assets/palm-springs-nakheel/logos/nakheel-logo-ink.webp"
-            alt="Nakheel"
-            width={3840}
-            height={667}
-            className="h-6 w-auto brightness-0 invert mb-4"
-          />
+          <div className="flex items-baseline gap-2.5 mb-4">
+            <span className="font-[family-name:var(--font-display)] text-white font-bold text-2xl tracking-tight">
+              Palm Springs
+            </span>
+            <span className="text-[#8DB6D3] text-xs font-semibold tracking-[0.15em] uppercase">
+              by Nakheel
+            </span>
+          </div>
           <p className="text-white/45 text-sm leading-relaxed max-w-[280px]">
             A private presentation for Palm Springs by Nakheel.
           </p>
@@ -93,7 +92,7 @@ export default function PPFooter() {
           subject to confirmation by Nakheel or an authorized representative.
         </p>
         <p className="text-white/25 text-xs mt-4">
-          &copy; {new Date().getFullYear()} Palm Springs by Nakheel. All rights reserved.
+          &copy; {new Date().getFullYear()} DNK Real Estate L L C. All rights reserved.
         </p>
       </div>
     </footer>

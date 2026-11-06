@@ -19,14 +19,14 @@ const OG_IMAGE =
 const PAGE_URL = "https://www.dnkre.com/palm-springs-nakheel-premium";
 
 export const metadata = {
-  title: "Palm Springs by Nakheel | Private Presentation",
+  title: "Palm Springs by Nakheel | Pre-Launch Townhouses & Villas, Dubai",
   description:
-    "A private presentation of Palm Springs by Nakheel, Dubai — 3 & 4 bedroom townhouses and 4 & 5 bedroom villas, as advertised from AED 3.8M. Register now for verified details.",
+    "Palm Springs by Nakheel in Jebel Ali, Dubai — new pre-launch townhouses and villas expected from $1.03M. Register now for pricing, floor plans and the first release.",
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: "Palm Springs by Nakheel | Private Presentation",
+    title: "Palm Springs by Nakheel | Pre-Launch Townhouses & Villas, Dubai",
     description:
-      "An exclusive residence collection by Nakheel, Dubai. As advertised from AED 3.8M — register now for verified project details.",
+      "A new Nakheel community in Jebel Ali, Dubai. Townhouses and villas expected from $1.03M — register now for pricing, floor plans and the first release.",
     url: PAGE_URL,
     siteName: "Palm Springs by Nakheel",
     images: [{ url: OG_IMAGE, width: 1674, height: 940, alt: "Palm Springs by Nakheel — villas at sunset" }],
@@ -34,9 +34,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Palm Springs by Nakheel",
+    title: "Palm Springs by Nakheel | Pre-Launch, Jebel Ali",
     description:
-      "An exclusive residence collection by Nakheel, Dubai. As advertised from AED 3.8M.",
+      "New townhouses and villas by Nakheel in Jebel Ali, Dubai, expected from $1.03M. Register now for the first release.",
     images: [OG_IMAGE],
   },
   robots: "index, follow",
