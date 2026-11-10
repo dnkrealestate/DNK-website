@@ -137,6 +137,10 @@ export default function PPEnquiryForm({
           user_email: email,
           interest: interest || "none",
         });
+        try {
+          window.localStorage.setItem("pp_lead_registered", "true");
+        } catch {}
+        window.dispatchEvent(new Event("pp-lead-registered"));
       }
 
       Swal.fire({

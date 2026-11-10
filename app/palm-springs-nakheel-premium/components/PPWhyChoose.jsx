@@ -90,8 +90,8 @@ export default function PPWhyChoose() {
         className="relative rounded-[1.75rem] overflow-hidden aspect-[21/9] flex items-end"
       >
         <Image
-          src="/assets/palm-springs-nakheel/images/community-lagoon-golden-hour.jpg"
-          alt="Palm Springs by Nakheel community and lagoon at golden hour"
+          src="/assets/palm-springs-nakheel/images/masterplan-aerial-night.webp"
+          alt="Aerial night view of the Palm Springs by Nakheel masterplan"
           fill
           sizes="100vw"
           className="object-cover"

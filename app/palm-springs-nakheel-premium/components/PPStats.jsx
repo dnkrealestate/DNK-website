@@ -21,7 +21,7 @@ const STATS = [
     value: `$${(PRICE_USD_MIN / 1_000_000).toFixed(2)}M`,
     sub: `AED ${(PRICE_AED_MIN / 1_000_000).toFixed(1)}M`,
   },
-  { icon: IoCalendarOutline, label: "Payment Plan", value: "To Be Announced" },
+  { icon: IoCalendarOutline, label: "Payment Plan", value: "60% / 40%" },
 ];
 
 export default function PPStats() {

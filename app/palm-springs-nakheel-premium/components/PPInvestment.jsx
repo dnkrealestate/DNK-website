@@ -3,12 +3,21 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import { PRICE_USD_MIN, PRICE_USD_MAX, PRICE_AED_MIN, PRICE_AED_MAX, AED_TO_USD_RATE } from "../constants";
+import {
+  PRICE_USD_MIN,
+  PRICE_USD_MAX,
+  PRICE_AED_MIN,
+  PRICE_AED_MAX,
+  AED_TO_USD_RATE,
+  DLD_FEE_PERCENT,
+  ESTIMATED_COMPLETION,
+} from "../constants";
 
 const HIGHLIGHTS = [
   "Developed by Nakheel, one of Dubai's most established master developers",
   "Positioned along Dubai's wider Jebel Ali growth corridor",
-  "3 & 4 bedroom townhouses and 4 & 5 bedroom villas, as advertised",
+  "Payment plan: 60% before handover, 40% on handover",
+  `Estimated completion ${ESTIMATED_COMPLETION}`,
 ];
 
 export default function PPInvestment({ onOpenEnquiry }) {
@@ -22,9 +31,10 @@ export default function PPInvestment({ onOpenEnquiry }) {
           </h2>
           <p className="text-white/60 leading-relaxed mb-8 max-w-[440px]">
             Palm Springs is advertised from AED {(PRICE_AED_MIN / 1_000_000).toFixed(1)}M to AED{" "}
-            {(PRICE_AED_MAX / 1_000_000).toFixed(0)}M. Payment plan terms have not yet been
-            released by Nakheel &mdash; register and we will send you the
-            confirmed structure the moment it's available.
+            {(PRICE_AED_MAX / 1_000_000).toFixed(1)}M across five residence
+            types, with a confirmed 60/40 payment plan running through to
+            handover in {ESTIMATED_COMPLETION}. A DLD fee of {DLD_FEE_PERCENT}% of the unit
+            value applies, along with additional admin charges.
           </p>
           <ul className="space-y-3 mb-9">
             {HIGHLIGHTS.map((h) => (
@@ -62,7 +72,7 @@ export default function PPInvestment({ onOpenEnquiry }) {
           </p>
           <p className="text-white/40 text-sm tabular-nums mb-8">
             &asymp; AED {(PRICE_AED_MIN / 1_000_000).toFixed(1)}M &middot; up to ${(PRICE_USD_MAX / 1_000_000).toFixed(2)}M
-            (AED {(PRICE_AED_MAX / 1_000_000).toFixed(0)}M)
+            (AED {(PRICE_AED_MAX / 1_000_000).toFixed(1)}M)
           </p>
           <div className="pt-6 border-t border-white/10">
             <p className="text-white/35 text-xs leading-relaxed">

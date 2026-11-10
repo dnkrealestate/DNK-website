@@ -20,13 +20,13 @@ const OG_IMAGE = "/assets/palm-springs-nakheel/images/hero-waterfront-sunset.png
 export const metadata = {
   title: "Palm Springs by Nakheel | Townhouses & Villas, Dubai",
   description:
-    "Palm Springs by Nakheel — 3 & 4-bedroom townhouses and 4 & 5-bedroom villas on Dubai's waterfront, advertised from AED 3.8M. Register your interest with DNK Real Estate for verified pricing and floor plans.",
+    "Palm Springs by Nakheel — 3 & 4-bedroom townhouses and 4 & 5-bedroom villas in Jebel Ali, Dubai, advertised from AED 3.8M to AED 8.9M. Register your interest with DNK Real Estate for verified pricing, floor plans and the payment plan.",
   keywords:
     "Palm Springs Nakheel, Nakheel Dubai villas, Palm Springs Dubai, Nakheel new launch, Dubai waterfront villas, Nakheel townhouses Dubai",
   openGraph: {
     title: "Palm Springs by Nakheel | Townhouses & Villas, Dubai",
     description:
-      "3 & 4-bedroom townhouses and 4 & 5-bedroom villas, advertised from AED 3.8M. Register your interest with DNK Real Estate.",
+      "3 & 4-bedroom townhouses and 4 & 5-bedroom villas, advertised from AED 3.8M to AED 8.9M. Register your interest with DNK Real Estate.",
     url: "https://www.dnkre.com/palm-springs-nakheel",
     siteName: "DNK Real Estate",
     type: "website",

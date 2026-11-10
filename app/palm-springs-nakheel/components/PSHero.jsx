@@ -99,7 +99,7 @@ export default function PSHero({ onOpenEnquiry }) {
           </div>
           <div className="px-4 sm:px-6 py-4 sm:py-5">
             <p className="font-[family-name:var(--font-body)] text-[#C6A66B] text-lg sm:text-2xl font-bold tracking-tight tabular-nums mb-0">
-              AED 3.8M&ndash;9M
+              AED 3.8M&ndash;8.9M
             </p>
             <p className="text-white text-[0.6rem] sm:text-[0.65rem] uppercase tracking-wider mt-1 mb-0">Price Range</p>
           </div>
@@ -138,17 +138,6 @@ export default function PSHero({ onOpenEnquiry }) {
             <FaWhatsapp /> Enquire on WhatsApp
           </a>
         </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="text-white/35 text-xs max-w-[560px]"
-        >
-          Pricing and unit types shown are as advertised; unit sizes are yet
-          to be announced by Nakheel. Register your interest today to
-          receive verified information first.
-        </motion.p>
       </div>
 
       <motion.div

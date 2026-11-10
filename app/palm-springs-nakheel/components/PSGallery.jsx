@@ -7,19 +7,29 @@ import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 
 const IMAGES = [
   {
-    src: "/assets/palm-springs-nakheel/images/hero-waterfront-sunset.png",
-    alt: "Aerial view of a waterfront villa community in Dubai at sunset",
-    caption: "Waterfront aerial view",
+    src: "/assets/palm-springs-nakheel/images/masterplan-aerial-night.webp",
+    alt: "Aerial night view of the Palm Springs by Nakheel masterplan",
+    caption: "Masterplan aerial view",
   },
   {
-    src: "/assets/palm-springs-nakheel/images/villas-exterior-sunset.png",
-    alt: "Row of contemporary villas with landscaped gardens at sunset",
-    caption: "Villa exteriors",
+    src: "/assets/palm-springs-nakheel/images/community-pool-lifestyle.webp",
+    alt: "Residents enjoying the community pool at Palm Springs by Nakheel",
+    caption: "Villas | Community Pool",
   },
   {
-    src: "/assets/palm-springs-nakheel/images/interior-living-sunset-view.png",
-    alt: "Open-plan living space with a waterfront sunset view",
-    caption: "Interior living space",
+    src: "/assets/palm-springs-nakheel/images/villa-4br-street-porsche.png",
+    alt: "4 Bedroom Villa street view at Palm Springs by Nakheel",
+    caption: "4BR Villa — Street View",
+  },
+  {
+    src: "/assets/palm-springs-nakheel/images/townhouse-6plex-corner.png",
+    alt: "6-Plex Townhouse corner unit at Palm Springs by Nakheel",
+    caption: "Townhouse — Corner Unit",
+  },
+  {
+    src: "/assets/palm-springs-nakheel/images/villa-5br-pool-loungers.png",
+    alt: "5 Bedroom Villa pool with loungers at Palm Springs by Nakheel",
+    caption: "5BR Villa — Pool",
   },
   {
     src: "/assets/palm-springs-nakheel/images/location-map-reference.webp",

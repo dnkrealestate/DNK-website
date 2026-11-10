@@ -12,6 +12,7 @@ const SOCIALS = [
 const QUICK_LINKS = [
   { name: "Overview", id: "overview" },
   { name: "Residences", id: "residences" },
+  { name: "Payment Plan", id: "payment-plan" },
   { name: "Location", id: "location" },
   { name: "Gallery", id: "gallery" },
   { name: "FAQ", id: "faq" },
@@ -25,22 +26,13 @@ export default function PSFooter() {
       <div className="max-w-[1320px] mx-auto">
         <div className="grid md:grid-cols-[1.3fr_1fr_1fr] gap-10 pb-10 border-b border-white/10">
           <div>
-            <div className="mb-5">
-              
-              <div className="flex items-center gap-2.5">
-                <p className="font-[family-name:var(--font-display)] text-[#C6A66B] text-2xl sm:text-3xl font-semibold tracking-[0.04em] mb-2">
-                Palm Springs
-              </p>
-                <span className="text-white/40 text-[0.65rem] tracking-[0.2em] uppercase">A Residence by</span>
-              </div>
-               <Image
-                  src="/assets/palm-springs-nakheel/logos/nakheel-logo-ink.webp"
-                  alt="Nakheel"
-                  width={3840}
-                  height={667}
-                  className="h-4 w-auto brightness-0 invert opacity-90"
-                />
-            </div>
+            <Image
+              src="/assets/palm-springs-nakheel/logos/palm-springs-logo.webp"
+              alt="Palm Springs by Nakheel"
+              width={1317}
+              height={324}
+              className="h-10 w-auto mb-5 brightness-0 invert"
+            />
             <p className="text-white/50 text-sm leading-relaxed max-w-[360px] mb-5">
              Discover the upcoming residential development by Nakheel. Register your interest to receive the latest confirmed project details, pricing, floor plans and launch updates as soon as they become available.
             </p>

@@ -142,6 +142,10 @@ export default function PSEnquiryForm({
           user_email: email,
           interest: interest || "none",
         });
+        try {
+          window.localStorage.setItem("ps_lead_registered", "true");
+        } catch {}
+        window.dispatchEvent(new Event("ps-lead-registered"));
       }
 
       Swal.fire({

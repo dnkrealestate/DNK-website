@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { IoCallOutline, IoArrowForward, IoMenu, IoClose } from "react-icons/io5";
 
 const LINKS = [
@@ -43,14 +44,14 @@ export default function PPNav({ onOpenEnquiry }) {
                   : "bg-white/90 backdrop-blur-xl"
               }`}
             >
-              <div className="flex items-baseline gap-2 flex-shrink-0 whitespace-nowrap">
-                <span className="font-[family-name:var(--font-display)] text-[#102B46] font-bold text-base sm:text-lg tracking-tight">
-                  Palm Springs
-                </span>
-                <span className="text-[#367BA8] text-[0.55rem] sm:text-[0.6rem] font-semibold tracking-[0.15em] uppercase">
-                  by Nakheel
-                </span>
-              </div>
+              <Image
+                src="/assets/palm-springs-nakheel/logos/palm-springs-logo.webp"
+                alt="Palm Springs by Nakheel"
+                width={1317}
+                height={324}
+                priority
+                className="h-7 sm:h-8 w-auto flex-shrink-0"
+              />
 
               <nav className="hidden xl:flex items-center gap-4">
                 {LINKS.map((l) => (

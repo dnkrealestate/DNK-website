@@ -4,41 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoLockClosedOutline, IoArrowForward } from "react-icons/io5";
-
-const UNIT_TYPES = [
-  {
-    label: "3 Bedroom Townhouse",
-    sub: "Townhouse",
-    bedrooms: 3,
-    layout: "Townhouse",
-    image: "/assets/palm-springs-nakheel/images/floor-plan-townhouse-3br.jpg",
-    exact: true,
-  },
-  {
-    label: "4 Bedroom Townhouse",
-    sub: "Townhouse",
-    bedrooms: 4,
-    layout: "Townhouse",
-    image: "/assets/palm-springs-nakheel/images/floor-plan-townhouse-4br.jpg",
-    exact: true,
-  },
-  {
-    label: "4 Bedroom Villa",
-    sub: "Standalone Villa",
-    bedrooms: 4,
-    layout: "Villa",
-    image: "/assets/palm-springs-nakheel/images/floor-plan-sample.png",
-    exact: false,
-  },
-  {
-    label: "5 Bedroom Villa",
-    sub: "Standalone Villa",
-    bedrooms: 5,
-    layout: "Villa",
-    image: "/assets/palm-springs-nakheel/images/floor-plan-villa-5br.jpg",
-    exact: true,
-  },
-];
+import { UNIT_TYPES } from "../constants";
 
 export default function PPFloorPlans({ onOpenEnquiry }) {
   const [active, setActive] = useState(0);
@@ -58,10 +24,10 @@ export default function PPFloorPlans({ onOpenEnquiry }) {
         Nakheel releases them.
       </p>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
         {UNIT_TYPES.map((u, i) => (
           <button
-            key={u.label}
+            key={`${u.label}-${u.sub}`}
             onClick={() => setActive(i)}
             className={`text-left rounded-2xl border p-4 transition-colors ${
               active === i
@@ -78,7 +44,7 @@ export default function PPFloorPlans({ onOpenEnquiry }) {
       <div className="rounded-[1.75rem] bg-[#F5F8FB] border border-[#102B46]/8 p-3 sm:p-5">
         <AnimatePresence mode="wait">
           <motion.div
-            key={unit.label}
+            key={`${unit.label}-${unit.sub}`}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
@@ -87,28 +53,28 @@ export default function PPFloorPlans({ onOpenEnquiry }) {
           >
             <div className="relative rounded-[1.25rem] overflow-hidden aspect-[4/3]">
               <Image
-                src={unit.image}
-                alt={`${unit.exact ? "Advertised" : "Sample"} floor plan layout for ${unit.label} at Palm Springs by Nakheel`}
+                src={unit.floorPlanImage}
+                alt={`${unit.floorPlanExact ? "Advertised" : "Sample"} floor plan layout for ${unit.label} (${unit.sub}) at Palm Springs by Nakheel`}
                 fill
                 sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover"
               />
               <span className="absolute top-3 right-3 bg-[#102B46]/85 text-white text-[0.6rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                <IoLockClosedOutline /> {unit.exact ? "As Advertised" : "Sample Preview"}
+                <IoLockClosedOutline /> {unit.floorPlanExact ? "As Advertised" : "Sample Preview"}
               </span>
             </div>
 
             <div className="flex flex-col justify-center p-2 sm:p-4">
               <p className="text-[#367BA8] text-[0.65rem] font-bold tracking-[0.2em] uppercase mb-1.5">
-                {unit.sub}
+                {unit.sub} &middot; {unit.floors}
               </p>
               <h3 className="font-[family-name:var(--font-display)] text-[#102B46] text-2xl font-semibold mb-4">
                 {unit.label}
               </h3>
               <p className="text-[#252D36]/55 text-sm leading-relaxed mb-7">
-                {unit.exact
-                  ? `This is the advertised layout for the ${unit.label.toLowerCase()}. Final specifications remain subject to confirmation by Nakheel.`
-                  : `This is a representative layout sample and not the final floor plan for this residence type. The confirmed ${unit.bedrooms}-bedroom ${unit.layout.toLowerCase()} plans will be released by Nakheel.`}
+                {unit.floorPlanExact
+                  ? `This is the advertised layout for the ${unit.label.toLowerCase()} (${unit.sub}). Final specifications remain subject to confirmation by Nakheel.`
+                  : `The image shown is a representative layout sample and not the final floor plan for this specific residence type. The confirmed ${unit.bedrooms}-bedroom ${unit.layout.toLowerCase()} plans will be released by Nakheel.`}
               </p>
               <button
                 onClick={() =>
@@ -116,7 +82,7 @@ export default function PPFloorPlans({ onOpenEnquiry }) {
                     eyebrow: `${unit.label} Floor Plans`,
                     title: `Request ${unit.label} Floor Plans`,
                     interest: "Floor Plans",
-                    propertyType: unit.label,
+                    propertyType: `${unit.label} — ${unit.sub}`,
                     ctaLabel: "Request Floor Plans",
                   })
                 }

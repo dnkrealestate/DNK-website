@@ -8,6 +8,7 @@ import { IoMenu, IoClose, IoCallOutline } from "react-icons/io5";
 const NAV_ITEMS = [
   { name: "Overview", id: "overview" },
   { name: "Residences", id: "residences" },
+  { name: "Payment Plan", id: "payment-plan" },
   { name: "Brochure & Plans", id: "brochure" },
   { name: "Location", id: "location" },
   { name: "Gallery", id: "gallery" },
@@ -41,12 +42,12 @@ export default function PSHeader({ onOpenEnquiry }) {
       <div className="max-w-[1320px] mx-auto px-5 sm:px-8 flex items-center justify-between">
         <Link href="/palm-springs-nakheel" className="flex items-center">
           <Image
-            src="/assets/palm-springs-nakheel/logos/nakheel-logo-ink.webp"
-            alt="Nakheel"
-            width={3840}
-            height={667}
+            src="/assets/palm-springs-nakheel/logos/palm-springs-logo.webp"
+            alt="Palm Springs by Nakheel"
+            width={1317}
+            height={324}
             priority
-            className="h-6 sm:h-7 w-auto brightness-0 invert"
+            className="h-8 sm:h-9 w-auto brightness-0 invert"
           />
         </Link>
 

@@ -7,6 +7,7 @@ import PSQuickFacts from "./PSQuickFacts";
 import PSIntro from "./PSIntro";
 import PSHighlights from "./PSHighlights";
 import PSResidences from "./PSResidences";
+import PSPaymentPlan from "./PSPaymentPlan";
 import PSLocation from "./PSLocation";
 import PSDocuments from "./PSDocuments";
 import PSGallery from "./PSGallery";
@@ -31,6 +32,7 @@ export default function HomePalmSprings() {
       <PSIntro />
       <PSHighlights />
       <PSResidences onOpenEnquiry={openEnquiry} />
+      <PSPaymentPlan onOpenEnquiry={openEnquiry} />
       <PSLocation onOpenEnquiry={openEnquiry} />
       <PSDocuments onOpenEnquiry={openEnquiry} />
       <PSGallery onOpenEnquiry={openEnquiry} />

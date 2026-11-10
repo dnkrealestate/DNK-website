@@ -33,8 +33,8 @@ export default function PPLifestyle() {
     <section id="lifestyle" className="relative px-4 sm:px-6 lg:px-10 py-10 sm:py-14 scroll-mt-28">
       <div className="relative rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden min-h-[480px] sm:min-h-[560px] flex items-end">
         <Image
-          src="/assets/palm-springs-nakheel/images/community-amenities-aerial.jpg"
-          alt="Aerial view of Palm Springs community amenities and lagoon pools"
+          src="/assets/palm-springs-nakheel/images/community-pool-lifestyle.webp"
+          alt="Residents enjoying the community pool at Palm Springs by Nakheel"
           fill
           sizes="100vw"
           className="object-cover"

@@ -14,22 +14,22 @@ const PANELS = [
   {
     title: "Explore Residences",
     text: "3 and 4 bedroom townhouses and 4 and 5 bedroom villas. Register to receive the floor plans as soon as Nakheel releases them.",
-    image: "/assets/palm-springs-nakheel/images/villa-exterior-dual-garage.jpg",
+    image: "/assets/palm-springs-nakheel/images/townhouse-6plex-street-day.png",
   },
   {
     title: "Experience the Lifestyle",
     text: "Planned for spacious everyday family living. Amenities and specifications are to be confirmed by Nakheel.",
-    image: "/assets/palm-springs-nakheel/images/interior-living-pool-view.jpg",
+    image: "/assets/palm-springs-nakheel/images/villa-5br-living-dining-2.webp",
   },
   {
     title: "Understand the Investment",
-    text: "Register to receive the price list and payment plan as soon as Nakheel releases them. Prices and payment terms are not yet confirmed.",
+    text: "Review the advertised price range of AED 3.8M–8.9M and the confirmed 60% before handover / 40% on handover payment plan, running through to handover in October 2030.",
     image: "/assets/palm-springs-nakheel/images/villa-exterior-infinity-pool-dusk.jpg",
   },
   {
     title: "Request a Private Consultation",
     text: "Leave your details and our team will contact you with the latest Palm Springs updates once Nakheel releases the official information.",
-    image: "/assets/palm-springs-nakheel/images/community-lagoon-golden-hour.jpg",
+    image: "/assets/palm-springs-nakheel/images/villa-4br-master-bedroom.webp",
     cta: true,
   },
 ];

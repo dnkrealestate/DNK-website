@@ -8,14 +8,23 @@ const RESIDENCES = [
   {
     type: "Townhouses",
     bedrooms: "3 & 4 Bedroom",
-    image: "/assets/palm-springs-nakheel/images/villas-exterior-sunset.png",
-    imageCaption: "Representative exterior imagery",
+    image: "/assets/palm-springs-nakheel/images/townhouse-4plex-street-dusk.png",
+    imageCaption: "4-Plex Townhouse — Exterior",
+    units: [
+      { label: "3BR, Mid Unit (G+1)", price: "AED 3.8M", area: "2,329 sq.ft" },
+      { label: "4BR Type 1, Corner Unit (G+1)", price: "AED 4.6M", area: "2,672 sq.ft" },
+      { label: "4BR Type 2, Corner Unit (G+2)", price: "AED 5.2M", area: "3,115 sq.ft" },
+    ],
   },
   {
     type: "Villas",
     bedrooms: "4 & 5 Bedroom",
-    image: "/assets/palm-springs-nakheel/images/interior-living-sunset-view.png",
-    imageCaption: "Representative interior imagery",
+    image: "/assets/palm-springs-nakheel/images/villa-5br-street-golfcart.png",
+    imageCaption: "5-Bedroom Villa — Exterior",
+    units: [
+      { label: "4BR Villa (G+2)", price: "AED 7.0M", area: "4,041 sq.ft" },
+      { label: "5BR Villa (G+2)", price: "AED 8.9M", area: "4,921 sq.ft" },
+    ],
   },
 ];
 
@@ -30,7 +39,7 @@ export default function PSResidences({ onOpenEnquiry }) {
           Spaces Designed Around the Way You Live
         </h2>
         <p className="text-[#4B534E] max-w-[640px] mb-12 leading-relaxed">
-          Explore a collection of townhouses and villas, with prices expected to range from AED 3.8M+. Register your interest to receive confirmed specifications, floor plans and pricing as they become available.
+          Five residence configurations across two collections, starting from AED 3.8M. Starting prices and unit sizes are as advertised by Nakheel.
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -65,13 +74,18 @@ export default function PSResidences({ onOpenEnquiry }) {
                   {res.type}
                 </h3>
 
-                <div className="mb-8 pb-8 border-b border-[#1C211F]/10">
-                  <span className="text-[#8A8F8B] text-xs uppercase tracking-wider block mb-1">
-                    Price
-                  </span>
-                  <span className="font-[family-name:var(--font-body)] text-[#A9874F] text-base sm:text-lg font-bold tracking-tight tabular-nums">
-                    AED 3.8M&ndash;9M range
-                  </span>
+                <div className="mb-8 pb-8 border-b border-[#1C211F]/10 divide-y divide-[#1C211F]/8">
+                  {res.units.map((u) => (
+                    <div key={u.label} className="flex items-center justify-between gap-3 py-2.5 first:pt-0">
+                      <span className="text-[#4B534E] text-sm">{u.label}</span>
+                      <span className="text-right flex-shrink-0">
+                        <span className="font-[family-name:var(--font-body)] text-[#A9874F] text-sm font-bold tracking-tight tabular-nums block">
+                          {u.price}
+                        </span>
+                        <span className="text-[#8A8F8B] text-xs tabular-nums">{u.area}</span>
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">

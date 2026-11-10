@@ -76,8 +76,8 @@ export default function PPIntro() {
           className="relative rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden min-h-[320px]"
         >
           <Image
-            src="/assets/palm-springs-nakheel/images/villa-exterior-infinity-pool-dusk.jpg"
-            alt="Palm Springs by Nakheel villa exterior with infinity pool at dusk"
+            src="/assets/palm-springs-nakheel/images/landscape-garden-villas.webp"
+            alt="Landscaped garden and villas at Palm Springs by Nakheel"
             fill
             sizes="(max-width: 1024px) 100vw, 33vw"
             className="object-cover"

@@ -9,19 +9,19 @@ export const FAQ_ITEMS = [
   },
   {
     q: "What residential property types are available?",
-    a: "The official property types and configurations are yet to be confirmed. Register your interest to receive the latest verified residence details as soon as they become available.",
+    a: "Palm Springs offers five configurations: a 3-bedroom townhouse (mid unit), two 4-bedroom townhouse types (corner units), a 4-bedroom villa and a 5-bedroom villa, as advertised by Nakheel.",
   },
   {
     q: "What are the starting prices?",
-    a: "Pricing has not yet been officially confirmed by Nakheel. Our team will share verified pricing with registered enquirers as soon as it's released.",
+    a: "Starting prices range from AED 3.8M for the 3-bedroom townhouse up to AED 8.9M for the 5-bedroom villa, as advertised by Nakheel. See the Residences section above for the full breakdown by unit type.",
   },
   {
     q: "What is the payment plan?",
-    a: "The official payment plan has not yet been published. Request a private briefing and we'll send you the confirmed structure as soon as it's available.",
+    a: "The advertised payment plan is 60% before handover and 40% on handover, split across 8 instalments from booking through to the estimated handover in October 2030. Request a private briefing for the full schedule.",
   },
   {
     q: "When is the expected handover?",
-    a: "An expected handover date has not yet been confirmed. We'll notify registered enquirers as soon as Nakheel releases this information.",
+    a: "Estimated completion is October 2030, as advertised by Nakheel. This remains subject to final confirmation.",
   },
   {
     q: "Can I download the brochure and floor plans?",

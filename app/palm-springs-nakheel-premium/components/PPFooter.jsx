@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { FaWhatsapp, FaInstagram, FaFacebookF, FaLinkedin } from "react-icons/fa";
 import { IoCallOutline, IoMailOutline } from "react-icons/io5";
 import { WHATSAPP_NUMBER, WHATSAPP_TEXT } from "../constants";
@@ -17,14 +18,13 @@ export default function PPFooter() {
     <footer className="bg-[#102B46] text-white px-4 sm:px-6 lg:px-10 py-14 sm:py-16">
       <div className="grid sm:grid-cols-3 gap-10 mb-12">
         <div>
-          <div className="flex items-baseline gap-2.5 mb-4">
-            <span className="font-[family-name:var(--font-display)] text-white font-bold text-2xl tracking-tight">
-              Palm Springs
-            </span>
-            <span className="text-[#8DB6D3] text-xs font-semibold tracking-[0.15em] uppercase">
-              by Nakheel
-            </span>
-          </div>
+          <Image
+            src="/assets/palm-springs-nakheel/logos/palm-springs-logo.webp"
+            alt="Palm Springs by Nakheel"
+            width={1317}
+            height={324}
+            className="h-9 w-auto mb-4 brightness-0 invert"
+          />
           <p className="text-white/45 text-sm leading-relaxed max-w-[280px]">
             A private presentation for Palm Springs by Nakheel.
           </p>

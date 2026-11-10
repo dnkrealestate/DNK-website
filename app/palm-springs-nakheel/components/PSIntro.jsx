@@ -17,8 +17,8 @@ export default function PSIntro() {
         >
           <div className="relative aspect-[16/10] rounded-sm overflow-hidden shadow-2xl shadow-black/10 border border-[#1C211F]/10">
             <Image
-              src="/assets/palm-springs-nakheel/images/villas-exterior-sunset.png"
-              alt="Row of contemporary villas with landscaped gardens at sunset, representative imagery for Palm Springs by Nakheel"
+              src="/assets/palm-springs-nakheel/images/masterplan-aerial-night.webp"
+              alt="Aerial night view of the Palm Springs by Nakheel masterplan"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
@@ -57,7 +57,7 @@ export default function PSIntro() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="text-[#4B534E] leading-relaxed mb-8 max-w-[480px]"
           >
-            Register your interest to receive the latest confirmed details on residences, floor plans, prices and payment plans as soon as they are announced. Be among the first to discover what Palm Springs has to offer.
+            Advertised pricing, unit sizes and the payment plan are now available across all five residence types. Register your interest to receive the full confirmed details, floor plans and brochure as soon as they&apos;re released.
           </motion.p>
 
           <button
