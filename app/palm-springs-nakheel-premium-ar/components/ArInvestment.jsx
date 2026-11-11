@@ -70,11 +70,11 @@ export default function ArInvestment({ onOpenEnquiry }) {
         >
           <p className="text-white/50 text-xs font-semibold tracking-[0.15em] uppercase mb-2">يبدأ من</p>
           <p className="font-[family-name:var(--font-body)] text-5xl sm:text-6xl font-extrabold tabular-nums mb-2">
-            ${(PRICE_USD_MIN / 1_000_000).toFixed(2)}M
+            AED {(PRICE_AED_MIN / 1_000_000).toFixed(1)}M
           </p>
           <p className="text-white/40 text-sm tabular-nums mb-8">
-            &asymp; AED {(PRICE_AED_MIN / 1_000_000).toFixed(1)}M &middot; وحتى ${(PRICE_USD_MAX / 1_000_000).toFixed(2)}M
-            (AED {(PRICE_AED_MAX / 1_000_000).toFixed(1)}M)
+            &asymp; ${(PRICE_USD_MIN / 1_000_000).toFixed(2)}M &middot; وحتى AED {(PRICE_AED_MAX / 1_000_000).toFixed(1)}M
+            (${(PRICE_USD_MAX / 1_000_000).toFixed(2)}M)
           </p>
           <div className="pt-6 border-t border-white/10">
             <p className="text-white/35 text-xs leading-relaxed">

@@ -62,10 +62,10 @@ export default function ArHero({ onOpenEnquiry }) {
                 يبدأ من
               </p>
               <p className="font-[family-name:var(--font-body)] text-white text-2xl sm:text-3xl font-extrabold tabular-nums">
-                ${(PRICE_USD_MIN / 1_000_000).toFixed(2)}M
+                AED {(PRICE_AED_MIN / 1_000_000).toFixed(1)}M
               </p>
               <p className="text-white/40 text-[0.65rem] mt-0.5 tabular-nums">
-                &asymp; AED {(PRICE_AED_MIN / 1_000_000).toFixed(1)}M &middot; كما هو معلن
+                &asymp; ${(PRICE_USD_MIN / 1_000_000).toFixed(2)}M &middot; كما هو معلن
               </p>
             </div>
           </motion.div>

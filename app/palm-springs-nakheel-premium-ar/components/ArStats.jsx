@@ -19,8 +19,8 @@ export default function ArStats() {
     {
       icon: IoPricetagOutline,
       label: "السعر الابتدائي",
-      value: `$${(PRICE_USD_MIN / 1_000_000).toFixed(2)}M`,
-      sub: `AED ${(PRICE_AED_MIN / 1_000_000).toFixed(1)}M`,
+      value: `AED ${(PRICE_AED_MIN / 1_000_000).toFixed(1)}M`,
+      sub: `≈ $${(PRICE_USD_MIN / 1_000_000).toFixed(2)}M`,
     },
     { icon: IoCalendarOutline, label: "خطة الدفع", value: "60% / 40%" },
   ];
