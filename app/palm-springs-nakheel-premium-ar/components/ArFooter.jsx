@@ -49,7 +49,7 @@ export default function ArFooter() {
           <ul className="space-y-3">
             <li>
               <a href="tel:+971555769195" className="flex items-center gap-2 text-white/65 hover:text-[#8DB6D3] text-sm transition-colors">
-                <IoCallOutline /> +971 55 576 9195
+                <IoCallOutline /> <span dir="ltr">+971 55 576 9195</span>
               </a>
             </li>
             <li>

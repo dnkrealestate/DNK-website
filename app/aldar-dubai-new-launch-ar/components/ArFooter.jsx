@@ -71,7 +71,7 @@ export default function ArFooter() {
               <li className="flex items-center gap-3">
                 <FaPhoneAlt className="text-[#C6A46A] flex-shrink-0" />
                 <a href="tel:+971555769195" className="text-white/50 hover:text-white text-sm transition-colors">
-                  +971 55 576 9195
+                  <span dir="ltr">+971 55 576 9195</span>
                 </a>
               </li>
               <li className="flex items-center gap-3">
